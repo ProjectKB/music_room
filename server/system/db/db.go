@@ -5,13 +5,17 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var Client *mongo.Client
-var Collection *mongo.Collection
+var UserCollection *mongo.Collection
+var PlaylistCollection *mongo.Collection
+var EventCollection *mongo.Collection
+var AuthorizationCollection *mongo.Collection
 
 func loadEnv() {
 	err := godotenv.Load(".env")
@@ -36,7 +40,10 @@ func ConnectToDB() {
 		log.Fatal(err)
 	}
 
-	Collection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_NAME"))
+	UserCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_USER"))
+	PlaylistCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_PLAYLIST"))
+	EventCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_EVENT"))
+	AuthorizationCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_AUTHORIZATION"))
 
 	// Check the connection
 	err = Client.Ping(context.TODO(), nil)
