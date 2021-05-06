@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"server/errors"
 	"server/model"
 	db "server/system/db"
 
@@ -11,56 +12,40 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Create(elem *model.Authorization) {
-	_, err := db.AuthorizationCollection.InsertOne(context.TODO(), elem)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Inserted a single document")
+func Create(elem *model.Authorization) int {
+	// TODO when playlist is created
+	return 0
 }
 
-func Read(param string) *model.Authorization {
+func Read(param string, result *model.Authorization) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
 
-	// create a value into which the result can be decoded
-	var result *model.Authorization
-
-	err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		log.Fatal(err)
+	if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
+		return errors.BddError
 	}
 
-	return result
+	return errors.None
 }
 
-func ReadAll() []*model.Authorization {
-	var authorization []*model.Authorization
-
+func ReadAll(authorizations *[]model.Authorization) int {
 	// Passing bson.D{} as the filter matches all documents in the User collection
 	cur, err := db.AuthorizationCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
-		log.Fatal(err)
+		return errors.BddError
 	}
 
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(context.TODO()) {
-
-		// create a value into which the single document can be decoded
 		var elem model.Authorization
-		err := cur.Decode(&elem)
-		if err != nil {
-			log.Fatal(err)
+
+		if err := cur.Decode(&elem); err != nil {
+			return errors.BddError
 		}
 
-		authorization = append(authorization, &elem)
-	}
-
-	if err := cur.Err(); err != nil {
-		log.Fatal(err)
+		*authorizations = append(*authorizations, elem)
 	}
 
 	// Close the cursor once finished
@@ -68,37 +53,38 @@ func ReadAll() []*model.Authorization {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return authorization
+	return errors.None
 }
 
-func Update(doc *model.Authorization, param string) {
+func Update(fields bson.M, param string) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
 	update := bson.M{
-		"$set": bson.D{
-			{"status", doc.Status},
-			{"guests", doc.Guests},
-			{"contributors", doc.Contributors},
-		},
+		"$set": fields,
 	}
 
 	updateResult, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update)
+
 	if err != nil {
-		log.Fatal(err)
+		return errors.BddError
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+	return errors.None
 }
 
-func Delete(param string) {
+func Delete(param string) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
 
 	deleteResult, err := db.AuthorizationCollection.DeleteOne(context.TODO(), filter)
+
 	if err != nil {
-		log.Fatal(err)
+		return errors.BddError
 	}
+
 	fmt.Printf("Deleted %v documents in the authorization collection\n", deleteResult.DeletedCount)
+	return errors.None
 }
 
 func DeleteAll() {
@@ -108,3 +94,5 @@ func DeleteAll() {
 	}
 	fmt.Printf("Deleted %v documents in the authorization collection\n", deleteResult.DeletedCount)
 }
+
+// TODO add bdd error to every methods + think about update
