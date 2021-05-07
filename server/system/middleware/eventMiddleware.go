@@ -81,17 +81,22 @@ func CreateOneEvent(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(event)
 }
 
-func updateEventFilter(doc model.Event) bson.M {
+func updateEventFilter(doc *model.Event) bson.M {
 	filter := bson.M{}
+	default_picture := "path_to_default_picture"
 
-	v := reflect.ValueOf(doc)
+	if doc.Picture == "" {
+		doc.Picture = default_picture
+	}
+
+	v := reflect.ValueOf(*doc)
 	typeOfS := v.Type()
 	for i := 0; i < v.NumField(); i++ {
 		if (typeOfS.Field(i).Name == "Name" || typeOfS.Field(i).Name == "Start" || typeOfS.Field(i).Name == "End") && v.Field(i).Interface() != "" {
 			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
 		}
 	}
-	
+
 	return filter
 }
 
@@ -100,12 +105,12 @@ func UpdateOneEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	
+
 	var event model.Event
 	params := mux.Vars(r)
-	
+
 	json.NewDecoder(r.Body).Decode(&event)
-	filter := updateEventFilter(event)
+	filter := updateEventFilter(&event)
 
 	if len(filter) == 0 {
 		http.Error(w, errors.ErrorMessages[errors.UpdateEmpty], http.StatusBadRequest)

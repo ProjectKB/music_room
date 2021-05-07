@@ -9,10 +9,8 @@ type User struct {
 	Login     string             `bson:"login,omitempty" json:"login,omitempty"`
 	Mail      string             `bson:"mail,omitempty" json:"mail,omitempty"`
 	Password  string             `bson:"password,omitempty" json:"password,omitempty"`
-	Friends   []string           `bson:"friends,omitempty" json:"friends,omitempty"` // TODO special routes
-	Events    []string           `bson:"events,omitempty" json:"events,omitempty"` // TODO special routes
+	Friends   []string           `bson:"friends,omitempty" json:"friends,omitempty"`     // TODO special routes
+	Events    []string           `bson:"events,omitempty" json:"events,omitempty"`       // TODO special routes
 	Playlists []string           `bson:"playlists,omitempty" json:"playlists,omitempty"` // TODO special routes
-	Avatar    string             `bson:"avatar,omitempty" json:"avatar,omitempty"` // TODO automatic default
+	Avatar    string             `bson:"avatar,omitempty" json:"avatar,omitempty"`
 }
-
-// TODO change omitempty to unrequire for friends, playlists, events

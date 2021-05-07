@@ -32,6 +32,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/authorizations/{id}", middleware.ReadOneAuthorization).Methods("GET", "OPTIONS")
 	router.HandleFunc("/authorizations/{id}", middleware.DeleteOneAuthorization).Methods("DELETE", "OPTIONS")
 	router.HandleFunc("/authorizations/{id}", middleware.UpdateOneAuthorization).Methods("PUT", "OPTIONS")
+	router.HandleFunc("/authorizations/addGuest/{id}", middleware.AddGuestToAuthorization).Methods("PUT", "OPTIONS")
 
 	// TODO refacto
 	

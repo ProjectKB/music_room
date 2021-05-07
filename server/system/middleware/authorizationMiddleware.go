@@ -2,7 +2,6 @@ package system
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"reflect"
 	authorizationController "server/controllers/authorizationController"
@@ -21,7 +20,6 @@ func ReadAllAuthorization(w http.ResponseWriter, r *http.Request) {
 	var results []model.Authorization
 
 	if err := authorizationController.ReadAll(&results); err != errors.None {
-		fmt.Println(err, results)
 		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -81,10 +79,10 @@ func CreateOneAuthorization(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(authorization)
 }
 
-func updateAuthorizationFilter(doc model.Authorization) bson.M {
+func updateAuthorizationFilter(doc *model.Authorization) bson.M {
 	filter := bson.M{}
 
-	v := reflect.ValueOf(doc)
+	v := reflect.ValueOf(*doc)
 	typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
@@ -106,7 +104,7 @@ func UpdateOneAuthorization(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	json.NewDecoder(r.Body).Decode(&authorization)
-	filter := updateAuthorizationFilter(authorization)
+	filter := updateAuthorizationFilter(&authorization)
 
 	if len(filter) == 0 {
 		http.Error(w, errors.ErrorMessages[errors.UpdateEmpty], http.StatusBadRequest)
@@ -117,4 +115,24 @@ func UpdateOneAuthorization(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(authorization)
+}
+
+func AddGuestToAuthorization(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var guest model.Guest
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&guest); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := authorizationController.AddGuest(params["id"], &guest); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(guest)
 }

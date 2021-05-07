@@ -81,10 +81,15 @@ func CreateOneUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
-func updateUserFilter(doc model.User) bson.M {
+func updateUserFilter(doc *model.User) bson.M {
 	filter := bson.M{}
+	default_avatar := "path_to_default_avatar"
 
-	v := reflect.ValueOf(doc)
+	if doc.Avatar == "" {
+		doc.Avatar = default_avatar
+	}
+
+	v := reflect.ValueOf(*doc)
 	typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
@@ -106,7 +111,7 @@ func UpdateOneUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	
 	json.NewDecoder(r.Body).Decode(&user)
-	filter := updateUserFilter(user)
+	filter := updateUserFilter(&user)
 
 	if len(filter) == 0 {
 		http.Error(w, errors.ErrorMessages[errors.UpdateEmpty], http.StatusBadRequest)

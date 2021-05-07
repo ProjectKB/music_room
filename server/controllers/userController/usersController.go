@@ -16,8 +16,13 @@ import (
 
 func Create(elem *model.User) int {
 	mail_regex := "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+	default_avatar := "path_to_default_avatar"
 	match, _ := regexp.MatchString(mail_regex, elem.Mail)
 	var isDuplicated *model.User
+
+	if elem.Avatar == "" {
+		elem.Avatar = default_avatar
+	}
 
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return errors.FieldIsMissing
@@ -82,7 +87,7 @@ func Update(fields bson.M, param string) int {
 	}
 
 	updateResult, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
-	
+
 	if err != nil {
 		return errors.BddError
 	}

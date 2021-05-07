@@ -13,6 +13,12 @@ import (
 )
 
 func Create(elem *model.Event) int {
+	default_picture := "path_to_default_picture"
+
+	if elem.Picture == "" {
+		elem.Picture = default_picture
+	}
+
 	if elem.Name == "" || elem.Start == "" || elem.End == "" {
 		return errors.FieldIsMissing
 	} else if _, err := db.EventCollection.InsertOne(context.TODO(), elem); err != nil {

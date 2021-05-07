@@ -13,8 +13,12 @@ import (
 )
 
 func Create(elem *model.Authorization) int {
-	// TODO when playlist is created
-	return 0
+	if _, err := db.AuthorizationCollection.InsertOne(context.TODO(), elem); err != nil {
+		return errors.BddError
+	}
+
+	fmt.Println("Inserted a single document")
+	return errors.None
 }
 
 func Read(param string, result *model.Authorization) int {
@@ -93,6 +97,48 @@ func DeleteAll() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Deleted %v documents in the authorization collection\n", deleteResult.DeletedCount)
+}
+
+func AddGuest(authorizationId string, guest *model.Guest) int {
+	id, _ := primitive.ObjectIDFromHex(authorizationId)
+	guestId, _ := primitive.ObjectIDFromHex(guest.Id)
+	filter := bson.D{{"_id", id}}
+	guestFilter := bson.D{{"_id", guestId}}
+	var result model.Authorization
+	contributorExist := false
+
+	// fix id pb
+
+	if guest.Id == "" {
+		return errors.FieldIsMissing
+	} else if err := db.AuthorizationCollection.FindOne(context.TODO(), guestFilter).Decode(&result); err != nil {
+		return errors.BddError
+	} else if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(result.Guests); i++ {
+		if result.Guests[i].Id == guest.Id {
+			contributorExist = true
+			result.Guests[i].Contributor = guest.Contributor
+		}
+	}
+
+	if !contributorExist {
+		result.Guests = append(result.Guests, *guest)
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"guests", result.Guests},
+		},
+	}
+
+	if _, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
 }
 
 // TODO add bdd error to every methods + think about update

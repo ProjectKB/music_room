@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	authorizationController "server/controllers/authorizationController"
 	"server/errors"
 	"server/model"
 	db "server/system/db"
@@ -13,8 +14,19 @@ import (
 )
 
 func Create(elem *model.Playlist) int {
+	default_picture := "path_to_default_picture"
+	authorization := model.Authorization{primitive.NewObjectID(), elem.Owner_id, "public", nil}
+
+	if elem.Picture == "" {
+		elem.Picture = default_picture
+	}
+
+	elem.Authorization_id = authorization.Id.String()
+
 	if elem.Name == "" {
 		return errors.FieldIsMissing
+	} else if authErr := authorizationController.Create(&authorization); authErr != errors.None {
+		return authErr
 	} else if _, err := db.PlaylistCollection.InsertOne(context.TODO(), elem); err != nil {
 		return errors.BddError
 	}

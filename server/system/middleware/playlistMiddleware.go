@@ -81,14 +81,19 @@ func CreateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(playlist)
 }
 
-func updatePlaylistFilter(doc model.Playlist) bson.M {
+func updatePlaylistFilter(doc *model.Playlist) bson.M {
 	filter := bson.M{}
+	default_picture := "path_to_default_picture"
 
-	v := reflect.ValueOf(doc)
+	if doc.Picture == "" {
+		doc.Picture = default_picture
+	}
+
+	v := reflect.ValueOf(*doc)
 	typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
-		if typeOfS.Field(i).Name == "Name" && v.Field(i).Interface() != "" {
+		if (typeOfS.Field(i).Name == "Name" || typeOfS.Field(i).Name == "Avatar") && v.Field(i).Interface() != "" {
 			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
 		}
 	}
@@ -106,7 +111,7 @@ func UpdateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	json.NewDecoder(r.Body).Decode(&playlist)
-	filter := updatePlaylistFilter(playlist)
+	filter := updatePlaylistFilter(&playlist)
 
 	if len(filter) == 0 {
 		http.Error(w, errors.ErrorMessages[errors.UpdateEmpty], http.StatusBadRequest)
