@@ -27,11 +27,11 @@ func Create(elem *model.User) int {
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return errors.FieldIsMissing
 	} else if !match {
-		return errors.MailInvalidFormat
+		return errors.InvalidFormat
 	} else if dbErr := db.UserCollection.FindOne(context.TODO(), bson.D{{"mail", elem.Mail}}).Decode(&isDuplicated); dbErr != nil {
 		return errors.BddError
 	} else if isDuplicated != nil {
-		return errors.MailAlreadyExist
+		return errors.AlreadyExist
 	} else if _, err := db.UserCollection.InsertOne(context.TODO(), elem); err != nil {
 		return errors.BddError
 	}
@@ -118,4 +118,248 @@ func DeleteAll() {
 	fmt.Printf("Deleted %v documents in the users collection\n", deleteResult.DeletedCount)
 }
 
-// TODO add bdd error to every methods + think about update
+func AddFriend(userId string, idToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	friendId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	filter := bson.D{{"_id", id}}
+	friendFilter := bson.D{{"_id", friendId}}
+	var user model.User
+	var friend model.User
+
+	if *idToAdd == "" {
+		return errors.FieldIsMissing
+	} else if userId == *idToAdd {
+		return errors.Unauthorized
+	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
+		return errors.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(user.Friends); i++ {
+		if user.Friends[i] == *idToAdd {
+			return errors.Unauthorized
+		}
+	}
+
+	user.Friends = append(user.Friends, *idToAdd)
+
+	update := bson.M{
+		"$set": bson.D{
+			{"friends", user.Friends},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
+func RemoveFriend(userId string, idToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	friendId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	filter := bson.D{{"_id", id}}
+	friendFilter := bson.D{{"_id", friendId}}
+	friendExist := false
+	var user model.User
+	var friend model.User
+
+	if *idToAdd == "" {
+		return errors.FieldIsMissing
+	} else if userId == *idToAdd {
+		return errors.Unauthorized
+	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
+		return errors.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(user.Friends); i++ {
+		if user.Friends[i] == *idToAdd {
+			friendExist = true
+			user.Friends = append(user.Friends[:i], user.Friends[i+1:]...)
+		}
+	}
+
+	if !friendExist {
+		return errors.Unauthorized
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"friends", user.Friends},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
+func AddPlaylist(userId string, idToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	playlistId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	filter := bson.D{{"_id", id}}
+	playlistFilter := bson.D{{"_id", playlistId}}
+	var user model.User
+	var playlist model.Event
+
+	if *idToAdd == "" {
+		return errors.FieldIsMissing
+	} else if userId == *idToAdd {
+		return errors.Unauthorized
+	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
+		return errors.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(user.Playlists); i++ {
+		if user.Playlists[i] == *idToAdd {
+			return errors.Unauthorized
+		}
+	}
+
+	user.Playlists = append(user.Playlists, *idToAdd)
+
+	update := bson.M{
+		"$set": bson.D{
+			{"playlists", user.Playlists},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
+func RemovePlaylist(userId string, idToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	playlistId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	filter := bson.D{{"_id", id}}
+	playlistFilter := bson.D{{"_id", playlistId}}
+	playlistExist := false
+	var user model.User
+	var playlist model.Playlist
+
+	if *idToAdd == "" {
+		return errors.FieldIsMissing
+	} else if userId == *idToAdd {
+		return errors.Unauthorized
+	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
+		return errors.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(user.Playlists); i++ {
+		if user.Playlists[i] == *idToAdd {
+			playlistExist = true
+			user.Playlists = append(user.Playlists[:i], user.Playlists[i+1:]...)
+		}
+	}
+
+	if !playlistExist {
+		return errors.Unauthorized
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"playlists", user.Playlists},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
+func AddEvent(userId string, idToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	eventId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	filter := bson.D{{"_id", id}}
+	eventFilter := bson.D{{"_id", eventId}}
+	var user model.User
+	var event model.Event
+
+	if *idToAdd == "" {
+		return errors.FieldIsMissing
+	} else if userId == *idToAdd {
+		return errors.Unauthorized
+	} else if err := db.EventCollection.FindOne(context.TODO(), eventFilter).Decode(&event); err != nil {
+		return errors.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(user.Events); i++ {
+		if user.Events[i] == *idToAdd {
+			return errors.Unauthorized
+		}
+	}
+
+	user.Events = append(user.Events, *idToAdd)
+
+	update := bson.M{
+		"$set": bson.D{
+			{"events", user.Events},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
+func RemoveEvent(userId string, idToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	eventId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	filter := bson.D{{"_id", id}}
+	eventFilter := bson.D{{"_id", eventId}}
+	eventExist := false
+	var user model.User
+	var event model.Event
+
+	if *idToAdd == "" {
+		return errors.FieldIsMissing
+	} else if userId == *idToAdd {
+		return errors.Unauthorized
+	} else if err := db.EventCollection.FindOne(context.TODO(), eventFilter).Decode(&event); err != nil {
+		return errors.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(user.Events); i++ {
+		if user.Events[i] == *idToAdd {
+			eventExist = true
+			user.Events = append(user.Events[:i], user.Events[i+1:]...)
+		}
+	}
+
+	if !eventExist {
+		return errors.Unauthorized
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"events", user.Events},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}

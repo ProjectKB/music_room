@@ -123,3 +123,123 @@ func UpdateOneUser(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(user)
 }
+
+func AddFriendToUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var friendId string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&friendId); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.AddFriend(params["id"], &friendId); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(friendId)
+}
+
+func RemoveFriendFromUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var friendId string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&friendId); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.RemoveFriend(params["id"], &friendId); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(friendId)
+}
+
+func AddPlaylistToUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var playlistId string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.AddPlaylist(params["id"], &playlistId); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(playlistId)
+}
+
+func RemovePlaylistFromUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var playlistId string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.RemovePlaylist(params["id"], &playlistId); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(playlistId)
+}
+
+func AddEventToUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var eventId string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&eventId); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.AddEvent(params["id"], &eventId); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(eventId)
+}
+
+func RemoveEventFromUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var eventId string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&eventId); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.RemoveEvent(params["id"], &eventId); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(eventId)
+}

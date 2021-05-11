@@ -105,13 +105,13 @@ func AddGuest(authorizationId string, guest *model.Guest) int {
 	filter := bson.D{{"_id", id}}
 	guestFilter := bson.D{{"_id", guestId}}
 	var result model.Authorization
+	var user model.User
 	contributorExist := false
-
-	// fix id pb
 
 	if guest.Id == "" {
 		return errors.FieldIsMissing
-	} else if err := db.AuthorizationCollection.FindOne(context.TODO(), guestFilter).Decode(&result); err != nil {
+	} else if err := db.UserCollection.FindOne(context.TODO(), guestFilter).Decode(&user); err != nil {
+		// TODO verif is not Owner_ID
 		return errors.BddError
 	} else if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
 		return errors.BddError
@@ -126,6 +126,48 @@ func AddGuest(authorizationId string, guest *model.Guest) int {
 
 	if !contributorExist {
 		result.Guests = append(result.Guests, *guest)
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"guests", result.Guests},
+		},
+	}
+
+	if _, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
+func RemoveGuest(authorizationId string, guest *model.Guest) int {
+	id, _ := primitive.ObjectIDFromHex(authorizationId)
+	guestId, _ := primitive.ObjectIDFromHex(guest.Id)
+	filter := bson.D{{"_id", id}}
+	guestFilter := bson.D{{"_id", guestId}}
+	var result model.Authorization
+	var user model.User
+	contributorExist := false
+
+	if guest.Id == "" {
+		return errors.FieldIsMissing
+	} else if err := db.UserCollection.FindOne(context.TODO(), guestFilter).Decode(&user); err != nil {
+		// TODO verif is not Owner_ID
+		return errors.BddError
+	} else if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
+		return errors.BddError
+	}
+
+	for i := 0; i < len(result.Guests); i++ {
+		if result.Guests[i].Id == guest.Id {
+			contributorExist = true
+			result.Guests = append(result.Guests[:i], result.Guests[i+1:]...)
+		}
+	}
+
+	if !contributorExist {
+		return errors.Unauthorized
 	}
 
 	update := bson.M{

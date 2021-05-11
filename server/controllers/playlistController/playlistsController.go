@@ -113,4 +113,80 @@ func DeleteAll() {
 	fmt.Printf("Deleted %v documents in the playlist collection\n", deleteResult.DeletedCount)
 }
 
+func AddSong(playlistId string, song *model.Song) int {
+	id, _ := primitive.ObjectIDFromHex(playlistId)
+	filter := bson.D{{"_id", id}}
+	var playlist model.Playlist
+
+	if song.Id == "" {
+		return errors.FieldIsMissing
+	} else if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&playlist); err != nil {
+		return errors.BddError
+	} else if song.Score != 0 {
+		return errors.Unauthorized
+	}
+
+	// TODO check how to secure when song id doesn't exist
+
+	for i := 0; i < len(playlist.Songs); i++ {
+		if playlist.Songs[i].Id == song.Id {
+			return errors.AlreadyExist
+		}
+	}
+
+	playlist.Songs = append(playlist.Songs, *song)
+
+	update := bson.M{
+		"$set": bson.D{
+			{"songs", playlist.Songs},
+		},
+	}
+
+	if _, err := db.PlaylistCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
+func RemoveSong(playlistId string, song *model.Song) int {
+	id, _ := primitive.ObjectIDFromHex(playlistId)
+	filter := bson.D{{"_id", id}}
+	var playlist model.Playlist
+	songExist := false
+
+	if song.Id == "" {
+		return errors.FieldIsMissing
+	} else if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&playlist); err != nil {
+		return errors.BddError
+	} else if song.Score != 0 {
+		return errors.Unauthorized
+	}
+
+	// TODO check how to secure when song id doesn't exist
+
+	for i := 0; i < len(playlist.Songs); i++ {
+		if playlist.Songs[i].Id == song.Id {
+			songExist = true
+			playlist.Songs = append(playlist.Songs[:i], playlist.Songs[i+1:]...)
+		}
+	}
+
+	if !songExist {
+		return errors.Unauthorized
+	}
+	
+	update := bson.M{
+		"$set": bson.D{
+			{"songs", playlist.Songs},
+		},
+	}
+
+	if _, err := db.PlaylistCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return errors.BddError
+	}
+
+	return errors.None
+}
+
 // TODO add bdd error to every methods + think about update

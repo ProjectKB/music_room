@@ -123,3 +123,43 @@ func UpdateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(playlist)
 }
+
+func AddSongToPlaylist(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var song model.Song
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&song); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.AddSong(params["id"], &song); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(song)
+}
+
+func RemoveSongFromPlaylist(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var song model.Song
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&song); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.RemoveSong(params["id"], &song); err != errors.None {
+		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(song)
+}
