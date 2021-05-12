@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	userController "server/controllers/userController"
-	"server/errors"
-	"server/model"
-	"strings"
 	"reflect"
+	userController "server/controllers/userController"
+	"server/model"
+	"server/response"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,9 +20,9 @@ func ReadAllUser(w http.ResponseWriter, r *http.Request) {
 
 	var results []model.User
 
-	if err := userController.ReadAll(&results); err != errors.None {
+	if err := userController.ReadAll(&results); err != response.None {
 		fmt.Println(err, results)
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
@@ -36,8 +36,8 @@ func ReadOneUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var result model.User
 
-	if err := userController.Read(params["id"], &result); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	if err := userController.Read(params["id"], &result); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
@@ -52,12 +52,12 @@ func DeleteOneUser(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	if err := userController.Delete(params["id"]); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	if err := userController.Delete(params["id"]); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(params["id"])
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Delete))
 }
 
 func CreateOneUser(w http.ResponseWriter, r *http.Request) {
@@ -72,13 +72,13 @@ func CreateOneUser(w http.ResponseWriter, r *http.Request) {
 	if jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.Create(&user); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.Create(&user); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Create))
 }
 
 func updateUserFilter(doc *model.User) bson.M {
@@ -109,19 +109,19 @@ func UpdateOneUser(w http.ResponseWriter, r *http.Request) {
 
 	var user model.User
 	params := mux.Vars(r)
-	
+
 	json.NewDecoder(r.Body).Decode(&user)
 	filter := updateUserFilter(&user)
 
 	if len(filter) == 0 {
-		http.Error(w, errors.ErrorMessages[errors.UpdateEmpty], http.StatusBadRequest)
+		http.Error(w, response.ErrorMessages[response.UpdateEmpty], http.StatusBadRequest)
 		return
-	} else if err := userController.Update(filter, params["id"]); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.Update(filter, params["id"]); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
-	} 
+	}
 
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Update))
 }
 
 func AddFriendToUser(w http.ResponseWriter, r *http.Request) {
@@ -136,8 +136,8 @@ func AddFriendToUser(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&friendId); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.AddFriend(params["id"], &friendId); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.AddFriend(params["id"], &friendId); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
@@ -156,12 +156,12 @@ func RemoveFriendFromUser(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&friendId); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.RemoveFriend(params["id"], &friendId); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.RemoveFriend(params["id"], &friendId); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(friendId)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend", response.Delete))
 }
 
 func AddPlaylistToUser(w http.ResponseWriter, r *http.Request) {
@@ -176,12 +176,12 @@ func AddPlaylistToUser(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.AddPlaylist(params["id"], &playlistId); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.AddPlaylist(params["id"], &playlistId); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(playlistId)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Create))
 }
 
 func RemovePlaylistFromUser(w http.ResponseWriter, r *http.Request) {
@@ -196,12 +196,12 @@ func RemovePlaylistFromUser(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.RemovePlaylist(params["id"], &playlistId); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.RemovePlaylist(params["id"], &playlistId); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(playlistId)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Delete))
 }
 
 func AddEventToUser(w http.ResponseWriter, r *http.Request) {
@@ -216,12 +216,12 @@ func AddEventToUser(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&eventId); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.AddEvent(params["id"], &eventId); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.AddEvent(params["id"], &eventId); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(eventId)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Create))
 }
 
 func RemoveEventFromUser(w http.ResponseWriter, r *http.Request) {
@@ -236,10 +236,10 @@ func RemoveEventFromUser(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&eventId); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.RemoveEvent(params["id"], &eventId); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := userController.RemoveEvent(params["id"], &eventId); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(eventId)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Delete))
 }

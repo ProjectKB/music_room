@@ -4,29 +4,35 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"server/errors"
 	"server/model"
+	"server/response"
 	db "server/system/db"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// TODO Create blacklisted fields function
+
 func Create(elem *model.Event) int {
 	default_picture := "path_to_default_picture"
 
 	if elem.Picture == "" {
 		elem.Picture = default_picture
+	} else if elem.Status != "" {
+		return response.Unauthorized
 	}
 
+	elem.Status = "pending"
+
 	if elem.Name == "" || elem.Start == "" || elem.End == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if _, err := db.EventCollection.InsertOne(context.TODO(), elem); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Println("Inserted a single document")
-	return errors.None
+	return response.None
 }
 
 func Read(param string, result *model.Event) int {
@@ -34,10 +40,10 @@ func Read(param string, result *model.Event) int {
 	filter := bson.D{{"_id", id}}
 
 	if err := db.EventCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func ReadAll(events *[]model.Event) int {
@@ -45,7 +51,7 @@ func ReadAll(events *[]model.Event) int {
 	cur, err := db.EventCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	// Finding multiple documents returns a cursor
@@ -54,7 +60,7 @@ func ReadAll(events *[]model.Event) int {
 		var elem model.Event
 
 		if err := cur.Decode(&elem); err != nil {
-			return errors.BddError
+			return response.BddError
 		}
 
 		*events = append(*events, elem)
@@ -65,7 +71,7 @@ func ReadAll(events *[]model.Event) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return errors.None
+	return response.None
 }
 
 func Update(fields bson.M, param string) int {
@@ -78,11 +84,11 @@ func Update(fields bson.M, param string) int {
 	updateResult, err := db.EventCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return errors.None
+	return response.None
 }
 
 func Delete(param string) int {
@@ -92,11 +98,11 @@ func Delete(param string) int {
 	deleteResult, err := db.EventCollection.DeleteOne(context.TODO(), filter)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Deleted %v documents in the event collection\n", deleteResult.DeletedCount)
-	return errors.None
+	return response.None
 }
 
 func DeleteAll() {
@@ -107,4 +113,82 @@ func DeleteAll() {
 	fmt.Printf("Deleted %v documents in the event collection\n", deleteResult.DeletedCount)
 }
 
-// TODO add bdd error to every methods + think about update
+func AddPlaylistToEvent(eventId string, idToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(eventId)
+	playlistId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	filter := bson.D{{"_id", id}}
+	playlistFilter := bson.D{{"_id", playlistId}}
+	var event model.Event
+	var playlist model.Playlist
+
+	if *idToAdd == "" {
+		return response.FieldIsMissing
+	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
+		return response.BddError
+	} else if err := db.EventCollection.FindOne(context.TODO(), filter).Decode(&event); err != nil {
+		return response.BddError
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"playlist_id", *idToAdd},
+		},
+	}
+
+	if _, err := db.EventCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	}
+
+	return response.None
+}
+
+func RemovePlaylistFromEvent(eventId string) int {
+	id, _ := primitive.ObjectIDFromHex(eventId)
+	filter := bson.D{{"_id", id}}
+	var event model.Event
+
+	if err := db.EventCollection.FindOne(context.TODO(), filter).Decode(&event); err != nil {
+		return response.BddError
+	} else if event.Playlist_id == "" {
+		return response.Unauthorized
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"playlist_id", ""},
+		},
+	}
+
+	if _, err := db.EventCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	}
+
+	return response.None
+}
+
+func UpdateStatus(eventId string, statutToAdd *string) int {
+	id, _ := primitive.ObjectIDFromHex(eventId)
+	filter := bson.D{{"_id", id}}
+	var event model.Event
+
+	fmt.Println(*statutToAdd)
+	if *statutToAdd == "" {
+		return response.FieldIsMissing
+	} else if *statutToAdd != "pending" && *statutToAdd != "ongoing" && *statutToAdd != "finished" {
+		return response.Unauthorized
+	} else if err := db.EventCollection.FindOne(context.TODO(), filter).Decode(&event); err != nil {
+		return response.BddError
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"statut", *statutToAdd},
+		},
+	}
+
+	if _, err := db.EventCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	}
+
+	return response.None
+}

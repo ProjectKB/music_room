@@ -14,3 +14,5 @@ type User struct {
 	Playlists []string           `bson:"playlists,omitempty" json:"playlists,omitempty"`
 	Avatar    string             `bson:"avatar,omitempty" json:"avatar,omitempty"`
 }
+
+// TODO add preference (create/update)

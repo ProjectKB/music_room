@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"reflect"
 	eventController "server/controllers/eventController"
-	"server/errors"
 	"server/model"
+	"server/response"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -20,9 +20,9 @@ func ReadAllEvent(w http.ResponseWriter, r *http.Request) {
 
 	var results []model.Event
 
-	if err := eventController.ReadAll(&results); err != errors.None {
+	if err := eventController.ReadAll(&results); err != response.None {
 		fmt.Println(err, results)
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
@@ -36,8 +36,8 @@ func ReadOneEvent(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var result model.Event
 
-	if err := eventController.Read(params["id"], &result); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	if err := eventController.Read(params["id"], &result); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
@@ -52,12 +52,12 @@ func DeleteOneEvent(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	if err := eventController.Delete(params["id"]); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	if err := eventController.Delete(params["id"]); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(params["id"])
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Delete))
 }
 
 func CreateOneEvent(w http.ResponseWriter, r *http.Request) {
@@ -72,13 +72,13 @@ func CreateOneEvent(w http.ResponseWriter, r *http.Request) {
 	if jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := eventController.Create(&event); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := eventController.Create(&event); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(event)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Create))
 }
 
 func updateEventFilter(doc *model.Event) bson.M {
@@ -113,12 +113,68 @@ func UpdateOneEvent(w http.ResponseWriter, r *http.Request) {
 	filter := updateEventFilter(&event)
 
 	if len(filter) == 0 {
-		http.Error(w, errors.ErrorMessages[errors.UpdateEmpty], http.StatusBadRequest)
+		http.Error(w, response.ErrorMessages[response.UpdateEmpty], http.StatusBadRequest)
 		return
-	} else if err := eventController.Update(filter, params["id"]); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := eventController.Update(filter, params["id"]); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(event)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Update))
+}
+
+func AddPlaylistToEvent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var playlistId string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := eventController.AddPlaylistToEvent(params["id"], &playlistId); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Create))
+}
+
+func RemovePlaylistFromEvent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	params := mux.Vars(r)
+
+	if err := eventController.RemovePlaylistFromEvent(params["id"]); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Delete))
+}
+
+func UpdateStatusOfEvent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var status string
+	params := mux.Vars(r)
+
+	if jsonErr := json.NewDecoder(r.Body).Decode(&status); jsonErr != nil {
+		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+		return
+	} else if err := eventController.UpdateStatus(params["id"], &status); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Status", response.Update))
 }

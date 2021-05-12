@@ -6,6 +6,7 @@ import (
 
 type Guest struct {
 	Id          string `bson:"id,omitempty" json:"id,omitempty"`
+	Name        string `bson:"name,omitempty" json:"name,omitempty"`
 	Contributor bool   `bson:"contributor,omitempty" json:"contributor,omitempty"`
 }
 

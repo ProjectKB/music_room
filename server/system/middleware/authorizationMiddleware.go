@@ -5,12 +5,13 @@ import (
 	"net/http"
 	"reflect"
 	authorizationController "server/controllers/authorizationController"
-	"server/errors"
 	"server/model"
 	"strings"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
+
+	"server/response"
 )
 
 func ReadAllAuthorization(w http.ResponseWriter, r *http.Request) {
@@ -19,8 +20,8 @@ func ReadAllAuthorization(w http.ResponseWriter, r *http.Request) {
 
 	var results []model.Authorization
 
-	if err := authorizationController.ReadAll(&results); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	if err := authorizationController.ReadAll(&results); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
@@ -34,8 +35,8 @@ func ReadOneAuthorization(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var result model.Authorization
 
-	if err := authorizationController.Read(params["id"], &result); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	if err := authorizationController.Read(params["id"], &result); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
@@ -50,12 +51,12 @@ func DeleteOneAuthorization(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	if err := authorizationController.Delete(params["id"]); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	if err := authorizationController.Delete(params["id"]); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(params["id"])
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Authorization", response.Delete))
 }
 
 func CreateOneAuthorization(w http.ResponseWriter, r *http.Request) {
@@ -70,13 +71,13 @@ func CreateOneAuthorization(w http.ResponseWriter, r *http.Request) {
 	if jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := authorizationController.Create(&authorization); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := authorizationController.Create(&authorization); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(authorization)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Authorization", response.Create))
 }
 
 func updateAuthorizationFilter(doc *model.Authorization) bson.M {
@@ -107,14 +108,14 @@ func UpdateOneAuthorization(w http.ResponseWriter, r *http.Request) {
 	filter := updateAuthorizationFilter(&authorization)
 
 	if len(filter) == 0 {
-		http.Error(w, errors.ErrorMessages[errors.UpdateEmpty], http.StatusBadRequest)
+		http.Error(w, response.ErrorMessages[response.UpdateEmpty], http.StatusBadRequest)
 		return
-	} else if err := authorizationController.Update(filter, params["id"]); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := authorizationController.Update(filter, params["id"]); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(authorization)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Authorization", response.Update))
 }
 
 func AddGuestToAuthorization(w http.ResponseWriter, r *http.Request) {
@@ -129,12 +130,12 @@ func AddGuestToAuthorization(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&guest); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := authorizationController.AddGuest(params["id"], &guest); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := authorizationController.AddGuest(params["id"], &guest); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(guest)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Guest", response.Create))
 }
 
 func RemoveGuestFromAuthorization(w http.ResponseWriter, r *http.Request) {
@@ -149,10 +150,10 @@ func RemoveGuestFromAuthorization(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&guest); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := authorizationController.RemoveGuest(params["id"], &guest); err != errors.None {
-		http.Error(w, errors.ErrorMessages[err], http.StatusBadRequest)
+	} else if err := authorizationController.RemoveGuest(params["id"], &guest); err != response.None {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(guest)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Guest", response.Delete))
 }

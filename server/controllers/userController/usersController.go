@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"server/errors"
 	"server/model"
 	db "server/system/db"
+	"server/response"
 
 	"regexp"
 
@@ -25,19 +25,19 @@ func Create(elem *model.User) int {
 	}
 
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if !match {
-		return errors.InvalidFormat
+		return response.InvalidFormat
 	} else if dbErr := db.UserCollection.FindOne(context.TODO(), bson.D{{"mail", elem.Mail}}).Decode(&isDuplicated); dbErr != nil {
-		return errors.BddError
+		return response.BddError
 	} else if isDuplicated != nil {
-		return errors.AlreadyExist
+		return response.AlreadyExist
 	} else if _, err := db.UserCollection.InsertOne(context.TODO(), elem); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Println("Inserted a single document")
-	return errors.None
+	return response.None
 }
 
 func Read(param string, result *model.User) int {
@@ -45,10 +45,10 @@ func Read(param string, result *model.User) int {
 	filter := bson.D{{"_id", id}}
 
 	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func ReadAll(users *[]model.User) int {
@@ -56,7 +56,7 @@ func ReadAll(users *[]model.User) int {
 	cur, err := db.UserCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	// Finding multiple documents returns a cursor
@@ -65,7 +65,7 @@ func ReadAll(users *[]model.User) int {
 		var elem model.User
 
 		if err := cur.Decode(&elem); err != nil {
-			return errors.BddError
+			return response.BddError
 		}
 
 		*users = append(*users, elem)
@@ -76,7 +76,7 @@ func ReadAll(users *[]model.User) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return errors.None
+	return response.None
 }
 
 func Update(fields bson.M, param string) int {
@@ -89,11 +89,11 @@ func Update(fields bson.M, param string) int {
 	updateResult, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return errors.None
+	return response.None
 }
 
 func Delete(param string) int {
@@ -103,11 +103,11 @@ func Delete(param string) int {
 	deleteResult, err := db.UserCollection.DeleteOne(context.TODO(), filter)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Deleted %v documents in the users collection\n", deleteResult.DeletedCount)
-	return errors.None
+	return response.None
 }
 
 func DeleteAll() {
@@ -127,18 +127,18 @@ func AddFriend(userId string, idToAdd *string) int {
 	var friend model.User
 
 	if *idToAdd == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if userId == *idToAdd {
-		return errors.Unauthorized
+		return response.Unauthorized
 	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(user.Friends); i++ {
 		if user.Friends[i] == *idToAdd {
-			return errors.Unauthorized
+			return response.Unauthorized
 		}
 	}
 
@@ -151,10 +151,10 @@ func AddFriend(userId string, idToAdd *string) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func RemoveFriend(userId string, idToAdd *string) int {
@@ -167,13 +167,13 @@ func RemoveFriend(userId string, idToAdd *string) int {
 	var friend model.User
 
 	if *idToAdd == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if userId == *idToAdd {
-		return errors.Unauthorized
+		return response.Unauthorized
 	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(user.Friends); i++ {
@@ -184,7 +184,7 @@ func RemoveFriend(userId string, idToAdd *string) int {
 	}
 
 	if !friendExist {
-		return errors.Unauthorized
+		return response.Unauthorized
 	}
 
 	update := bson.M{
@@ -194,10 +194,10 @@ func RemoveFriend(userId string, idToAdd *string) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func AddPlaylist(userId string, idToAdd *string) int {
@@ -209,18 +209,18 @@ func AddPlaylist(userId string, idToAdd *string) int {
 	var playlist model.Event
 
 	if *idToAdd == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if userId == *idToAdd {
-		return errors.Unauthorized
+		return response.Unauthorized
 	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(user.Playlists); i++ {
 		if user.Playlists[i] == *idToAdd {
-			return errors.Unauthorized
+			return response.Unauthorized
 		}
 	}
 
@@ -233,10 +233,10 @@ func AddPlaylist(userId string, idToAdd *string) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func RemovePlaylist(userId string, idToAdd *string) int {
@@ -249,13 +249,13 @@ func RemovePlaylist(userId string, idToAdd *string) int {
 	var playlist model.Playlist
 
 	if *idToAdd == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if userId == *idToAdd {
-		return errors.Unauthorized
+		return response.Unauthorized
 	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(user.Playlists); i++ {
@@ -266,7 +266,7 @@ func RemovePlaylist(userId string, idToAdd *string) int {
 	}
 
 	if !playlistExist {
-		return errors.Unauthorized
+		return response.Unauthorized
 	}
 
 	update := bson.M{
@@ -276,10 +276,10 @@ func RemovePlaylist(userId string, idToAdd *string) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func AddEvent(userId string, idToAdd *string) int {
@@ -291,18 +291,18 @@ func AddEvent(userId string, idToAdd *string) int {
 	var event model.Event
 
 	if *idToAdd == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if userId == *idToAdd {
-		return errors.Unauthorized
+		return response.Unauthorized
 	} else if err := db.EventCollection.FindOne(context.TODO(), eventFilter).Decode(&event); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(user.Events); i++ {
 		if user.Events[i] == *idToAdd {
-			return errors.Unauthorized
+			return response.Unauthorized
 		}
 	}
 
@@ -315,10 +315,10 @@ func AddEvent(userId string, idToAdd *string) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func RemoveEvent(userId string, idToAdd *string) int {
@@ -331,13 +331,13 @@ func RemoveEvent(userId string, idToAdd *string) int {
 	var event model.Event
 
 	if *idToAdd == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if userId == *idToAdd {
-		return errors.Unauthorized
+		return response.Unauthorized
 	} else if err := db.EventCollection.FindOne(context.TODO(), eventFilter).Decode(&event); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(user.Events); i++ {
@@ -348,7 +348,7 @@ func RemoveEvent(userId string, idToAdd *string) int {
 	}
 
 	if !eventExist {
-		return errors.Unauthorized
+		return response.Unauthorized
 	}
 
 	update := bson.M{
@@ -358,8 +358,8 @@ func RemoveEvent(userId string, idToAdd *string) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }

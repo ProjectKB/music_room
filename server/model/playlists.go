@@ -6,6 +6,7 @@ import (
 
 type Song struct {
 	Id    string `bson:"id,omitempty" json:"id,omitempty"`
+	Name  string `bson:"name,omitempty" json:"name,omitempty"`
 	Score uint   `bson:"score,omitempty" json:"score,omitempty"` // TODO sort algo
 }
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"server/errors"
 	"server/model"
+	"server/response"
 	db "server/system/db"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,11 +14,11 @@ import (
 
 func Create(elem *model.Authorization) int {
 	if _, err := db.AuthorizationCollection.InsertOne(context.TODO(), elem); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Println("Inserted a single document")
-	return errors.None
+	return response.None
 }
 
 func Read(param string, result *model.Authorization) int {
@@ -26,10 +26,10 @@ func Read(param string, result *model.Authorization) int {
 	filter := bson.D{{"_id", id}}
 
 	if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func ReadAll(authorizations *[]model.Authorization) int {
@@ -37,7 +37,7 @@ func ReadAll(authorizations *[]model.Authorization) int {
 	cur, err := db.AuthorizationCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	// Finding multiple documents returns a cursor
@@ -46,7 +46,7 @@ func ReadAll(authorizations *[]model.Authorization) int {
 		var elem model.Authorization
 
 		if err := cur.Decode(&elem); err != nil {
-			return errors.BddError
+			return response.BddError
 		}
 
 		*authorizations = append(*authorizations, elem)
@@ -57,7 +57,7 @@ func ReadAll(authorizations *[]model.Authorization) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return errors.None
+	return response.None
 }
 
 func Update(fields bson.M, param string) int {
@@ -70,11 +70,11 @@ func Update(fields bson.M, param string) int {
 	updateResult, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return errors.None
+	return response.None
 }
 
 func Delete(param string) int {
@@ -84,11 +84,11 @@ func Delete(param string) int {
 	deleteResult, err := db.AuthorizationCollection.DeleteOne(context.TODO(), filter)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Deleted %v documents in the authorization collection\n", deleteResult.DeletedCount)
-	return errors.None
+	return response.None
 }
 
 func DeleteAll() {
@@ -108,13 +108,13 @@ func AddGuest(authorizationId string, guest *model.Guest) int {
 	var user model.User
 	contributorExist := false
 
-	if guest.Id == "" {
-		return errors.FieldIsMissing
+	if guest.Id == "" || guest.Name == "" {
+		return response.FieldIsMissing
 	} else if err := db.UserCollection.FindOne(context.TODO(), guestFilter).Decode(&user); err != nil {
 		// TODO verif is not Owner_ID
-		return errors.BddError
+		return response.BddError
 	} else if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(result.Guests); i++ {
@@ -135,10 +135,10 @@ func AddGuest(authorizationId string, guest *model.Guest) int {
 	}
 
 	if _, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func RemoveGuest(authorizationId string, guest *model.Guest) int {
@@ -151,12 +151,12 @@ func RemoveGuest(authorizationId string, guest *model.Guest) int {
 	contributorExist := false
 
 	if guest.Id == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if err := db.UserCollection.FindOne(context.TODO(), guestFilter).Decode(&user); err != nil {
 		// TODO verif is not Owner_ID
-		return errors.BddError
+		return response.BddError
 	} else if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	for i := 0; i < len(result.Guests); i++ {
@@ -167,7 +167,7 @@ func RemoveGuest(authorizationId string, guest *model.Guest) int {
 	}
 
 	if !contributorExist {
-		return errors.Unauthorized
+		return response.Unauthorized
 	}
 
 	update := bson.M{
@@ -177,10 +177,10 @@ func RemoveGuest(authorizationId string, guest *model.Guest) int {
 	}
 
 	if _, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 // TODO add bdd error to every methods + think about update

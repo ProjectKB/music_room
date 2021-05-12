@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	authorizationController "server/controllers/authorizationController"
-	"server/errors"
 	"server/model"
+	"server/response"
 	db "server/system/db"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -24,15 +24,15 @@ func Create(elem *model.Playlist) int {
 	elem.Authorization_id = authorization.Id.String()
 
 	if elem.Name == "" {
-		return errors.FieldIsMissing
-	} else if authErr := authorizationController.Create(&authorization); authErr != errors.None {
+		return response.FieldIsMissing
+	} else if authErr := authorizationController.Create(&authorization); authErr != response.None {
 		return authErr
 	} else if _, err := db.PlaylistCollection.InsertOne(context.TODO(), elem); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Println("Inserted a single document")
-	return errors.None
+	return response.None
 }
 
 func Read(param string, result *model.Playlist) int {
@@ -40,10 +40,10 @@ func Read(param string, result *model.Playlist) int {
 	filter := bson.D{{"_id", id}}
 
 	if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func ReadAll(playlists *[]model.Playlist) int {
@@ -51,7 +51,7 @@ func ReadAll(playlists *[]model.Playlist) int {
 	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.D{})
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	// Finding multiple documents returns a cursor
@@ -60,7 +60,7 @@ func ReadAll(playlists *[]model.Playlist) int {
 		var elem model.Playlist
 
 		if err := cur.Decode(&elem); err != nil {
-			return errors.BddError
+			return response.BddError
 		}
 
 		*playlists = append(*playlists, elem)
@@ -71,7 +71,7 @@ func ReadAll(playlists *[]model.Playlist) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return errors.None
+	return response.None
 }
 
 func Update(fields bson.M, param string) int {
@@ -84,11 +84,11 @@ func Update(fields bson.M, param string) int {
 	updateResult, err := db.PlaylistCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return errors.None
+	return response.None
 }
 
 func Delete(param string) int {
@@ -98,11 +98,11 @@ func Delete(param string) int {
 	deleteResult, err := db.PlaylistCollection.DeleteOne(context.TODO(), filter)
 
 	if err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
 	fmt.Printf("Deleted %v documents in the playlist collection\n", deleteResult.DeletedCount)
-	return errors.None
+	return response.None
 }
 
 func DeleteAll() {
@@ -118,19 +118,19 @@ func AddSong(playlistId string, song *model.Song) int {
 	filter := bson.D{{"_id", id}}
 	var playlist model.Playlist
 
-	if song.Id == "" {
-		return errors.FieldIsMissing
+	if song.Id == "" || song.Name == "" {
+		return response.FieldIsMissing
 	} else if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&playlist); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if song.Score != 0 {
-		return errors.Unauthorized
+		return response.Unauthorized
 	}
 
 	// TODO check how to secure when song id doesn't exist
 
 	for i := 0; i < len(playlist.Songs); i++ {
 		if playlist.Songs[i].Id == song.Id {
-			return errors.AlreadyExist
+			return response.AlreadyExist
 		}
 	}
 
@@ -143,10 +143,10 @@ func AddSong(playlistId string, song *model.Song) int {
 	}
 
 	if _, err := db.PlaylistCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 func RemoveSong(playlistId string, song *model.Song) int {
@@ -156,11 +156,11 @@ func RemoveSong(playlistId string, song *model.Song) int {
 	songExist := false
 
 	if song.Id == "" {
-		return errors.FieldIsMissing
+		return response.FieldIsMissing
 	} else if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&playlist); err != nil {
-		return errors.BddError
+		return response.BddError
 	} else if song.Score != 0 {
-		return errors.Unauthorized
+		return response.Unauthorized
 	}
 
 	// TODO check how to secure when song id doesn't exist
@@ -173,9 +173,9 @@ func RemoveSong(playlistId string, song *model.Song) int {
 	}
 
 	if !songExist {
-		return errors.Unauthorized
+		return response.Unauthorized
 	}
-	
+
 	update := bson.M{
 		"$set": bson.D{
 			{"songs", playlist.Songs},
@@ -183,10 +183,10 @@ func RemoveSong(playlistId string, song *model.Song) int {
 	}
 
 	if _, err := db.PlaylistCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return errors.BddError
+		return response.BddError
 	}
 
-	return errors.None
+	return response.None
 }
 
 // TODO add bdd error to every methods + think about update
