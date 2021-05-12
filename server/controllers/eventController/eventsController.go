@@ -17,10 +17,10 @@ import (
 func Create(elem *model.Event) int {
 	default_picture := "path_to_default_picture"
 
-	if elem.Picture == "" {
-		elem.Picture = default_picture
-	} else if elem.Status != "" {
+	if elem.Status != "" {
 		return response.Unauthorized
+	} else if elem.Picture == "" {
+		elem.Picture = default_picture
 	}
 
 	elem.Status = "pending"
@@ -32,7 +32,7 @@ func Create(elem *model.Event) int {
 	}
 
 	fmt.Println("Inserted a single document")
-	return response.None
+	return response.Ok
 }
 
 func Read(param string, result *model.Event) int {
@@ -43,7 +43,7 @@ func Read(param string, result *model.Event) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func ReadAll(events *[]model.Event) int {
@@ -71,7 +71,7 @@ func ReadAll(events *[]model.Event) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return response.None
+	return response.Ok
 }
 
 func Update(fields bson.M, param string) int {
@@ -88,7 +88,7 @@ func Update(fields bson.M, param string) int {
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return response.None
+	return response.Ok
 }
 
 func Delete(param string) int {
@@ -102,7 +102,7 @@ func Delete(param string) int {
 	}
 
 	fmt.Printf("Deleted %v documents in the event collection\n", deleteResult.DeletedCount)
-	return response.None
+	return response.Ok
 }
 
 func DeleteAll() {
@@ -139,7 +139,7 @@ func AddPlaylistToEvent(eventId string, idToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func RemovePlaylistFromEvent(eventId string) int {
@@ -163,7 +163,7 @@ func RemovePlaylistFromEvent(eventId string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func UpdateStatus(eventId string, statutToAdd *string) int {
@@ -190,5 +190,5 @@ func UpdateStatus(eventId string, statutToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }

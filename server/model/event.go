@@ -12,7 +12,7 @@ type Event struct {
 	Start       string             `bson:"start,omitempty" json:"start,omitempty"` // TODO Check logic between start & end
 	End         string             `bson:"end,omitempty" json:"end,omitempty"`     // TODO Check logic between start & end
 	Status      string             `bson:"status,omitempty" json:"status,omitempty"`
-	// Location    string             `bson:"location,omitempty" json:"location,omitempty"` // TODO bonus
+	// Location    string             `bson:"location,omitempty" json:"location,omitempty"`
 }
 
 // TODO ADD MSG FOR FLASH MSG (FRONT)

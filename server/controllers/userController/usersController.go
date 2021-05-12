@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"log"
 	"server/model"
-	db "server/system/db"
 	"server/response"
+	"server/helpers"
+	db "server/system/db"
 
 	"regexp"
 
@@ -26,10 +27,12 @@ func Create(elem *model.User) int {
 
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return response.FieldIsMissing
+	} else if fieldErr := helpers.CheckUserBlacklistedFields(elem); fieldErr != response.Ok {
+		return response.Unauthorized
 	} else if !match {
 		return response.InvalidFormat
-	} else if dbErr := db.UserCollection.FindOne(context.TODO(), bson.D{{"mail", elem.Mail}}).Decode(&isDuplicated); dbErr != nil {
-		return response.BddError
+	} else if dbErr := db.UserCollection.FindOne(context.TODO(), bson.D{{"mail", elem.Mail}}).Decode(&isDuplicated); dbErr == nil {
+		return response.MailAlreadyExist
 	} else if isDuplicated != nil {
 		return response.AlreadyExist
 	} else if _, err := db.UserCollection.InsertOne(context.TODO(), elem); err != nil {
@@ -37,7 +40,7 @@ func Create(elem *model.User) int {
 	}
 
 	fmt.Println("Inserted a single document")
-	return response.None
+	return response.Ok
 }
 
 func Read(param string, result *model.User) int {
@@ -48,7 +51,7 @@ func Read(param string, result *model.User) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func ReadAll(users *[]model.User) int {
@@ -76,7 +79,7 @@ func ReadAll(users *[]model.User) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return response.None
+	return response.Ok
 }
 
 func Update(fields bson.M, param string) int {
@@ -86,14 +89,13 @@ func Update(fields bson.M, param string) int {
 		"$set": fields,
 	}
 
-	updateResult, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
+	_, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
 		return response.BddError
 	}
 
-	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return response.None
+	return response.Ok
 }
 
 func Delete(param string) int {
@@ -107,7 +109,7 @@ func Delete(param string) int {
 	}
 
 	fmt.Printf("Deleted %v documents in the users collection\n", deleteResult.DeletedCount)
-	return response.None
+	return response.Ok
 }
 
 func DeleteAll() {
@@ -154,7 +156,7 @@ func AddFriend(userId string, idToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func RemoveFriend(userId string, idToAdd *string) int {
@@ -197,7 +199,7 @@ func RemoveFriend(userId string, idToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func AddPlaylist(userId string, idToAdd *string) int {
@@ -236,7 +238,7 @@ func AddPlaylist(userId string, idToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func RemovePlaylist(userId string, idToAdd *string) int {
@@ -279,7 +281,7 @@ func RemovePlaylist(userId string, idToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func AddEvent(userId string, idToAdd *string) int {
@@ -318,7 +320,7 @@ func AddEvent(userId string, idToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func RemoveEvent(userId string, idToAdd *string) int {
@@ -361,5 +363,5 @@ func RemoveEvent(userId string, idToAdd *string) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }

@@ -1,4 +1,4 @@
-package system
+package middleware
 
 import (
 	"encoding/json"
@@ -20,7 +20,7 @@ func ReadAllEvent(w http.ResponseWriter, r *http.Request) {
 
 	var results []model.Event
 
-	if err := eventController.ReadAll(&results); err != response.None {
+	if err := eventController.ReadAll(&results); err != response.Ok {
 		fmt.Println(err, results)
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
@@ -36,7 +36,7 @@ func ReadOneEvent(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var result model.Event
 
-	if err := eventController.Read(params["id"], &result); err != response.None {
+	if err := eventController.Read(params["id"], &result); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -52,7 +52,7 @@ func DeleteOneEvent(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	if err := eventController.Delete(params["id"]); err != response.None {
+	if err := eventController.Delete(params["id"]); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -72,7 +72,7 @@ func CreateOneEvent(w http.ResponseWriter, r *http.Request) {
 	if jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := eventController.Create(&event); err != response.None {
+	} else if err := eventController.Create(&event); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -115,7 +115,7 @@ func UpdateOneEvent(w http.ResponseWriter, r *http.Request) {
 	if len(filter) == 0 {
 		http.Error(w, response.ErrorMessages[response.UpdateEmpty], http.StatusBadRequest)
 		return
-	} else if err := eventController.Update(filter, params["id"]); err != response.None {
+	} else if err := eventController.Update(filter, params["id"]); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -135,7 +135,7 @@ func AddPlaylistToEvent(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := eventController.AddPlaylistToEvent(params["id"], &playlistId); err != response.None {
+	} else if err := eventController.AddPlaylistToEvent(params["id"], &playlistId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -151,7 +151,7 @@ func RemovePlaylistFromEvent(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	if err := eventController.RemovePlaylistFromEvent(params["id"]); err != response.None {
+	if err := eventController.RemovePlaylistFromEvent(params["id"]); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -171,7 +171,7 @@ func UpdateStatusOfEvent(w http.ResponseWriter, r *http.Request) {
 	if jsonErr := json.NewDecoder(r.Body).Decode(&status); jsonErr != nil {
 		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 		return
-	} else if err := eventController.UpdateStatus(params["id"], &status); err != response.None {
+	} else if err := eventController.UpdateStatus(params["id"], &status); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}

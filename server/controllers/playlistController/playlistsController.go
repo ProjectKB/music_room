@@ -7,6 +7,7 @@ import (
 	authorizationController "server/controllers/authorizationController"
 	"server/model"
 	"server/response"
+	"server/helpers"
 	db "server/system/db"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,14 +26,16 @@ func Create(elem *model.Playlist) int {
 
 	if elem.Name == "" {
 		return response.FieldIsMissing
-	} else if authErr := authorizationController.Create(&authorization); authErr != response.None {
+	} else if fieldErr := helpers.CheckPlaylistBlacklistedFields(elem); fieldErr != response.Ok {
+		return response.Unauthorized
+	} else if authErr := authorizationController.Create(&authorization); authErr != response.Ok {
 		return authErr
 	} else if _, err := db.PlaylistCollection.InsertOne(context.TODO(), elem); err != nil {
 		return response.BddError
 	}
 
 	fmt.Println("Inserted a single document")
-	return response.None
+	return response.Ok
 }
 
 func Read(param string, result *model.Playlist) int {
@@ -43,7 +46,7 @@ func Read(param string, result *model.Playlist) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func ReadAll(playlists *[]model.Playlist) int {
@@ -71,7 +74,7 @@ func ReadAll(playlists *[]model.Playlist) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return response.None
+	return response.Ok
 }
 
 func Update(fields bson.M, param string) int {
@@ -88,7 +91,7 @@ func Update(fields bson.M, param string) int {
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return response.None
+	return response.Ok
 }
 
 func Delete(param string) int {
@@ -102,7 +105,7 @@ func Delete(param string) int {
 	}
 
 	fmt.Printf("Deleted %v documents in the playlist collection\n", deleteResult.DeletedCount)
-	return response.None
+	return response.Ok
 }
 
 func DeleteAll() {
@@ -146,7 +149,7 @@ func AddSong(playlistId string, song *model.Song) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func RemoveSong(playlistId string, song *model.Song) int {
@@ -186,7 +189,5 @@ func RemoveSong(playlistId string, song *model.Song) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
-
-// TODO add bdd error to every methods + think about update

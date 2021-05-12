@@ -6,6 +6,7 @@ import (
 	"log"
 	"server/model"
 	"server/response"
+	"server/helpers"
 	db "server/system/db"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,7 +19,7 @@ func Create(elem *model.Authorization) int {
 	}
 
 	fmt.Println("Inserted a single document")
-	return response.None
+	return response.Ok
 }
 
 func Read(param string, result *model.Authorization) int {
@@ -29,7 +30,7 @@ func Read(param string, result *model.Authorization) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func ReadAll(authorizations *[]model.Authorization) int {
@@ -57,14 +58,23 @@ func ReadAll(authorizations *[]model.Authorization) int {
 
 	fmt.Printf("DB Fetch went well!\n")
 
-	return response.None
+	return response.Ok
 }
 
-func Update(fields bson.M, param string) int {
+func Update(param string, authorization *model.Authorization) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
+
+	if authorization.Status != "public" && authorization.Status != "private" {
+		return response.FieldIsMissing
+	} else if err := helpers.CheckAuthorizationBlacklistedFields(authorization); err != response.Ok {
+		return response.Unauthorized
+	}
+
 	update := bson.M{
-		"$set": fields,
+		"$set": bson.D{
+			{"guests", authorization.Status},
+		},
 	}
 
 	updateResult, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update)
@@ -74,7 +84,7 @@ func Update(fields bson.M, param string) int {
 	}
 
 	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-	return response.None
+	return response.Ok
 }
 
 func Delete(param string) int {
@@ -88,7 +98,7 @@ func Delete(param string) int {
 	}
 
 	fmt.Printf("Deleted %v documents in the authorization collection\n", deleteResult.DeletedCount)
-	return response.None
+	return response.Ok
 }
 
 func DeleteAll() {
@@ -138,7 +148,7 @@ func AddGuest(authorizationId string, guest *model.Guest) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
 
 func RemoveGuest(authorizationId string, guest *model.Guest) int {
@@ -180,7 +190,5 @@ func RemoveGuest(authorizationId string, guest *model.Guest) int {
 		return response.BddError
 	}
 
-	return response.None
+	return response.Ok
 }
-
-// TODO add bdd error to every methods + think about update

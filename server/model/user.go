@@ -15,4 +15,4 @@ type User struct {
 	Avatar    string             `bson:"avatar,omitempty" json:"avatar,omitempty"`
 }
 
-// TODO add preference (create/update)
+// TODO add musical preference (create/update)

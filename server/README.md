@@ -128,8 +128,8 @@ Route | Method | Utility
 `/authorizations` | **GET** | return every authorizations
 `/authorizations/{id}` | **GET** | return one authorization
 `/authorizations/{id}` | **POST** | create one authorization
-`/authorizations/{id}` | **PUT** | update one authorization
 `/authorizations/{id}` | **DELETE** | delete one authorization
+`/authorizations/updateStatus/{id}` | **PUT** | update authorization status
 `/authorizations/addGuest/{id}` | **PUT** | add a guest to `guests` field
 `/authorizations/removeGuest/{id}` | **PUT** | remove a guest from `guests` field
 </details>
