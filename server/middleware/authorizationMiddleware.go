@@ -136,3 +136,18 @@ func RemoveGuestFromAuthorization(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Guest", response.Delete))
 }
+
+func ReadAuthorizationGuests(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	var guests []model.User
+
+	if err := authorizationController.ReadGuests(params["id"], &guests); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(guests)
+}

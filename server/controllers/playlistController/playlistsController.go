@@ -72,8 +72,6 @@ func ReadAll(playlists *[]model.Playlist) int {
 	// Close the cursor once finished
 	cur.Close(context.TODO())
 
-	fmt.Printf("DB Fetch went well!\n")
-
 	return response.Ok
 }
 

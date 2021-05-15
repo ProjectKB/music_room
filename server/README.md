@@ -18,21 +18,24 @@ Name | Type
 **Playlists** | `string[]`
 **Avatar** | `string`
 
-(*) mandatory field(s) when creating/updating
+(*) mandatory fields
 
 ### ENDPOINTS 
 Route | Method | Utility
  --- | --- | ---
-`/users` | **GET** | return every users
-`/users/{id}` | **GET** | return one user
+`/users` | **GET** | read every users
+`/users/{id}` | **GET** | read one user
 `/users/{id}` | **POST** | create one user
 `/users/{id}` | **PUT** | update one user
 `/users/{id}` | **DELETE** | delete one user
 `/users/addFriend/{id}` | **PUT** | add a friend to `friends` field
+`/users/friends/{id}` | **GET** | read every friends
 `/users/removeFriend/{id}` | **PUT** | remove a friend from `friends` field
 `/users/addPlaylist/{id}` | **PUT** | add a playlist to `playlists` field
+`/users/playlists/{id}` | **GET** | read every playlistss
 `/users/removePlaylist/{id}` | **PUT** | remove a playlist from `playlists` field
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
+`/users/events/{id}` | **GET** | read every events
 `/users/removeEvent/{id}` | **PUT** | remove an event from `events` field
 </details>
 
@@ -53,17 +56,17 @@ Name | Type
 #### Song
 Name | Type
  --- | ---
-**Id** | `primitive.ObjectID`
+**Id** | `string`
 **Name*** | `string`
 **Score** | `uint`
 
-(*) mandatory field(s) when creating/updating
+(*) mandatory fields
 
 ### ENDPOINTS
 Route | Method | Utility
  --- | --- | ---
-`/playlists` | **GET** | return every playlists
-`/playlists/{id}` | **GET** | return one playlist
+`/playlists` | **GET** | read every playlists
+`/playlists/{id}` | **GET** | read one playlist
 `/playlists/{id}` | **POST** | create one playlist
 `/playlists/{id}` | **PUT** | update one playlist
 `/playlists/{id}` | **DELETE** | delete one playlist
@@ -86,13 +89,13 @@ Name | Type | Value
 **End*** | `string`
 **Status** | `string` | pending/ongoing/finished
 
-(*) mandatory field(s) when creating/updating
+(*) mandatory fields
 
 ### ENDPOINTS
 Route | Method | Utility
  --- | --- | ---
-`/events` | **GET** | return every events
-`/events/{id}` | **GET** | return one event
+`/events` | **GET** | read every events
+`/events/{id}` | **GET** | read one event
 `/events/{id}` | **POST** | create one event
 `/events/{id}` | **PUT** | update one event
 `/events/{id}` | **DELETE** | delete one event
@@ -116,20 +119,18 @@ Name | Type | Value
 #### Guest
 Name | Type
  --- | ---
-**Id** | `primitive.ObjectID`
-**Name*** | `string`
+**Id** | `string`
 **Contributor** | bool
-
-(*) mandatory field(s) when creating/updating
 
 ### ENDPOINTS
 Route | Method | Utility
  --- | --- | ---
-`/authorizations` | **GET** | return every authorizations
-`/authorizations/{id}` | **GET** | return one authorization
+`/authorizations` | **GET** | read every authorizations
+`/authorizations/{id}` | **GET** | read one authorization
 `/authorizations/{id}` | **POST** | create one authorization
 `/authorizations/{id}` | **DELETE** | delete one authorization
 `/authorizations/updateStatus/{id}` | **PUT** | update authorization status
 `/authorizations/addGuest/{id}` | **PUT** | add a guest to `guests` field
+`/authorization/guests/{id}` | **GET** | read every guests
 `/authorizations/removeGuest/{id}` | **PUT** | remove a guest from `guests` field
 </details>

@@ -56,8 +56,6 @@ func ReadAll(authorizations *[]model.Authorization) int {
 	// Close the cursor once finished
 	cur.Close(context.TODO())
 
-	fmt.Printf("DB Fetch went well!\n")
-
 	return response.Ok
 }
 
@@ -118,7 +116,7 @@ func AddGuest(authorizationId string, guest *model.Guest) int {
 	var user model.User
 	contributorExist := false
 
-	if guest.Id == "" || guest.Name == "" {
+	if guest.Id == "" {
 		return response.FieldIsMissing
 	} else if err := db.UserCollection.FindOne(context.TODO(), guestFilter).Decode(&user); err != nil {
 		// TODO verif is not Owner_ID
@@ -189,6 +187,48 @@ func RemoveGuest(authorizationId string, guest *model.Guest) int {
 	if _, err := db.AuthorizationCollection.UpdateOne(context.TODO(), filter, update); err != nil {
 		return response.BddError
 	}
+
+	return response.Ok
+}
+
+func ReadGuests(param string, guests *[]model.User) int {
+	id, _ := primitive.ObjectIDFromHex(param)
+	filter := bson.D{{"_id", id}}
+	var authorization model.Authorization
+
+	if err := db.AuthorizationCollection.FindOne(context.TODO(), filter).Decode(&authorization); err != nil {
+		return response.BddError
+	}
+
+	var guestIds []primitive.ObjectID
+
+	for _, guest := range authorization.Guests {
+		objID, err := primitive.ObjectIDFromHex(guest.Id)
+		if err == nil {
+			guestIds = append(guestIds, objID)
+		}
+	}
+
+	cur, err := db.UserCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": guestIds}})
+
+	if err != nil {
+		return response.BddError
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.User
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*guests = append(*guests, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
 
 	return response.Ok
 }

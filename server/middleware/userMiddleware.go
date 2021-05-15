@@ -150,7 +150,7 @@ func AddFriendToUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(friendId)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend", response.Create))
 }
 
 func RemoveFriendFromUser(w http.ResponseWriter, r *http.Request) {
@@ -251,4 +251,49 @@ func RemoveEventFromUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Delete))
+}
+
+func ReadUserFriends(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	var friends []model.User
+
+	if err := userController.ReadFriends(params["id"], &friends); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(friends)
+}
+
+func ReadUserPlaylists(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	var playlists []model.Playlist
+
+	if err := userController.ReadPlaylists(params["id"], &playlists); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(playlists)
+}
+
+func ReadUserEvents(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	var events []model.Event
+
+	if err := userController.ReadEvents(params["id"], &events); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(events)
 }

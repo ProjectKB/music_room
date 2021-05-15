@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"server/helpers"
 	"server/model"
 	"server/response"
-	"server/helpers"
 	db "server/system/db"
 
 	"regexp"
@@ -76,8 +76,6 @@ func ReadAll(users *[]model.User) int {
 
 	// Close the cursor once finished
 	cur.Close(context.TODO())
-
-	fmt.Printf("DB Fetch went well!\n")
 
 	return response.Ok
 }
@@ -362,6 +360,132 @@ func RemoveEvent(userId string, idToAdd *string) int {
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
 		return response.BddError
 	}
+
+	return response.Ok
+}
+
+func ReadFriends(param string, users *[]model.User) int {
+	id, _ := primitive.ObjectIDFromHex(param)
+	filter := bson.D{{"_id", id}}
+	var user model.User
+
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
+	var friendsIds []primitive.ObjectID
+
+	for _, friend := range user.Friends {
+		objID, err := primitive.ObjectIDFromHex(friend)
+		if err == nil {
+			friendsIds = append(friendsIds, objID)
+		}
+	}
+
+	cur, err := db.UserCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": friendsIds}})
+
+	if err != nil {
+		return response.BddError
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.User
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*users = append(*users, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	return response.Ok
+}
+
+func ReadPlaylists(param string, playlists *[]model.Playlist) int {
+	id, _ := primitive.ObjectIDFromHex(param)
+	filter := bson.D{{"_id", id}}
+	var user model.User
+
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
+	var playlistsIds []primitive.ObjectID
+
+	for _, playlist := range user.Playlists {
+		objID, err := primitive.ObjectIDFromHex(playlist)
+		if err == nil {
+			playlistsIds = append(playlistsIds, objID)
+		}
+	}
+
+	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": playlistsIds}})
+
+	if err != nil {
+		return response.BddError
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.Playlist
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*playlists = append(*playlists, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	return response.Ok
+}
+
+func ReadEvents(param string, event *[]model.Event) int {
+	id, _ := primitive.ObjectIDFromHex(param)
+	filter := bson.D{{"_id", id}}
+	var user model.User
+
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
+	var eventIds []primitive.ObjectID
+
+	for _, event := range user.Events {
+		objID, err := primitive.ObjectIDFromHex(event)
+		if err == nil {
+			eventIds = append(eventIds, objID)
+		}
+	}
+
+	cur, err := db.EventCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": eventIds}})
+
+	if err != nil {
+		return response.BddError
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.Event
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*event = append(*event, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
 
 	return response.Ok
 }
