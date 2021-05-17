@@ -69,10 +69,9 @@ func CreateOneUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var user model.User
-	jsonErr := json.NewDecoder(r.Body).Decode(&user)
 
-	if jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := userController.Create(&user); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -145,8 +144,8 @@ func AddFriendToUser(w http.ResponseWriter, r *http.Request) {
 	var friendId string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&friendId); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&friendId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := userController.AddFriend(params["id"], &friendId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -165,8 +164,8 @@ func RemoveFriendFromUser(w http.ResponseWriter, r *http.Request) {
 	var friendId string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&friendId); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&friendId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := userController.RemoveFriend(params["id"], &friendId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -185,8 +184,8 @@ func AddPlaylistToUser(w http.ResponseWriter, r *http.Request) {
 	var playlistId string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&playlistId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := userController.AddPlaylist(params["id"], &playlistId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -205,8 +204,8 @@ func RemovePlaylistFromUser(w http.ResponseWriter, r *http.Request) {
 	var playlistId string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&playlistId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := userController.RemovePlaylist(params["id"], &playlistId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -225,8 +224,8 @@ func AddEventToUser(w http.ResponseWriter, r *http.Request) {
 	var eventId string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&eventId); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&eventId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := userController.AddEvent(params["id"], &eventId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -245,8 +244,8 @@ func RemoveEventFromUser(w http.ResponseWriter, r *http.Request) {
 	var eventId string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&eventId); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&eventId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := userController.RemoveEvent(params["id"], &eventId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)

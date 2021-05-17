@@ -63,10 +63,9 @@ func CreateOneAuthorization(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var authorization model.Authorization
-	jsonErr := json.NewDecoder(r.Body).Decode(&authorization)
 
-	if jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&authorization); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := authorizationController.Create(&authorization); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -106,8 +105,8 @@ func AddGuestToAuthorization(w http.ResponseWriter, r *http.Request) {
 	var guest model.Guest
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&guest); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&guest); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := authorizationController.AddGuest(params["id"], &guest); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -126,8 +125,8 @@ func RemoveGuestFromAuthorization(w http.ResponseWriter, r *http.Request) {
 	var guest model.Guest
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&guest); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&guest); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := authorizationController.RemoveGuest(params["id"], &guest); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)

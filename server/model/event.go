@@ -7,6 +7,7 @@ import (
 type Event struct {
 	Id          primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Name        string             `bson:"name,omitempty" json:"name,omitempty"`
+	Owner_id    string             `bson:"owner_id,omitempty" json:"owner_id,omitempty"` // TODO along creation -> session
 	Playlist_id string             `bson:"playlist_id,omitempty" json:"playlist_id,omitempty"`
 	Picture     string             `bson:"picture,omitempty" json:"picture,omitempty"`
 	Start       string             `bson:"start,omitempty" json:"start,omitempty"` // TODO Check logic between start & end

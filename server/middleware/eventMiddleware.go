@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"reflect"
 	eventController "server/controllers/eventController"
+	"server/helpers"
 	"server/model"
 	"server/response"
 	"strings"
@@ -67,10 +68,9 @@ func CreateOneEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var event model.Event
-	jsonErr := json.NewDecoder(r.Body).Decode(&event)
 
-	if jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := eventController.Create(&event); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -109,7 +109,15 @@ func UpdateOneEvent(w http.ResponseWriter, r *http.Request) {
 	var event model.Event
 	params := mux.Vars(r)
 
-	json.NewDecoder(r.Body).Decode(&event)
+	
+	if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := helpers.CheckEventBlacklistedFields(&event, "UPDATE"); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
 	filter := updateEventFilter(&event)
 
 	if len(filter) == 0 {
@@ -132,8 +140,8 @@ func AddPlaylistToEvent(w http.ResponseWriter, r *http.Request) {
 	var playlistId string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&playlistId); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&playlistId); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := eventController.AddPlaylistToEvent(params["id"], &playlistId); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
@@ -168,8 +176,8 @@ func UpdateStatusOfEvent(w http.ResponseWriter, r *http.Request) {
 	var status string
 	params := mux.Vars(r)
 
-	if jsonErr := json.NewDecoder(r.Body).Decode(&status); jsonErr != nil {
-		http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&status); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := eventController.UpdateStatus(params["id"], &status); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)

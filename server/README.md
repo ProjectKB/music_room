@@ -83,6 +83,7 @@ Name | Type | Value
  --- | --- | ---
 **Id** | `primitive.ObjectID`
 **Name*** | `string`
+**Owner_id** | `string`
 **Playlist_id** | `string`
 **Picture** | `string`
 **Start*** | `string`

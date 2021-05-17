@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	authorizationController "server/controllers/authorizationController"
+	"server/helpers"
 	"server/model"
 	"server/response"
-	"server/helpers"
 	db "server/system/db"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,20 +16,22 @@ import (
 
 func Create(elem *model.Playlist) int {
 	default_picture := "path_to_default_picture"
-	authorization := model.Authorization{primitive.NewObjectID(), elem.Owner_id, "public", nil}
 
 	if elem.Picture == "" {
 		elem.Picture = default_picture
 	}
 
-	elem.Authorization_id = authorization.Id.String()
-
 	if elem.Name == "" {
 		return response.FieldIsMissing
-	} else if fieldErr := helpers.CheckPlaylistBlacklistedFields(elem); fieldErr != response.Ok {
+	} else if err := helpers.CheckPlaylistBlacklistedFields(elem); err != response.Ok {
 		return response.Unauthorized
-	} else if authErr := authorizationController.Create(&authorization); authErr != response.Ok {
-		return authErr
+	}
+
+	authorization := model.Authorization{primitive.NewObjectID(), elem.Owner_id, "public", nil}
+	elem.Authorization_id = authorization.Id.Hex()
+
+	if err := authorizationController.Create(&authorization); err != response.Ok {
+		return err
 	} else if _, err := db.PlaylistCollection.InsertOne(context.TODO(), elem); err != nil {
 		return response.BddError
 	}

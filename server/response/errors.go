@@ -1,5 +1,7 @@
 package response
 
+// TODO add enum to return good error code (middleware)
+
 const (
 	BddError = iota 
 	AlreadyExist 

@@ -29,7 +29,7 @@ func Create(elem *model.User) int {
 
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return response.FieldIsMissing
-	} else if fieldErr := helpers.CheckUserBlacklistedFields(elem); fieldErr != response.Ok {
+	} else if err := helpers.CheckUserBlacklistedFields(elem); err != response.Ok {
 		return response.Unauthorized
 	} else if !match {
 		return response.InvalidFormat

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	playlistController "server/controllers/playlistController"
+	"server/helpers"
 	"server/model"
 	"server/response"
 	db "server/system/db"
@@ -16,18 +18,39 @@ import (
 
 func Create(elem *model.Event) int {
 	default_picture := "path_to_default_picture"
+	var playlist model.Playlist
 
-	if elem.Status != "" {
-		return response.Unauthorized
-	} else if elem.Picture == "" {
+	if elem.Picture == "" {
 		elem.Picture = default_picture
 	}
 
+	if elem.Status != "" {
+		return response.Unauthorized
+	} else if elem.Name == "" || elem.Start == "" || elem.End == "" {
+		return response.FieldIsMissing
+	} else if err := helpers.CheckEventBlacklistedFields(elem, "CREATE"); err != response.Ok {
+		return response.Unauthorized
+	}
+	
+	if elem.Playlist_id != "" {
+		playlistId, _ := primitive.ObjectIDFromHex(elem.Playlist_id)
+		playlistFilter := bson.D{{"_id", playlistId}}
+
+		if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
+			return response.BddError
+		}
+	} else {
+		playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, "", nil, elem.Picture}
+
+		if err := playlistController.Create(&playlist); err != response.Ok {
+			return err
+		}
+	}
+
+	elem.Playlist_id = playlist.Id.Hex()
 	elem.Status = "pending"
 
-	if elem.Name == "" || elem.Start == "" || elem.End == "" {
-		return response.FieldIsMissing
-	} else if _, err := db.EventCollection.InsertOne(context.TODO(), elem); err != nil {
+	if _, err := db.EventCollection.InsertOne(context.TODO(), elem); err != nil {
 		return response.BddError
 	}
 
