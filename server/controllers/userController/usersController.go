@@ -25,6 +25,8 @@ func Create(elem *model.User) int {
 		elem.Avatar = default_avatar
 	}
 
+	// TODO Check preferences
+
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return response.FieldIsMissing
 	} else if fieldErr := helpers.CheckUserBlacklistedFields(elem); fieldErr != response.Ok {

@@ -7,8 +7,8 @@ import (
 	"reflect"
 	userController "server/controllers/userController"
 
-	"server/model"
 	"server/helpers"
+	"server/model"
 	"server/response"
 	"strings"
 
@@ -96,6 +96,9 @@ func updateUserFilter(doc *model.User) bson.M {
 
 	for i := 0; i < v.NumField(); i++ {
 		if (typeOfS.Field(i).Name == "Login" || typeOfS.Field(i).Name == "Password" || typeOfS.Field(i).Name == "Avatar") && v.Field(i).Interface() != "" {
+			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
+		} else if typeOfS.Field(i).Name == "Preference" && v.Field(i).Interface() != nil {
+			// TODO Check preferences
 			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
 		}
 	}
