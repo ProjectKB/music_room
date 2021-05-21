@@ -64,44 +64,42 @@ const Player = () => {
   }, [currentTime, duration, songState]);
 
   return (
-    <View style={{width: '100%', height: '100%', justifyContent: 'flex-end'}}>
-      <View>
-        <View style={{opacity: 0}}>
-          <YoutubePlayer
-            ref={playerRef}
-            height={1}
-            play={playing}
-            videoId={currentSong}
-            onReady={() => {
-              setPlaying(true);
-            }}
-            onChangeState={onStateChange}
-          />
-        </View>
+    <View>
+      <View style={{opacity: 0}}>
+        <YoutubePlayer
+          ref={playerRef}
+          height={1}
+          play={playing}
+          videoId={currentSong}
+          onReady={() => {
+            setPlaying(true);
+          }}
+          onChangeState={onStateChange}
+        />
+      </View>
 
-        <View>
-          <ProgressBar progress={progressionBarValue} color="#685a5e" />
-          <View style={styles.songPlayerContainer}>
-            <View style={styles.songPlayerPicture}>
-              <FontAwesomeIcon color="white" size={20} icon={faMusic} />
-            </View>
-            <View style={styles.songPLayerTitle}>
-              <TextTicker
-                style={styles.songPlayerTitleFont}
-                duration={10000}
-                loop
-                scroll={false}
-                repeatSpacer={50}
-                marqueeDelay={1000}>
-                Childish Gambino - This is America - Oh no I'm too long !
-              </TextTicker>
-            </View>
-            <TouchableOpacity
-              style={styles.songPLayerButton}
-              onPress={togglePlaying}>
-              {songPlayerButton}
-            </TouchableOpacity>
+      <View>
+        <ProgressBar progress={progressionBarValue} color="#685a5e" />
+        <View style={styles.songPlayerContainer}>
+          <View style={styles.songPlayerPicture}>
+            <FontAwesomeIcon color="white" size={20} icon={faMusic} />
           </View>
+          <View style={styles.songPLayerTitle}>
+            <TextTicker
+              style={styles.songPlayerTitleFont}
+              duration={10000}
+              loop
+              scroll={false}
+              repeatSpacer={50}
+              marqueeDelay={1000}>
+              Childish Gambino - This is America - Oh no I'm too long !
+            </TextTicker>
+          </View>
+          <TouchableOpacity
+            style={styles.songPLayerButton}
+            onPress={togglePlaying}>
+            {songPlayerButton}
+          </TouchableOpacity>
         </View>
       </View>
     </View>
