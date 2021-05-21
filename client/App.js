@@ -67,4 +67,20 @@ const App = () => {
 
 export default App;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  playlistStackHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  playlistStackHeaderButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 1,
+  },
+  playlistStackHeaderTitle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    flex: 6,
+  },
+});
