@@ -66,7 +66,7 @@ const Player = () => {
   return (
     <View>
       <View style={{opacity: 0}}>
-        <YoutubePlayer
+        {/* <YoutubePlayer
           ref={playerRef}
           height={1}
           play={playing}
@@ -75,7 +75,7 @@ const Player = () => {
             setPlaying(true);
           }}
           onChangeState={onStateChange}
-        />
+        /> */}
       </View>
 
       <View>
