@@ -116,6 +116,8 @@ func DeleteAll() {
 	fmt.Printf("Deleted %v documents in the playlist collection\n", deleteResult.DeletedCount)
 }
 
+// TODO delete table connected
+
 func AddSong(playlistId string, song *model.Song) int {
 	id, _ := primitive.ObjectIDFromHex(playlistId)
 	filter := bson.D{{"_id", id}}
