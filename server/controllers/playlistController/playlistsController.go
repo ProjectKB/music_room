@@ -22,13 +22,15 @@ func Create(elem *model.Playlist) int {
 		elem.Picture = default_picture
 	}
 
-	elem.Authorization_id = authorization.Id.String()
-
 	if elem.Name == "" {
 		return response.FieldIsMissing
 	} else if fieldErr := helpers.CheckPlaylistBlacklistedFields(elem); fieldErr != response.Ok {
 		return response.Unauthorized
-	} else if authErr := authorizationController.Create(&authorization); authErr != response.Ok {
+	}
+
+	elem.Authorization_id = authorization.Id.Hex()
+
+	if authErr := authorizationController.Create(&authorization); authErr != response.Ok {
 		return authErr
 	} else if _, err := db.PlaylistCollection.InsertOne(context.TODO(), elem); err != nil {
 		return response.BddError
@@ -113,6 +115,8 @@ func DeleteAll() {
 	}
 	fmt.Printf("Deleted %v documents in the playlist collection\n", deleteResult.DeletedCount)
 }
+
+// TODO delete table connected
 
 func AddSong(playlistId string, song *model.Song) int {
 	id, _ := primitive.ObjectIDFromHex(playlistId)
