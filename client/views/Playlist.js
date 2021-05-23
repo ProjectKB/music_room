@@ -1,6 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import Player from '../components/Player';
+import {StyleSheet, View, ScrollView} from 'react-native';
+import PlaylistList from '../components/PlaylistList';
+import {Text, Subheading, Divider, Searchbar} from 'react-native-paper';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faCameraRetro, faSearch} from '@fortawesome/free-solid-svg-icons';
 
 {
   /* <Button
@@ -11,51 +14,18 @@ import Player from '../components/Player';
 
 const Playlist = ({navigation}) => {
   return (
-    <ScrollView style={styles.playlistList}>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-      <Text>Coucou</Text>
-    </ScrollView>
+    <>
+      <Searchbar
+        style={styles.searchBar}
+        placeholder="Search"
+        icon={() => (
+          <FontAwesomeIcon size={20} color={'gray'} icon={faSearch} />
+        )}
+      />
+      <ScrollView style={styles.playlistList}>
+        <PlaylistList />
+      </ScrollView>
+    </>
   );
 };
 
@@ -63,6 +33,10 @@ export default Playlist;
 
 const styles = StyleSheet.create({
   playlistList: {
-    margin: 5,
+    margin: 10,
+  },
+  searchBar: {
+    marginHorizontal: 10,
+    marginTop: 10,
   },
 });

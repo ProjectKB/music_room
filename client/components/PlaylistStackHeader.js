@@ -8,14 +8,9 @@ const PlaylistStackHeader = props => {
   return (
     <View style={styles.playlistStackHeaderContainer}>
       <Headline style={styles.playlistStackHeaderTitle}>{props.title}</Headline>
-      <View style={styles.playlistStackHeaderButton}>
-        <TouchableOpacity>
-          <FontAwesomeIcon size={20} icon={faSearch} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <FontAwesomeIcon size={20} icon={faPlus} />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity>
+        <FontAwesomeIcon size={20} icon={faPlus} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -27,11 +22,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  playlistStackHeaderButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flex: 1,
   },
   playlistStackHeaderTitle: {
     fontWeight: 'bold',
