@@ -21,8 +21,12 @@ func ReadAllPlaylist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var results []model.Playlist
+	var toSearch string
 
-	if err := playlistController.ReadAll(&results); err != response.Ok {
+	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.ReadAll(&results, toSearch); err != response.Ok {
 		fmt.Println(err, results)
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return

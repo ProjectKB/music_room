@@ -73,7 +73,8 @@ func SearchSong(playlistId string, toSearch string, playlist *model.Playlist, so
 
 func ReadAll(playlists *[]model.Playlist) int {
 	// Passing bson.D{} as the filter matches all documents in the User collection
-	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.D{})
+	cur, err := db.PlaylistCollection.Find(context.TODO(), filter)
+	// cur, err := db.PlaylistCollection.Find(context.TODO(), bson.M{"name": "Chi"})
 
 	if err != nil {
 		return response.BddError
