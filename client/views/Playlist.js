@@ -3,6 +3,7 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import PlaylistList from '../components/PlaylistList';
 import PlaylistSearchBar from '../components/PlaylistSearchBar';
 import {ReadAllPlaylist} from '../api/PlaylistEndpoint';
+import PlaylistSearchContext from '../contexts/PlaylistSearchContext';
 
 {
   /* <Button
@@ -13,22 +14,23 @@ import {ReadAllPlaylist} from '../api/PlaylistEndpoint';
 
 const Playlist = ({navigation}) => {
   const [playlistCollection, setPlaylistCollection] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchPlaylists = useCallback(() => {
-    ReadAllPlaylist(setPlaylistCollection);
-  }, []);
+    ReadAllPlaylist(setPlaylistCollection, searchQuery);
+  }, [searchQuery]);
 
   useEffect(() => {
     fetchPlaylists();
   }, [fetchPlaylists]);
 
   return (
-    <>
+    <PlaylistSearchContext.Provider value={{searchQuery, setSearchQuery}}>
       <PlaylistSearchBar />
       <ScrollView style={styles.playlistList}>
         <PlaylistList playlistCollection={playlistCollection} />
       </ScrollView>
-    </>
+    </PlaylistSearchContext.Provider>
   );
 };
 
