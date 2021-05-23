@@ -51,14 +51,35 @@ func Read(param string, result *model.Playlist) int {
 	return response.Ok
 }
 
-func ReadAll(playlists *[]model.Playlist, toSearch string) int {
-	var filter bson.M
+func ReadAll(playlists *[]model.Playlist) int {
+	// Passing bson.D{} as the filter matches all documents in the User collection
+	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.D{})
+	// cur, err := db.PlaylistCollection.Find(context.TODO(), bson.M{"name": "Chi"})
 
-	if toSearch == "" {
-		filter = bson.M{}
-	} else {
-		filter = bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}} 
+	if err != nil {
+		return response.BddError
 	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.Playlist
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*playlists = append(*playlists, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	return response.Ok
+}
+
+func Search(playlists *[]model.Playlist, toSearch string) int {
+	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}} 
 
 	// Passing bson.D{} as the filter matches all documents in the User collection
 	cur, err := db.PlaylistCollection.Find(context.TODO(), filter)
