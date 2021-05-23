@@ -21,12 +21,29 @@ func ReadAllPlaylist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var results []model.Playlist
+
+	if err := playlistController.ReadAll(&results); err != response.Ok {
+		fmt.Println(err, results)
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(results)
+}
+
+func SearchPlaylist(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var results []model.Playlist
 	var toSearch string
 
 	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := playlistController.ReadAll(&results, toSearch); err != response.Ok {
+	} else if err := playlistController.Search(&results, toSearch); err != response.Ok {
 		fmt.Println(err, results)
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
