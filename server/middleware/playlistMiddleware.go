@@ -3,12 +3,13 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	playlistController "server/controllers/playlistController"
+	"server/helpers"
 	"server/model"
 	"server/response"
-	"server/helpers"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -20,8 +21,12 @@ func ReadAllPlaylist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var results []model.Playlist
+	var toSearch string
 
-	if err := playlistController.ReadAll(&results); err != response.Ok {
+	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.ReadAll(&results, toSearch); err != response.Ok {
 		fmt.Println(err, results)
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
@@ -69,7 +74,7 @@ func CreateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 
 	var playlist model.Playlist
 
-	if err := json.NewDecoder(r.Body).Decode(&playlist) ; err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&playlist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := playlistController.Create(&playlist); err != response.Ok {

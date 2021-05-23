@@ -51,9 +51,18 @@ func Read(param string, result *model.Playlist) int {
 	return response.Ok
 }
 
-func ReadAll(playlists *[]model.Playlist) int {
+func ReadAll(playlists *[]model.Playlist, toSearch string) int {
+	var filter bson.M
+
+	if toSearch == "" {
+		filter = bson.M{}
+	} else {
+		filter = bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}} 
+	}
+
 	// Passing bson.D{} as the filter matches all documents in the User collection
-	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.D{})
+	cur, err := db.PlaylistCollection.Find(context.TODO(), filter)
+	// cur, err := db.PlaylistCollection.Find(context.TODO(), bson.M{"name": "Chi"})
 
 	if err != nil {
 		return response.BddError
