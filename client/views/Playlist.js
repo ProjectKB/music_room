@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import PlaylistList from '../components/PlaylistList';
-import {Text, Subheading, Divider, Searchbar} from 'react-native-paper';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faCameraRetro, faSearch} from '@fortawesome/free-solid-svg-icons';
+import PlaylistSearchBar from '../components/PlaylistSearchBar';
+import {ReadAllPlaylist} from '../api/PlaylistEndpoint';
 
 {
   /* <Button
@@ -13,17 +12,21 @@ import {faCameraRetro, faSearch} from '@fortawesome/free-solid-svg-icons';
 }
 
 const Playlist = ({navigation}) => {
+  const [playlistCollection, setPlaylistCollection] = useState([]);
+
+  const fetchPlaylists = useCallback(() => {
+    ReadAllPlaylist(setPlaylistCollection);
+  }, []);
+
+  useEffect(() => {
+    fetchPlaylists();
+  }, [fetchPlaylists]);
+
   return (
     <>
-      <Searchbar
-        style={styles.searchBar}
-        placeholder="Search"
-        icon={() => (
-          <FontAwesomeIcon size={20} color={'gray'} icon={faSearch} />
-        )}
-      />
+      <PlaylistSearchBar />
       <ScrollView style={styles.playlistList}>
-        <PlaylistList />
+        <PlaylistList playlistCollection={playlistCollection} />
       </ScrollView>
     </>
   );
@@ -34,9 +37,5 @@ export default Playlist;
 const styles = StyleSheet.create({
   playlistList: {
     margin: 10,
-  },
-  searchBar: {
-    marginHorizontal: 10,
-    marginTop: 10,
   },
 });
