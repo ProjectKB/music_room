@@ -1,23 +1,12 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React from 'react';
+import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
-import {ReadAllPlaylist} from '../api/PlaylistEndpoint';
 import PlaylistElement from './PlaylistElement';
 
-const PlaylistsList = () => {
-  const [playlistCollection, setPlaylistCollection] = useState([]);
-
-  const fetchPlaylists = useCallback(() => {
-    ReadAllPlaylist(setPlaylistCollection);
-  }, []);
-
-  useEffect(() => {
-    fetchPlaylists();
-  }, [fetchPlaylists]);
-
+const PlaylistsList = props => {
   const PlaylistCollection = () => {
-    if (playlistCollection.length !== 0) {
-      return playlistCollection.map(elem => {
+    if (props.playlistCollection.length !== 0) {
+      return props.playlistCollection.map(elem => {
         return <PlaylistElement key={elem.id} playlist={elem} />;
       });
     } else {
@@ -25,11 +14,7 @@ const PlaylistsList = () => {
     }
   };
 
-  return (
-    <View>
-      <PlaylistCollection />
-    </View>
-  );
+  return <PlaylistCollection />;
 };
 
 export default PlaylistsList;
