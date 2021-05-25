@@ -23,10 +23,18 @@ const App = () => {
           name="Playlist"
           component={Playlist}
           options={{
-            headerTitle: () => <PlaylistStackHeader title="Playlist" />,
+            title: 'Playlist',
+            headerTitle: props => <PlaylistStackHeader navigation={props} />,
           }}
         />
-        <Stack.Screen name="SongDetails" component={SongDetails} />
+        <Stack.Screen
+          name="SongDetails"
+          component={SongDetails}
+          options={{
+            title: 'Playlist Song',
+            headerTitle: props => <PlaylistStackHeader navigation={props} />,
+          }}
+        />
       </Stack.Navigator>
     );
   };

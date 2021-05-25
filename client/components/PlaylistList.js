@@ -7,7 +7,13 @@ const PlaylistsList = props => {
   const PlaylistCollection = () => {
     if (props.playlistCollection.length !== 0) {
       return props.playlistCollection.map(elem => {
-        return <PlaylistElement key={elem.id} playlist={elem} />;
+        return (
+          <PlaylistElement
+            key={elem.id}
+            playlist={elem}
+            navigation={props.navigation}
+          />
+        );
       });
     } else {
       return <Text>There is no Playlist here.</Text>;
