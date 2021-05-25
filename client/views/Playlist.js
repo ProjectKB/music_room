@@ -3,14 +3,7 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import PlaylistList from '../components/PlaylistList';
 import PlaylistSearchBar from '../components/PlaylistSearchBar';
 import {ReadAllPlaylist} from '../api/PlaylistEndpoint';
-import PlaylistSearchContext from '../contexts/PlaylistSearchContext';
-
-{
-  /* <Button
-  title="Go to Details"
-  onPress={() => navigation.navigate('SongDetails')}
-/>; */
-}
+import PlaylistListSearchContext from '../contexts/PlaylistListSearchContext';
 
 const Playlist = ({navigation}) => {
   const [playlistCollection, setPlaylistCollection] = useState([]);
@@ -25,15 +18,15 @@ const Playlist = ({navigation}) => {
   }, [fetchPlaylists]);
 
   return (
-    <PlaylistSearchContext.Provider value={{searchQuery, setSearchQuery}}>
-      <PlaylistSearchBar />
+    <PlaylistListSearchContext.Provider value={{searchQuery, setSearchQuery}}>
+      <PlaylistSearchBar context={PlaylistListSearchContext} />
       <ScrollView style={styles.playlistList}>
         <PlaylistList
           playlistCollection={playlistCollection}
           navigation={navigation}
         />
       </ScrollView>
-    </PlaylistSearchContext.Provider>
+    </PlaylistListSearchContext.Provider>
   );
 };
 
