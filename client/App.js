@@ -5,7 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {createStackNavigator} from '@react-navigation/stack';
 import Home from './views/Home';
 import Playlist from './views/Playlist';
-import SongDetails from './views/SongDetails';
+import SongsList from './views/SongsList';
 import Event from './views/Event';
 import Search from './views/Search';
 import Chat from './views/Chat';
@@ -34,7 +34,7 @@ const App = () => {
         />
         <Stack.Screen
           name="SongDetails"
-          component={SongDetails}
+          component={SongsList}
           options={{
             title: 'Playlist Song',
             headerTitle: props => <PlaylistStackHeader navigation={props} />,
