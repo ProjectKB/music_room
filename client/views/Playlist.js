@@ -28,7 +28,10 @@ const Playlist = ({navigation}) => {
     <PlaylistSearchContext.Provider value={{searchQuery, setSearchQuery}}>
       <PlaylistSearchBar />
       <ScrollView style={styles.playlistList}>
-        <PlaylistList playlistCollection={playlistCollection} />
+        <PlaylistList
+          playlistCollection={playlistCollection}
+          navigation={navigation}
+        />
       </ScrollView>
     </PlaylistSearchContext.Provider>
   );

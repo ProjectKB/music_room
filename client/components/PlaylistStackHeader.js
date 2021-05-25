@@ -7,7 +7,9 @@ import {Headline} from 'react-native-paper';
 const PlaylistStackHeader = props => {
   return (
     <View style={styles.playlistStackHeaderContainer}>
-      <Headline style={styles.playlistStackHeaderTitle}>{props.title}</Headline>
+      <Headline style={styles.playlistStackHeaderTitle}>
+        {props.navigation.children}
+      </Headline>
       <TouchableOpacity>
         <FontAwesomeIcon size={20} icon={faPlus} />
       </TouchableOpacity>

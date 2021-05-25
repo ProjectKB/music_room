@@ -20,7 +20,11 @@ const PlaylistElement = props => {
 
   return (
     <>
-      <TouchableOpacity style={styles.playlistElementContainer}>
+      <TouchableOpacity
+        style={styles.playlistElementContainer}
+        onPress={() =>
+          props.navigation.navigate('SongDetails', {title: props.playlist.name})
+        }>
         <FontAwesomeIcon size={70} icon={faCameraRetro} />
         <View style={styles.playlistElementContent}>
           <View style={{marginLeft: 10}}>
