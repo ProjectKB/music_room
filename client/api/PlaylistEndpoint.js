@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = 'http://10.19.1.129:8080';
+const URL = 'http://10.18.168.38:8080';
 
 export const ReadAllPlaylist = async (setter, query) => {
   try {
