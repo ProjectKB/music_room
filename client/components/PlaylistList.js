@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 import PlaylistElement from './PlaylistElement';
 
-const PlaylistsList = props => {
+const PlaylistList = props => {
   const PlaylistCollection = () => {
     if (props.playlistCollection.length !== 0) {
       return props.playlistCollection.map(elem => {
@@ -16,13 +16,13 @@ const PlaylistsList = props => {
         );
       });
     } else {
-      return <Text>There is no Playlist here.</Text>;
+      return <Text>There is no playlist here.</Text>;
     }
   };
 
   return <PlaylistCollection />;
 };
 
-export default PlaylistsList;
+export default PlaylistList;
 
 const styles = StyleSheet.create({});
