@@ -2,31 +2,14 @@ import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faCameraRetro, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
+import {faMusic, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
 
-const PlaylistElement = props => {
-  const SongNumber = songNumberProps => {
-    const songNumber =
-      songNumberProps.playlist.songs !== undefined
-        ? songNumberProps.playlist.songs.length
-        : 0;
-
-    return songNumber <= 1 ? (
-      <Text>{songNumber.toString()} song</Text>
-    ) : (
-      <Text>{songNumber.toString()} songs</Text>
-    );
-  };
-
+const PlaylistSongElement = props => {
   return (
     <>
-      <TouchableOpacity
-        style={styles.playlistElementContainer}
-        onPress={() =>
-          props.navigation.navigate('SongDetails', {playlist: props.playlist})
-        }>
-        <FontAwesomeIcon size={70} icon={faCameraRetro} />
+      <TouchableOpacity style={styles.playlistElementContainer}>
+        <FontAwesomeIcon size={50} icon={faMusic} />
         <View style={styles.playlistElementContent}>
           <View style={{marginLeft: 10}}>
             <TextTicker
@@ -36,9 +19,8 @@ const PlaylistElement = props => {
               scroll={false}
               repeatSpacer={50}
               marqueeDelay={1000}>
-              <Subheading>{props.playlist.name}</Subheading>
+              <Subheading>{props.song.name}</Subheading>
             </TextTicker>
-            <SongNumber playlist={props.playlist} />
           </View>
           <TouchableOpacity>
             <FontAwesomeIcon size={20} icon={faEllipsisV} />
@@ -50,7 +32,7 @@ const PlaylistElement = props => {
   );
 };
 
-export default PlaylistElement;
+export default PlaylistSongElement;
 
 const styles = StyleSheet.create({
   playlistElementContainer: {
