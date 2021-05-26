@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -11,11 +11,14 @@ import Search from './views/Search';
 import Chat from './views/Chat';
 import TabBar from './components/TabBar';
 import PlaylistStackHeader from './components/PlaylistStackHeader';
+import ShowPlayerContext from './contexts/ShowPlayerContext';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
 const App = () => {
+  const [showPlayer, setShowPlayer] = useState(false);
+
   const playlistStackNavigation = () => {
     return (
       <Stack.Navigator>
@@ -42,7 +45,11 @@ const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        tabBar={props => <TabBar {...props} />}
+        tabBar={props => {
+          if (showPlayer) {
+            return <TabBar {...props} />;
+          }
+        }}
         tabBarPosition="bottom">
         <Tab.Screen name={'Home'} component={Home} />
         <Tab.Screen name={'Playlist'} component={playlistStackNavigation} />
