@@ -43,8 +43,30 @@ func SearchPlaylist(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := playlistController.Search(&results, toSearch); err != response.Ok {
+	} else if err := playlistController.SearchPlaylist(&results, toSearch); err != response.Ok {
 		fmt.Println(err, results)
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(results)
+}
+
+func SearchSong(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var playlist model.Playlist
+	var results []model.Song
+	var toSearch string
+	params := mux.Vars(r)
+
+	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.SearchSong(params["id"], toSearch, &playlist, &results); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}

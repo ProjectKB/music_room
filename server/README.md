@@ -25,7 +25,7 @@ Route | Method | Utility
  --- | --- | ---
 `/users` | **GET** | read every users
 `/users/{id}` | **GET** | read one user
-`/users/{id}` | **POST** | create one user
+`/users` | **POST** | create one user
 `/users/{id}` | **PUT** | update one user
 `/users/{id}` | **DELETE** | delete one user
 `/users/addFriend/{id}` | **PUT** | add a friend to `friends` field
@@ -67,7 +67,9 @@ Route | Method | Utility
  --- | --- | ---
 `/playlists` | **GET** | read every playlists
 `/playlists/{id}` | **GET** | read one playlist
-`/playlists/{id}` | **POST** | create one playlist
+`/playlists` | **POST** | create one playlist
+`/playlists/searchPlaylist` | **POST** | search in playlist collection
+`/playlists/searchSong` | **POST** | search song in playlist
 `/playlists/{id}` | **PUT** | update one playlist
 `/playlists/{id}` | **DELETE** | delete one playlist
 `/playlists/addSong/{id}` | **PUT** | add a song to `songs` field
@@ -97,7 +99,7 @@ Route | Method | Utility
  --- | --- | ---
 `/events` | **GET** | read every events
 `/events/{id}` | **GET** | read one event
-`/events/{id}` | **POST** | create one event
+`/events` | **POST** | create one event
 `/events/{id}` | **PUT** | update one event
 `/events/{id}` | **DELETE** | delete one event
 `/events/addPlaylist/{id}` | **PUT** | add a playlist to `playlists` field
@@ -128,7 +130,7 @@ Route | Method | Utility
  --- | --- | ---
 `/authorizations` | **GET** | read every authorizations
 `/authorizations/{id}` | **GET** | read one authorization
-`/authorizations/{id}` | **POST** | create one authorization
+`/authorizations` | **POST** | create one authorization
 `/authorizations/{id}` | **DELETE** | delete one authorization
 `/authorizations/updateStatus/{id}` | **PUT** | update authorization status
 `/authorizations/addGuest/{id}` | **PUT** | add a guest to `guests` field

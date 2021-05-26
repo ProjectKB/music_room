@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"regexp"
 	authorizationController "server/controllers/authorizationController"
 	"server/helpers"
 	"server/model"
@@ -51,6 +52,25 @@ func Read(param string, result *model.Playlist) int {
 	return response.Ok
 }
 
+func SearchSong(playlistId string, toSearch string, playlist *model.Playlist, songsSearched *[]model.Song) int {
+	id, _ := primitive.ObjectIDFromHex(playlistId)
+	filter := bson.D{{"_id", id}}
+
+	if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&playlist); err != nil {
+		return response.BddError
+	}
+
+	regexSong := "(?i).*" + toSearch + ".*"
+
+	for _, song := range playlist.Songs {
+		if match, _ := regexp.MatchString(regexSong, song.Name); match {
+			*songsSearched = append(*songsSearched, song)
+		}
+	}
+
+	return response.Ok
+}
+
 func ReadAll(playlists *[]model.Playlist) int {
 	// Passing bson.D{} as the filter matches all documents in the User collection
 	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.D{})
@@ -77,8 +97,8 @@ func ReadAll(playlists *[]model.Playlist) int {
 	return response.Ok
 }
 
-func Search(playlists *[]model.Playlist, toSearch string) int {
-	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}} 
+func SearchPlaylist(playlists *[]model.Playlist, toSearch string) int {
+	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}}
 
 	cur, err := db.PlaylistCollection.Find(context.TODO(), filter)
 
