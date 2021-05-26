@@ -24,7 +24,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/users/addEvent/{id}", middleware.AddEventToUser).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/events/{id}", middleware.ReadUserEvents).Methods("GET", "OPTIONS")
 	router.HandleFunc("/users/removeEvent/{id}", middleware.RemoveEventFromUser).Methods("PUT", "OPTIONS")
-
+	
 	router.HandleFunc("/playlists", middleware.ReadAllPlaylist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.ReadOnePlaylist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.DeleteOnePlaylist).Methods("DELETE", "OPTIONS")
@@ -39,6 +39,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/events/{id}", middleware.ReadOneEvent).Methods("GET", "OPTIONS")
 	router.HandleFunc("/events/{id}", middleware.DeleteOneEvent).Methods("DELETE", "OPTIONS")
 	router.HandleFunc("/events", middleware.CreateOneEvent).Methods("POST", "OPTIONS")
+	router.HandleFunc("/events/searchEvent", middleware.SearchEvent).Methods("POST", "OPTIONS")
 	router.HandleFunc("/events/{id}", middleware.UpdateOneEvent).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/events/addPlaylist/{id}", middleware.AddPlaylistToEvent).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/events/removePlaylist/{id}", middleware.RemovePlaylistFromEvent).Methods("PUT", "OPTIONS")

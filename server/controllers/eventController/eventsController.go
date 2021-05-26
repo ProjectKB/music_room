@@ -112,6 +112,33 @@ func Update(fields bson.M, param string) int {
 	return response.Ok
 }
 
+func SearchEvent(events *[]model.Event, toSearch string) int {
+	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}}
+
+	cur, err := db.EventCollection.Find(context.TODO(), filter)
+
+	if err != nil {
+		return response.BddError
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.Event
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*events = append(*events, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	return response.Ok
+}
+
 func Delete(param string) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}

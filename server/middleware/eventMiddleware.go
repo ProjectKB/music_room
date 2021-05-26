@@ -3,6 +3,7 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	eventController "server/controllers/eventController"
@@ -61,6 +62,27 @@ func DeleteOneEvent(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Delete))
 }
 
+func SearchEvent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var results []model.Event
+	var toSearch string
+
+	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := eventController.SearchEvent(&results, toSearch); err != response.Ok {
+		fmt.Println(err, results)
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(results)
+}
+
 func CreateOneEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -109,7 +131,6 @@ func UpdateOneEvent(w http.ResponseWriter, r *http.Request) {
 	var event model.Event
 	params := mux.Vars(r)
 
-	
 	if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
