@@ -2,20 +2,20 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import PlaylistList from '../components/PlaylistList';
 import PlaylistSearchBar from '../components/PlaylistSearchBar';
-import {ReadAllPlaylist} from '../api/PlaylistEndpoint';
+import {FetchPlaylistList} from '../api/PlaylistEndpoint';
 import PlaylistListSearchContext from '../contexts/PlaylistListSearchContext';
 
 const Playlist = ({navigation}) => {
   const [playlistCollection, setPlaylistCollection] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const fetchPlaylists = useCallback(() => {
-    ReadAllPlaylist(setPlaylistCollection, searchQuery);
+  const fetchPlaylist = useCallback(() => {
+    FetchPlaylistList(setPlaylistCollection, searchQuery);
   }, [searchQuery]);
 
   useEffect(() => {
-    fetchPlaylists();
-  }, [fetchPlaylists]);
+    fetchPlaylist();
+  }, [fetchPlaylist]);
 
   return (
     <PlaylistListSearchContext.Provider value={{searchQuery, setSearchQuery}}>
