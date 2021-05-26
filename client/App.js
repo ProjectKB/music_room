@@ -16,6 +16,7 @@ const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
 const App = () => {
+  global.URL = 'http://10.18.168.38:8080';
   const playlistStackNavigation = () => {
     return (
       <Stack.Navigator>
