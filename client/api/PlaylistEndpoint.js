@@ -5,7 +5,7 @@ const URL = 'http://10.19.1.129:8080';
 export const ReadAllPlaylist = async (setter, query) => {
   try {
     const response = await axios.post(
-      URL + '/playlists/search',
+      URL + '/playlists/searchPlaylist',
       JSON.stringify(query),
     );
 
