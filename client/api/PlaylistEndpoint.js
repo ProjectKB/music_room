@@ -3,7 +3,7 @@ import axios from 'axios';
 export const ReadAllPlaylist = async (setter, query) => {
   try {
     const response = await axios.post(
-      global.URL + '/playlists/search',
+      URL + '/playlists/searchPlaylist',
       JSON.stringify(query),
     );
 
