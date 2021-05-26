@@ -100,6 +100,7 @@ Route | Method | Utility
 `/events` | **GET** | read every events
 `/events/{id}` | **GET** | read one event
 `/events` | **POST** | create one event
+`/events/searchEvent` | **POST** | search in event collection
 `/events/{id}` | **PUT** | update one event
 `/events/{id}` | **DELETE** | delete one event
 `/events/addPlaylist/{id}` | **PUT** | add a playlist to `playlists` field
