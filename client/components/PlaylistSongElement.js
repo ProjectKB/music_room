@@ -1,14 +1,24 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMusic, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
+import ShowPlayerContext from '../contexts/ShowPlayerContext';
+import SongIndexContext from '../contexts/SongIndexContext';
 
 const PlaylistSongElement = props => {
+  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
+  const {songIndex, setSongIndex} = useContext(SongIndexContext);
+
   return (
     <>
-      <TouchableOpacity style={styles.playlistElementContainer}>
+      <TouchableOpacity
+        style={styles.playlistElementContainer}
+        onPress={() => {
+          setShowPlayer(true);
+          setSongIndex(props.index);
+        }}>
         <FontAwesomeIcon size={50} icon={faMusic} />
         <View style={styles.playlistElementContent}>
           <View style={{marginLeft: 10}}>

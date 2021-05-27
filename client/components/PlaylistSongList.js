@@ -6,8 +6,8 @@ import PlaylistSongElement from './PlaylistSongElement';
 const PlaylistSongList = props => {
   const PlaylistSongCollection = () => {
     if (props.playlistSongCollection.length !== 0) {
-      return props.playlistSongCollection.map(elem => {
-        return <PlaylistSongElement key={elem.id} song={elem} />;
+      return props.playlistSongCollection.map((elem, index) => {
+        return <PlaylistSongElement key={elem.id} song={elem} index={index} />;
       });
     } else {
       return <Text>There is no song here.</Text>;

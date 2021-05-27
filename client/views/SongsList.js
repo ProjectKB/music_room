@@ -1,18 +1,19 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import PlaylistSongSearchContext from '../contexts/PlaylistSongSearchContext';
 import {FetchPlaylistSong} from '../api/PlaylistEndpoint';
 import PlaylistSearchBar from '../components/PlaylistSearchBar';
 import PlaylistSongList from '../components/PlaylistSongList';
+import PlaylistContext from '../contexts/PlaylistContext';
 
-const SongsList = ({navigation, route}) => {
+const SongsList = ({navigation}) => {
   const [playlistSongCollection, setPlaylistSongCollection] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [playlist, setPlaylist] = useState(route.params.playlist);
+  const {playlist, setPlaylist} = useContext(PlaylistContext);
 
   const fetchPlaylistSong = useCallback(() => {
     FetchPlaylistSong(setPlaylistSongCollection, searchQuery, playlist.id);
-  }, [searchQuery, playlist.id]);
+  }, [searchQuery, playlist]);
 
   useEffect(() => {
     navigation.setOptions({title: playlist.name});

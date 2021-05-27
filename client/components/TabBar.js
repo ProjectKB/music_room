@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Player from './Player';
 import TabBarButton from './TabBarButton';
@@ -9,11 +9,14 @@ import {
   faCalendar,
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
+import ShowPlayerContext from '../contexts/ShowPlayerContext';
 
 const TabBar = ({state, navigation}) => {
+  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
+
   return (
     <View>
-      <Player />
+      {showPlayer ? <Player /> : null}
       <View style={styles.tabBarButtonContainer}>
         <TabBarButton
           title="Home"
