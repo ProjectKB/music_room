@@ -261,7 +261,7 @@ func UpdateStatus(eventId string, statutToAdd *string) int {
 
 	update := bson.M{
 		"$set": bson.D{
-			{"statut", *statutToAdd},
+			{"status", *statutToAdd},
 		},
 	}
 
