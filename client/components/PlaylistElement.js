@@ -1,11 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCameraRetro, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
+import PlaylistContext from '../contexts/PlaylistContext';
 
 const PlaylistElement = props => {
+  const {playlist, setPlaylist} = useContext(PlaylistContext);
+
   const SongNumber = songNumberProps => {
     const songNumber =
       songNumberProps.playlist.songs !== undefined
@@ -23,9 +26,10 @@ const PlaylistElement = props => {
     <>
       <TouchableOpacity
         style={styles.playlistElementContainer}
-        onPress={() =>
-          props.navigation.navigate('SongDetails', {playlist: props.playlist})
-        }>
+        onPress={() => {
+          setPlaylist(props.playlist);
+          props.navigation.navigate('SongDetails');
+        }}>
         <FontAwesomeIcon size={70} icon={faCameraRetro} />
         <View style={styles.playlistElementContent}>
           <View style={{marginLeft: 10}}>

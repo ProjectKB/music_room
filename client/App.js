@@ -12,6 +12,8 @@ import Chat from './views/Chat';
 import TabBar from './components/TabBar';
 import PlaylistStackHeader from './components/PlaylistStackHeader';
 import ShowPlayerContext from './contexts/ShowPlayerContext';
+import PlaylistContext from './contexts/PlaylistContext';
+import SongIndexContext from './contexts/SongIndexContext';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -22,13 +24,19 @@ const App = () => {
 
   global.URL = 'http://10.18.168.38:8080';
   const [showPlayer, setShowPlayer] = useState(false);
+  const [playlist, setPlaylist] = useState([]);
+  const [songIndex, setSongIndex] = useState(0);
 
   const playlistStackNavigation = () => {
     return (
       <Stack.Navigator>
         <Stack.Screen
           name="Playlist"
-          component={Playlist}
+          children={props => (
+            <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+              <Playlist {...props} />
+            </PlaylistContext.Provider>
+          )}
           options={{
             title: 'Playlist',
             headerTitle: props => <PlaylistStackHeader navigation={props} />,
@@ -36,7 +44,15 @@ const App = () => {
         />
         <Stack.Screen
           name="SongDetails"
-          component={SongsList}
+          children={props => (
+            <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
+              <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+                <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
+                  <SongsList {...props} />
+                </SongIndexContext.Provider>
+              </PlaylistContext.Provider>
+            </ShowPlayerContext.Provider>
+          )}
           options={{
             title: 'Playlist Song',
             headerTitle: props => <PlaylistStackHeader navigation={props} />,
@@ -49,11 +65,15 @@ const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        tabBar={props => {
-          if (showPlayer) {
-            return <TabBar {...props} />;
-          }
-        }}
+        tabBar={props => (
+          <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
+            <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+              <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
+                <TabBar {...props} />
+              </SongIndexContext.Provider>
+            </PlaylistContext.Provider>
+          </ShowPlayerContext.Provider>
+        )}
         tabBarPosition="bottom">
         <Tab.Screen name={'Home'} component={Home} />
         <Tab.Screen name={'Playlist'} component={playlistStackNavigation} />

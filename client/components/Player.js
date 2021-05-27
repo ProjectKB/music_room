@@ -1,35 +1,50 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useContext,
+} from 'react';
+
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {ProgressBar, Colors} from 'react-native-paper';
+import {ProgressBar} from 'react-native-paper';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faPlay, faPause, faMusic} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
-
-const playlist = [
-  {videoId: '668nUCeBHyY', name: 'Nature Beautiful short video 720p HD'},
-  {videoId: 'iee2TATGMyI', name: 'This is a title'},
-  {
-    videoId: '-qYS3xJ-7DQ',
-    name: 'Nouveau Renault Arkana – hybride par nature | Publicité | Renault',
-  },
-];
+import PlaylistContext from '../contexts/PlaylistContext';
+import SongIndexContext from '../contexts/SongIndexContext';
+import ShowPlayerContext from '../contexts/ShowPlayerContext';
 
 const Player = () => {
+  const {songIndex, setSongIndex} = useContext(SongIndexContext);
+  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
+  const {playlist, setPlaylist} = useContext(PlaylistContext);
+
   const [playing, setPlaying] = useState(false);
+  const [index, setIndex] = useState(songIndex);
   const [songState, setSongState] = useState('undefined');
-  const [currentSong, setCurrentSong] = useState('iee2TATGMyI');
+  const [currentSong, setCurrentSong] = useState(playlist.songs[songIndex].id);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [progressionBarValue, setProgressionBarValue] = useState(0);
 
-  const onStateChange = useCallback(state => {
-    if (state === 'ended') {
-      setCurrentSong('VYOjWnS4cMY');
-      setPlaying(false);
-    }
-    setSongState(state);
-  }, []);
+  const onStateChange = useCallback(
+    state => {
+      if (state === 'ended') {
+        if (index !== playlist.songs.length - 1) {
+          setCurrentSong(playlist.songs[index + 1].id);
+          setIndex(index + 1);
+        } else {
+          setShowPlayer(false);
+        }
+
+        setPlaying(false);
+      }
+      setSongState(state);
+    },
+    [playlist, setShowPlayer, index],
+  );
 
   const togglePlaying = useCallback(() => {
     setPlaying(prev => !prev);
@@ -66,7 +81,7 @@ const Player = () => {
   return (
     <View>
       <View style={{opacity: 0}}>
-        {/* <YoutubePlayer
+        <YoutubePlayer
           ref={playerRef}
           height={1}
           play={playing}
@@ -75,7 +90,7 @@ const Player = () => {
             setPlaying(true);
           }}
           onChangeState={onStateChange}
-        /> */}
+        />
       </View>
 
       <View>
@@ -92,7 +107,7 @@ const Player = () => {
               scroll={false}
               repeatSpacer={50}
               marqueeDelay={1000}>
-              Childish Gambino - This is America - Oh no I'm too long !
+              {playlist.songs[index].name}
             </TextTicker>
           </View>
           <TouchableOpacity
