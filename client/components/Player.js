@@ -24,7 +24,7 @@ const Player = () => {
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(songIndex);
   const [songState, setSongState] = useState('undefined');
-  const [currentSong, setCurrentSong] = useState(playlist.songs[songIndex].id);
+  const [currentSong, setCurrentSong] = useState(playlist.songs[index].id);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [progressionBarValue, setProgressionBarValue] = useState(0);
@@ -43,7 +43,7 @@ const Player = () => {
       }
       setSongState(state);
     },
-    [playlist, setShowPlayer, index],
+    [playlist, setShowPlayer, index, setIndex],
   );
 
   const togglePlaying = useCallback(() => {
@@ -78,10 +78,16 @@ const Player = () => {
     }
   }, [currentTime, duration, songState]);
 
+  useEffect(() => {
+    setPlaying(false);
+    setCurrentSong(playlist.songs[songIndex].id);
+    setIndex(songIndex);
+  }, [songIndex, playlist]);
+
   return (
     <View>
       <View style={{opacity: 0}}>
-        <YoutubePlayer
+        {/* <YoutubePlayer
           ref={playerRef}
           height={1}
           play={playing}
@@ -90,7 +96,7 @@ const Player = () => {
             setPlaying(true);
           }}
           onChangeState={onStateChange}
-        />
+        /> */}
       </View>
 
       <View>
