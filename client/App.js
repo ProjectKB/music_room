@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useCallback, useMemo} from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -23,7 +24,7 @@ const App = () => {
   const [playlist, setPlaylist] = useState([]);
   const [songIndex, setSongIndex] = useState(0);
 
-  const playlistStackNavigation = () => {
+  const playlistStackNavigation = useCallback(() => {
     return (
       <Stack.Navigator>
         <Stack.Screen
@@ -41,13 +42,13 @@ const App = () => {
         <Stack.Screen
           name="SongDetails"
           children={props => (
-            <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
-              <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+            <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+              <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
                 <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
                   <SongsList {...props} />
                 </SongIndexContext.Provider>
-              </PlaylistContext.Provider>
-            </ShowPlayerContext.Provider>
+              </ShowPlayerContext.Provider>
+            </PlaylistContext.Provider>
           )}
           options={{
             title: 'Playlist Song',
@@ -56,19 +57,19 @@ const App = () => {
         />
       </Stack.Navigator>
     );
-  };
+  }, [playlist]);
 
   return (
     <NavigationContainer>
       <Tab.Navigator
         tabBar={props => (
-          <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
-            <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+          <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+            <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
               <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
                 <TabBar {...props} />
               </SongIndexContext.Provider>
-            </PlaylistContext.Provider>
-          </ShowPlayerContext.Provider>
+            </ShowPlayerContext.Provider>
+          </PlaylistContext.Provider>
         )}
         tabBarPosition="bottom">
         <Tab.Screen name={'Home'} component={Home} />
