@@ -21,7 +21,8 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const [showPlayer, setShowPlayer] = useState(false);
-  const [playlist, setPlaylist] = useState([]);
+  const [playlistDisplayed, setPlaylistDisplayed] = useState([]);
+  const [playlistPlayed, setPlaylistPlayed] = useState([]);
   const [songIndex, setSongIndex] = useState(0);
 
   const playlistStackNavigation = useCallback(() => {
@@ -30,7 +31,13 @@ const App = () => {
         <Stack.Screen
           name="Playlist"
           children={props => (
-            <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+            <PlaylistContext.Provider
+              value={{
+                playlistDisplayed,
+                setPlaylistDisplayed,
+                playlistPlayed,
+                setPlaylistPlayed,
+              }}>
               <Playlist {...props} />
             </PlaylistContext.Provider>
           )}
@@ -42,7 +49,13 @@ const App = () => {
         <Stack.Screen
           name="SongDetails"
           children={props => (
-            <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+            <PlaylistContext.Provider
+              value={{
+                playlistDisplayed,
+                setPlaylistDisplayed,
+                playlistPlayed,
+                setPlaylistPlayed,
+              }}>
               <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
                 <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
                   <SongsList {...props} />
@@ -57,13 +70,19 @@ const App = () => {
         />
       </Stack.Navigator>
     );
-  }, [playlist]);
+  }, [playlistDisplayed]);
 
   return (
     <NavigationContainer>
       <Tab.Navigator
         tabBar={props => (
-          <PlaylistContext.Provider value={{playlist, setPlaylist}}>
+          <PlaylistContext.Provider
+            value={{
+              playlistDisplayed,
+              setPlaylistDisplayed,
+              playlistPlayed,
+              setPlaylistPlayed,
+            }}>
             <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
               <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
                 <TabBar {...props} />
