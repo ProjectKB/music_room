@@ -1,23 +1,102 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faChevronDown} from '@fortawesome/free-solid-svg-icons';
-import {Headline} from 'react-native-paper';
+import {
+  faChevronDown,
+  faEllipsisV,
+  faPlayCircle,
+  faPauseCircle,
+  faStepBackward,
+  faStepForward,
+} from '@fortawesome/free-solid-svg-icons';
+import {Headline, ProgressBar, Subheading} from 'react-native-paper';
+import PlaylistContext from '../contexts/PlaylistContext';
+import AnimatedText from './AnimatedText';
+import SongIndexContext from '../contexts/SongIndexContext';
+import PlayPauseButton from './PlayPauseButton';
 
 const PlayerDetails = props => {
   const modalVisible = props.modalVisible;
   const setModalVisible = props.setModalVisible;
+  const playing = props.playing;
+  const setPlaying = props.setPlaying;
+
+  const {
+    playlistDisplayed,
+    setPlaylistDisplayed,
+    playlistPlayed,
+    setPlaylistPlayed,
+  } = useContext(PlaylistContext);
+  const {songIndex, setSongIndex} = useContext(SongIndexContext);
+
+  const displayTime = toConvert => {
+    let h = Math.trunc(toConvert / 3600);
+    let m = Math.trunc(toConvert / 60);
+    let s = Math.trunc(toConvert % 60);
+
+    if (s < 10) {
+      s = `0${s}`;
+    }
+
+    return h ? `${h}:${m}:${s}` : `${m}:${s}`;
+  };
 
   return (
     <View style={styles.centeredView}>
       <Modal animationType="slide" transparent={false} visible={modalVisible}>
-        <View style={styles.playlistStackHeaderContainer}>
+        <View style={styles.playerDetailsHeaderContainer}>
           <TouchableOpacity onPress={() => setModalVisible(false)}>
             <FontAwesomeIcon size={20} icon={faChevronDown} />
           </TouchableOpacity>
-          <Headline style={styles.playlistStackHeaderTitle}>
-            {props.songName}
-          </Headline>
+          <TouchableOpacity>
+            <FontAwesomeIcon size={20} icon={faEllipsisV} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.pictureContainer}>
+          <View style={styles.pictureSize} />
+        </View>
+        <View style={styles.playerActionContainer}>
+          <View style={styles.playerDetailsText}>
+            <AnimatedText
+              text={
+                <Headline style={{fontWeight: 'bold', marginBottom: -5}}>
+                  {props.songName}
+                </Headline>
+              }
+              callback={props.songName}
+            />
+            <AnimatedText
+              text={<Subheading>{playlistPlayed.name}</Subheading>}
+              callback={playlistPlayed.name}
+            />
+          </View>
+          <ProgressBar
+            style={{marginTop: 10}}
+            progress={props.progressionBarValue}
+          />
+          <View style={styles.progressBarTime}>
+            <Text>{displayTime(props.currentTime)}</Text>
+            <Text>{displayTime(props.duration)}</Text>
+          </View>
+          <View style={styles.actionButtonContainer}>
+            <TouchableOpacity>
+              <FontAwesomeIcon size={40} icon={faStepBackward} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{marginHorizontal: 20}}
+              onPress={() => setPlaying(!playing)}>
+              <PlayPauseButton
+                color="black"
+                size={70}
+                playing={playing}
+                faTrue={faPauseCircle}
+                faFalse={faPlayCircle}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <FontAwesomeIcon size={40} icon={faStepForward} />
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </View>
@@ -27,14 +106,40 @@ const PlayerDetails = props => {
 export default PlayerDetails;
 
 const styles = StyleSheet.create({
-  playlistStackHeaderContainer: {
+  playerDetailsHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: 'lightblue',
+    padding: 15,
   },
-  playlistStackHeaderTitle: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    flex: 6,
+  pictureContainer: {
+    flex: 4,
+    backgroundColor: 'lightblue',
+    padding: 30,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  playerDetailsText: {
+    paddingVertical: 10,
+  },
+  pictureSize: {
+    width: '100%',
+    height: '90%',
+    backgroundColor: 'darkblue',
+  },
+  playerActionContainer: {
+    flex: 3,
+    paddingHorizontal: 40,
+    backgroundColor: 'lightblue',
+  },
+  progressBarTime: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  actionButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

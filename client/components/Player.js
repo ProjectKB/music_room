@@ -16,6 +16,7 @@ import PlaylistContext from '../contexts/PlaylistContext';
 import SongIndexContext from '../contexts/SongIndexContext';
 import ShowPlayerContext from '../contexts/ShowPlayerContext';
 import PlayerDetails from './PlayerDetails';
+import PlayPauseButton from './PlayPauseButton';
 
 const Player = () => {
   const {songIndex, setSongIndex} = useContext(SongIndexContext);
@@ -61,12 +62,6 @@ const Player = () => {
 
   const playerRef = useRef();
 
-  const songPlayerButton = playing ? (
-    <FontAwesomeIcon color="white" size={20} icon={faPause} />
-  ) : (
-    <FontAwesomeIcon color="white" size={20} icon={faPlay} />
-  );
-
   useEffect(() => {
     if (songState !== 'paused') {
       const interval = setInterval(() => {
@@ -78,7 +73,6 @@ const Player = () => {
           .then(getDuration => setDuration(getDuration));
 
         const songProgression = currentTime / duration;
-
         !isNaN(songProgression) && isFinite(songProgression)
           ? setProgressionBarValue(songProgression)
           : setProgressionBarValue(0);
@@ -99,9 +93,14 @@ const Player = () => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         songName={playlistPlayed.songs[index].name}
+        progressionBarValue={progressionBarValue}
+        currentTime={currentTime}
+        duration={duration}
+        playing={playing}
+        setPlaying={setPlaying}
       />
       <View style={{opacity: 0}}>
-        {/* <YoutubePlayer
+        <YoutubePlayer
           ref={playerRef}
           height={1}
           play={playing}
@@ -110,7 +109,7 @@ const Player = () => {
             setPlaying(true);
           }}
           onChangeState={onStateChange}
-        /> */}
+        />
       </View>
       <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
         <ProgressBar progress={progressionBarValue} color="#685a5e" />
@@ -132,7 +131,13 @@ const Player = () => {
           <TouchableOpacity
             style={styles.songPLayerButton}
             onPress={togglePlaying}>
-            {songPlayerButton}
+            <PlayPauseButton
+              color="white"
+              size={20}
+              playing={playing}
+              faTrue={faPause}
+              faFalse={faPlay}
+            />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
