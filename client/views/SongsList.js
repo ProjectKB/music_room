@@ -9,16 +9,20 @@ import PlaylistContext from '../contexts/PlaylistContext';
 const SongsList = ({navigation}) => {
   const [playlistSongCollection, setPlaylistSongCollection] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const {playlist, setPlaylist} = useContext(PlaylistContext);
+  const {playlistDisplayed, setPlaylistDisplayed} = useContext(PlaylistContext);
 
   const fetchPlaylistSong = useCallback(() => {
-    FetchPlaylistSong(setPlaylistSongCollection, searchQuery, playlist.id);
-  }, [searchQuery, playlist]);
+    FetchPlaylistSong(
+      setPlaylistSongCollection,
+      searchQuery,
+      playlistDisplayed.id,
+    );
+  }, [searchQuery, playlistDisplayed]);
 
   useEffect(() => {
-    navigation.setOptions({title: playlist.name});
+    navigation.setOptions({title: playlistDisplayed.name});
     fetchPlaylistSong();
-  }, [navigation, playlist, fetchPlaylistSong]);
+  }, [navigation, playlistDisplayed, fetchPlaylistSong]);
 
   return (
     <PlaylistSongSearchContext.Provider value={{searchQuery, setSearchQuery}}>

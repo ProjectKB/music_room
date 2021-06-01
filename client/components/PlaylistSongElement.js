@@ -6,17 +6,28 @@ import {faMusic, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
 import ShowPlayerContext from '../contexts/ShowPlayerContext';
 import SongIndexContext from '../contexts/SongIndexContext';
+import PlaylistContext from '../contexts/PlaylistContext';
 
 const PlaylistSongElement = props => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
   const {songIndex, setSongIndex} = useContext(SongIndexContext);
+  const {
+    playlistDisplayed,
+    setPlaylistDisplayed,
+    playlistPlayed,
+    setPlaylistPlayed,
+  } = useContext(PlaylistContext);
 
   return (
     <>
       <TouchableOpacity
         style={styles.playlistElementContainer}
         onPress={() => {
-          setShowPlayer(true);
+          if (!showPlayer) {
+            setShowPlayer(true);
+          }
+
+          setPlaylistPlayed(playlistDisplayed);
           setSongIndex(props.index);
         }}>
         <FontAwesomeIcon size={50} icon={faMusic} />

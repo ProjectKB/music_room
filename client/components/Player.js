@@ -15,25 +15,34 @@ import TextTicker from 'react-native-text-ticker';
 import PlaylistContext from '../contexts/PlaylistContext';
 import SongIndexContext from '../contexts/SongIndexContext';
 import ShowPlayerContext from '../contexts/ShowPlayerContext';
+import PlayerDetails from './PlayerDetails';
 
 const Player = () => {
   const {songIndex, setSongIndex} = useContext(SongIndexContext);
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
-  const {playlist, setPlaylist} = useContext(PlaylistContext);
+  const {
+    playlistDisplayed,
+    setPlaylistDisplayed,
+    playlistPlayed,
+    setPlaylistPlayed,
+  } = useContext(PlaylistContext);
 
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(songIndex);
   const [songState, setSongState] = useState('undefined');
-  const [currentSong, setCurrentSong] = useState(playlist.songs[index].id);
+  const [currentSong, setCurrentSong] = useState(
+    playlistPlayed.songs[index].id,
+  );
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [progressionBarValue, setProgressionBarValue] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const onStateChange = useCallback(
     state => {
       if (state === 'ended') {
-        if (index !== playlist.songs.length - 1) {
-          setCurrentSong(playlist.songs[index + 1].id);
+        if (index !== playlistPlayed.songs.length - 1) {
+          setCurrentSong(playlistPlayed.songs[index + 1].id);
           setIndex(index + 1);
         } else {
           setShowPlayer(false);
@@ -43,7 +52,7 @@ const Player = () => {
       }
       setSongState(state);
     },
-    [playlist, setShowPlayer, index, setIndex],
+    [playlistPlayed, setShowPlayer, index, setIndex],
   );
 
   const togglePlaying = useCallback(() => {
@@ -80,12 +89,17 @@ const Player = () => {
 
   useEffect(() => {
     setPlaying(false);
-    setCurrentSong(playlist.songs[songIndex].id);
+    setCurrentSong(playlistPlayed.songs[songIndex].id);
     setIndex(songIndex);
-  }, [songIndex, playlist]);
+  }, [songIndex, playlistPlayed]);
 
   return (
     <View>
+      <PlayerDetails
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        songName={playlistPlayed.songs[index].name}
+      />
       <View style={{opacity: 0}}>
         {/* <YoutubePlayer
           ref={playerRef}
@@ -98,8 +112,7 @@ const Player = () => {
           onChangeState={onStateChange}
         /> */}
       </View>
-
-      <View>
+      <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
         <ProgressBar progress={progressionBarValue} color="#685a5e" />
         <View style={styles.songPlayerContainer}>
           <View style={styles.songPlayerPicture}>
@@ -113,7 +126,7 @@ const Player = () => {
               scroll={false}
               repeatSpacer={50}
               marqueeDelay={1000}>
-              {playlist.songs[index].name}
+              {playlistPlayed.songs[index].name}
             </TextTicker>
           </View>
           <TouchableOpacity
@@ -122,7 +135,7 @@ const Player = () => {
             {songPlayerButton}
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };
