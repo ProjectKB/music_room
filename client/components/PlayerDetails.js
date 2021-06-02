@@ -64,10 +64,10 @@ const PlayerDetails = props => {
       <Modal animationType="slide" transparent={false} visible={modalVisible}>
         <View style={styles.playerDetailsHeaderContainer}>
           <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <FontAwesomeIcon size={20} icon={faChevronDown} />
+            <FontAwesomeIcon color="white" size={20} icon={faChevronDown} />
           </TouchableOpacity>
           <TouchableOpacity>
-            <FontAwesomeIcon size={20} icon={faEllipsisV} />
+            <FontAwesomeIcon color="white" size={20} icon={faEllipsisV} />
           </TouchableOpacity>
         </View>
         <View style={styles.pictureContainer}>
@@ -77,34 +77,39 @@ const PlayerDetails = props => {
           <View style={styles.playerDetailsText}>
             <AnimatedText
               text={
-                <Headline style={{fontWeight: 'bold', marginBottom: -5}}>
-                  {props.songName}
-                </Headline>
+                <Headline style={styles.songName}>{props.songName}</Headline>
               }
               callback={props.songName}
             />
             <AnimatedText
-              text={<Subheading>{playlistPlayed.name}</Subheading>}
+              text={
+                <Subheading style={{color: 'white'}}>
+                  {playlistPlayed.name}
+                </Subheading>
+              }
               callback={playlistPlayed.name}
             />
           </View>
           <ProgressBar
             style={{marginTop: 10}}
             progress={props.progressionBarValue}
+            color="white"
           />
           <View style={styles.progressBarTime}>
-            <Text>{displayTime(props.currentTime)}</Text>
-            <Text>{displayTime(props.duration)}</Text>
+            <Text style={{color: 'white'}}>
+              {displayTime(props.currentTime)}
+            </Text>
+            <Text style={{color: 'white'}}>{displayTime(props.duration)}</Text>
           </View>
           <View style={styles.actionButtonContainer}>
             <TouchableOpacity onPress={prevSong}>
-              <FontAwesomeIcon size={40} icon={faStepBackward} />
+              <FontAwesomeIcon color="white" size={40} icon={faStepBackward} />
             </TouchableOpacity>
             <TouchableOpacity
               style={{marginHorizontal: 20}}
               onPress={() => setPlaying(!playing)}>
               <PlayPauseButton
-                color="black"
+                color="white"
                 size={70}
                 songState={props.songState}
                 faTrue={faPlayCircle}
@@ -112,7 +117,7 @@ const PlayerDetails = props => {
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={nextSong}>
-              <FontAwesomeIcon size={40} icon={faStepForward} />
+              <FontAwesomeIcon color="white" size={40} icon={faStepForward} />
             </TouchableOpacity>
           </View>
         </View>
@@ -128,12 +133,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'lightblue',
+    backgroundColor: '#77656a',
     padding: 15,
   },
   pictureContainer: {
     flex: 4,
-    backgroundColor: 'lightblue',
+    backgroundColor: '#77656a',
     padding: 30,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -144,12 +149,12 @@ const styles = StyleSheet.create({
   pictureSize: {
     width: '100%',
     height: '90%',
-    backgroundColor: 'darkblue',
+    backgroundColor: '#3c3132',
   },
   playerActionContainer: {
     flex: 3,
     paddingHorizontal: 40,
-    backgroundColor: 'lightblue',
+    backgroundColor: '#77656a',
   },
   progressBarTime: {
     flexDirection: 'row',
@@ -159,5 +164,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  songName: {
+    fontWeight: 'bold',
+    marginBottom: -5,
+    color: 'white',
   },
 });
