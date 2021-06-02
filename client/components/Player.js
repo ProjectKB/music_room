@@ -63,7 +63,7 @@ const Player = () => {
   const playerRef = useRef();
 
   useEffect(() => {
-    if (songState !== 'paused') {
+    if (songState === 'playing') {
       const interval = setInterval(() => {
         playerRef.current
           ?.getCurrentTime()
@@ -78,6 +78,9 @@ const Player = () => {
           : setProgressionBarValue(0);
       }, 1000);
       return () => clearInterval(interval);
+    } else if (songState === 'unstarted' || songState === 'buffering') {
+      setCurrentTime(0);
+      setProgressionBarValue(0);
     }
   }, [currentTime, duration, songState]);
 
@@ -92,12 +95,16 @@ const Player = () => {
       <PlayerDetails
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        songName={playlistPlayed.songs[index].name}
         progressionBarValue={progressionBarValue}
         currentTime={currentTime}
         duration={duration}
+        songState={songState}
         playing={playing}
         setPlaying={setPlaying}
+        index={index}
+        setIndex={setIndex}
+        songName={playlistPlayed.songs[index].name}
+        setCurrentSong={setCurrentSong}
       />
       <View style={{opacity: 0}}>
         <YoutubePlayer
@@ -134,9 +141,9 @@ const Player = () => {
             <PlayPauseButton
               color="white"
               size={20}
-              playing={playing}
-              faTrue={faPause}
-              faFalse={faPlay}
+              songState={songState}
+              faTrue={faPlay}
+              faFalse={faPause}
             />
           </TouchableOpacity>
         </View>
