@@ -5,7 +5,7 @@ const PlayPauseButton = props => (
   <FontAwesomeIcon
     color={props.color}
     size={props.size}
-    icon={props.playing ? props.faTrue : props.faFalse}
+    icon={props.songState === 'paused' ? props.faTrue : props.faFalse}
   />
 );
 

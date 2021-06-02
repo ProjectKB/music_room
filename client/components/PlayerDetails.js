@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
@@ -16,10 +16,13 @@ import SongIndexContext from '../contexts/SongIndexContext';
 import PlayPauseButton from './PlayPauseButton';
 
 const PlayerDetails = props => {
-  const modalVisible = props.modalVisible;
-  const setModalVisible = props.setModalVisible;
-  const playing = props.playing;
-  const setPlaying = props.setPlaying;
+  const [modalVisible, setModalVisible] = [
+    props.modalVisible,
+    props.setModalVisible,
+  ];
+
+  const [playing, setPlaying] = [props.playing, props.setPlaying];
+  const [index, setIndex] = [props.index, props.setIndex];
 
   const {
     playlistDisplayed,
@@ -27,7 +30,6 @@ const PlayerDetails = props => {
     playlistPlayed,
     setPlaylistPlayed,
   } = useContext(PlaylistContext);
-  const {songIndex, setSongIndex} = useContext(SongIndexContext);
 
   const displayTime = toConvert => {
     let h = Math.trunc(toConvert / 3600);
@@ -39,6 +41,22 @@ const PlayerDetails = props => {
     }
 
     return h ? `${h}:${m}:${s}` : `${m}:${s}`;
+  };
+
+  const nextSong = () => {
+    if (index + 1 !== playlistPlayed.songs.length) {
+      props.setCurrentSong(playlistPlayed.songs[index + 1].id);
+      setIndex(index + 1);
+      setPlaying(false);
+    }
+  };
+
+  const prevSong = () => {
+    if (index !== 0) {
+      props.setCurrentSong(playlistPlayed.songs[index - 1].id);
+      setIndex(index - 1);
+      setPlaying(false);
+    }
   };
 
   return (
@@ -79,7 +97,7 @@ const PlayerDetails = props => {
             <Text>{displayTime(props.duration)}</Text>
           </View>
           <View style={styles.actionButtonContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={prevSong}>
               <FontAwesomeIcon size={40} icon={faStepBackward} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -88,12 +106,12 @@ const PlayerDetails = props => {
               <PlayPauseButton
                 color="black"
                 size={70}
-                playing={playing}
-                faTrue={faPauseCircle}
-                faFalse={faPlayCircle}
+                songState={props.songState}
+                faTrue={faPlayCircle}
+                faFalse={faPauseCircle}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={nextSong}>
               <FontAwesomeIcon size={40} icon={faStepForward} />
             </TouchableOpacity>
           </View>
