@@ -10,7 +10,6 @@ import Chat from './views/Chat';
 import TabBar from './components/TabBar';
 import ShowPlayerContext from './contexts/ShowPlayerContext';
 import PlaylistContext from './contexts/PlaylistContext';
-import PlaylistCreationModalContext from './contexts/PlaylistCreationModalContext';
 import SongIndexContext from './contexts/SongIndexContext';
 import PlaylistStackNavigator from './components/PlaylistStackNavigator';
 
@@ -21,7 +20,6 @@ const App = () => {
   const [playlistDisplayed, setPlaylistDisplayed] = useState([]);
   const [playlistPlayed, setPlaylistPlayed] = useState([]);
   const [songIndex, setSongIndex] = useState(0);
-  const [modalVisibility, setModalVisibility] = useState(false);
 
   return (
     <NavigationContainer>
@@ -53,14 +51,11 @@ const App = () => {
                 playlistPlayed,
                 setPlaylistPlayed,
               }}>
-              <PlaylistCreationModalContext.Provider
-                value={{modalVisibility, setModalVisibility}}>
-                <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
-                  <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
-                    <PlaylistStackNavigator />
-                  </SongIndexContext.Provider>
-                </ShowPlayerContext.Provider>
-              </PlaylistCreationModalContext.Provider>
+              <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
+                <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
+                  <PlaylistStackNavigator />
+                </SongIndexContext.Provider>
+              </ShowPlayerContext.Provider>
             </PlaylistContext.Provider>
           )}
         />

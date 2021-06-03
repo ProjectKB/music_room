@@ -5,7 +5,6 @@ import PlaylistSearchBar from '../components/PlaylistSearchBar';
 import {FetchPlaylistList} from '../api/PlaylistEndpoint';
 import PlaylistListSearchContext from '../contexts/PlaylistListSearchContext';
 import PlaylistCreationModal from '../components/PlaylistCreationModal';
-import PlaylistCreationModalContext from '../contexts/PlaylistCreationModalContext';
 
 const Playlist = props => {
   const [playlistCollection, setPlaylistCollection] = useState([]);
@@ -15,10 +14,6 @@ const Playlist = props => {
     FetchPlaylistList(setPlaylistCollection, searchQuery);
   }, [searchQuery]);
 
-  const {modalVisibility, setModalVisibility} = useContext(
-    PlaylistCreationModalContext,
-  );
-
   useEffect(() => {
     fetchPlaylist();
   }, [fetchPlaylist]);
@@ -27,7 +22,7 @@ const Playlist = props => {
     <PlaylistListSearchContext.Provider value={{searchQuery, setSearchQuery}}>
       <PlaylistSearchBar
         context={PlaylistListSearchContext}
-        modalVisibility={modalVisibility}
+        modalVisibility={props.modalVisibility}
       />
       <ScrollView style={styles.playlistList}>
         <PlaylistList
@@ -35,7 +30,11 @@ const Playlist = props => {
           navigation={props.navigation}
         />
       </ScrollView>
-      <PlaylistCreationModal />
+      <PlaylistCreationModal
+        modalVisibility={props.modalVisibility}
+        setModalVisibility={props.setModalVisibility}
+        setPlaylistCollection={setPlaylistCollection}
+      />
     </PlaylistListSearchContext.Provider>
   );
 };

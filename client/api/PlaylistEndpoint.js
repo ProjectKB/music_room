@@ -27,3 +27,13 @@ export const FetchPlaylistSong = async (setter, query, playlistId) => {
     console.log(error);
   }
 };
+
+export const CreatePlaylist = async (setter, playlistName) => {
+  try {
+    await axios.post(URL + '/playlists', JSON.stringify({name: playlistName}));
+
+    FetchPlaylistList(setter, '');
+  } catch (error) {
+    console.log(error);
+  }
+};
