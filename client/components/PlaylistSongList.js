@@ -5,7 +5,10 @@ import PlaylistSongElement from './PlaylistSongElement';
 
 const PlaylistSongList = props => {
   const PlaylistSongCollection = () => {
-    if (props.playlistSongCollection.length !== 0) {
+    if (
+      props.playlistSongCollection !== undefined &&
+      props.playlistSongCollection.length !== 0
+    ) {
       return props.playlistSongCollection.map((elem, index) => {
         return <PlaylistSongElement key={elem.id} song={elem} index={index} />;
       });
