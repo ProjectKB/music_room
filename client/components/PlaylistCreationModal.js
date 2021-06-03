@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, TextInput} from 'react-native';
 import {Portal, Provider, Dialog, Button} from 'react-native-paper';
 import {CreatePlaylist} from '../api/PlaylistEndpoint';
+import {FlashMessage} from './FlashMessage';
 
 const PlaylistCreationModal = props => {
   const [playlistName, setPlaylistName] = useState('');
@@ -10,6 +11,9 @@ const PlaylistCreationModal = props => {
   const inputErrorText = inputIsEmpty
     ? '* you have to choose a name for your playlist'
     : '';
+
+  const flashMessageSuccess = `${playlistName} has been successfully added!`;
+  const flashMessageFailure = 'An error has occurred, please retry later!';
 
   return (
     <Provider>
@@ -54,7 +58,17 @@ const PlaylistCreationModal = props => {
                     setInputIsEmpty(true);
                   }
                 } else {
-                  CreatePlaylist(props.setPlaylistCollection, playlistName);
+                  const responseStatus = CreatePlaylist(
+                    props.setPlaylistCollection,
+                    playlistName,
+                  );
+                  responseStatus.then(status =>
+                    FlashMessage(
+                      status,
+                      flashMessageSuccess,
+                      flashMessageFailure,
+                    ),
+                  );
                   props.setModalVisibility(false);
                   setPlaylistName('');
                 }

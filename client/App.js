@@ -12,6 +12,7 @@ import ShowPlayerContext from './contexts/ShowPlayerContext';
 import PlaylistContext from './contexts/PlaylistContext';
 import SongIndexContext from './contexts/SongIndexContext';
 import PlaylistStackNavigator from './components/PlaylistStackNavigator';
+import FlashMessage from 'react-native-flash-message';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -26,28 +27,10 @@ const App = () => {
   const [songIndex, setSongIndex] = useState(0);
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        tabBar={props => (
-          <PlaylistContext.Provider
-            value={{
-              playlistDisplayed,
-              setPlaylistDisplayed,
-              playlistPlayed,
-              setPlaylistPlayed,
-            }}>
-            <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
-              <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
-                <TabBar {...props} />
-              </SongIndexContext.Provider>
-            </ShowPlayerContext.Provider>
-          </PlaylistContext.Provider>
-        )}
-        tabBarPosition="bottom">
-        <Tab.Screen name={'Home'} component={Home} />
-        <Tab.Screen
-          name={'Playlist'}
-          children={() => (
+    <>
+      <NavigationContainer>
+        <Tab.Navigator
+          tabBar={props => (
             <PlaylistContext.Provider
               value={{
                 playlistDisplayed,
@@ -57,17 +40,38 @@ const App = () => {
               }}>
               <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
                 <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
-                  <PlaylistStackNavigator />
+                  <TabBar {...props} />
                 </SongIndexContext.Provider>
               </ShowPlayerContext.Provider>
             </PlaylistContext.Provider>
           )}
-        />
-        <Tab.Screen name={'Search'} component={Search} />
-        <Tab.Screen name={'Event'} component={Event} />
-        <Tab.Screen name={'Chat'} component={Chat} />
-      </Tab.Navigator>
-    </NavigationContainer>
+          tabBarPosition="bottom">
+          <Tab.Screen name={'Home'} component={Home} />
+          <Tab.Screen
+            name={'Playlist'}
+            children={() => (
+              <PlaylistContext.Provider
+                value={{
+                  playlistDisplayed,
+                  setPlaylistDisplayed,
+                  playlistPlayed,
+                  setPlaylistPlayed,
+                }}>
+                <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
+                  <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
+                    <PlaylistStackNavigator />
+                  </SongIndexContext.Provider>
+                </ShowPlayerContext.Provider>
+              </PlaylistContext.Provider>
+            )}
+          />
+          <Tab.Screen name={'Search'} component={Search} />
+          <Tab.Screen name={'Event'} component={Event} />
+          <Tab.Screen name={'Chat'} component={Chat} />
+        </Tab.Navigator>
+      </NavigationContainer>
+      <FlashMessage position="top" />
+    </>
   );
 };
 
