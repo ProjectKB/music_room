@@ -6,7 +6,6 @@ import {FetchPlaylistSong} from '../api/PlaylistEndpoint';
 import PlaylistSearchBar from '../components/PlaylistSearchBar';
 import PlaylistSongList from '../components/PlaylistSongList';
 import PlaylistContext from '../contexts/PlaylistContext';
-import PlaylistCreationModalContext from '../contexts/PlaylistCreationModalContext';
 
 const SongsList = ({navigation}) => {
   const [playlistSongCollection, setPlaylistSongCollection] =
