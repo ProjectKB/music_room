@@ -3,15 +3,18 @@ import {StyleSheet} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
+import PlaylistCreationModalContext from '../contexts/PlaylistCreationModalContext';
 
 const PlaylistSearchBar = props => {
   const {searchQuery, setSearchQuery} = useContext(props.context);
 
   const onChangeSearch = query => setSearchQuery(query);
 
+  const opacity = {opacity: props.modalVisibility ? 0.3 : 1};
+
   return (
     <Searchbar
-      style={styles.searchBar}
+      style={[styles.searchBar, opacity]}
       selectionColor="gray"
       placeholder="Search"
       onChangeText={onChangeSearch}
