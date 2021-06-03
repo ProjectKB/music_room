@@ -10,8 +10,10 @@ export const FetchPlaylistList = async (setter, query) => {
     );
 
     response.data != null ? setter(response.data) : setter([]);
+
+    return true;
   } catch (error) {
-    console.log(error);
+    return false;
   }
 };
 
@@ -31,9 +33,8 @@ export const FetchPlaylistSong = async (setter, query, playlistId) => {
 export const CreatePlaylist = async (setter, playlistName) => {
   try {
     await axios.post(URL + '/playlists', JSON.stringify({name: playlistName}));
-
-    FetchPlaylistList(setter, '');
+    return FetchPlaylistList(setter, '');
   } catch (error) {
-    console.log(error);
+    return false;
   }
 };
