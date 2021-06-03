@@ -28,15 +28,16 @@ const PlaylistSongElement = props => {
 
           setPlaylistPlayed(playlistDisplayed);
           setSongIndex(props.index);
+        }}
+        onLongPress={() => {
+          props.setSongToDeleteIndex(props.index);
+          props.setDeletionPlaylistModal(true);
         }}>
         <FontAwesomeIcon size={50} icon={faMusic} />
         <View style={styles.playlistElementContent}>
-          <ScrollView horizontal={true} style={{marginHorizontal: 10}}>
+          <ScrollView horizontal={true} style={{marginHorizontal: 15}}>
             <Subheading>{props.song.name}</Subheading>
           </ScrollView>
-          <TouchableOpacity>
-            <FontAwesomeIcon size={20} icon={faEllipsisV} />
-          </TouchableOpacity>
         </View>
       </TouchableOpacity>
       <Divider />

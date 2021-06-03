@@ -12,7 +12,6 @@ import {
 import {Headline, ProgressBar, Subheading} from 'react-native-paper';
 import PlaylistContext from '../contexts/PlaylistContext';
 import AnimatedText from './AnimatedText';
-import SongIndexContext from '../contexts/SongIndexContext';
 import PlayPauseButton from './PlayPauseButton';
 
 const PlayerDetails = props => {
@@ -60,69 +59,63 @@ const PlayerDetails = props => {
   };
 
   return (
-    <View style={styles.centeredView}>
-      <Modal animationType="slide" transparent={false} visible={modalVisible}>
-        <View style={styles.playerDetailsHeaderContainer}>
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <FontAwesomeIcon color="white" size={20} icon={faChevronDown} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <FontAwesomeIcon color="white" size={20} icon={faEllipsisV} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.pictureContainer}>
-          <View style={styles.pictureSize} />
-        </View>
-        <View style={styles.playerActionContainer}>
-          <View style={styles.playerDetailsText}>
-            <AnimatedText
-              text={
-                <Headline style={styles.songName}>{props.songName}</Headline>
-              }
-              callback={props.songName}
-            />
-            <AnimatedText
-              text={
-                <Subheading style={{color: 'white'}}>
-                  {playlistPlayed.name}
-                </Subheading>
-              }
-              callback={playlistPlayed.name}
-            />
-          </View>
-          <ProgressBar
-            style={{marginTop: 10}}
-            progress={props.progressionBarValue}
-            color="white"
+    <Modal animationType="slide" visible={modalVisible}>
+      <View style={styles.playerDetailsHeaderContainer}>
+        <TouchableOpacity onPress={() => setModalVisible(false)}>
+          <FontAwesomeIcon color="white" size={20} icon={faChevronDown} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <FontAwesomeIcon color="white" size={20} icon={faEllipsisV} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.pictureContainer}>
+        <View style={styles.pictureSize} />
+      </View>
+      <View style={styles.playerActionContainer}>
+        <View style={styles.playerDetailsText}>
+          <AnimatedText
+            text={<Headline style={styles.songName}>{props.songName}</Headline>}
+            callback={props.songName}
           />
-          <View style={styles.progressBarTime}>
-            <Text style={{color: 'white'}}>
-              {displayTime(props.currentTime)}
-            </Text>
-            <Text style={{color: 'white'}}>{displayTime(props.duration)}</Text>
-          </View>
-          <View style={styles.actionButtonContainer}>
-            <TouchableOpacity onPress={prevSong}>
-              <FontAwesomeIcon color="white" size={40} icon={faStepBackward} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{marginHorizontal: 20}}
-              onPress={() => setPlaying(!playing)}>
-              <PlayPauseButton
-                color="white"
-                size={70}
-                songState={props.songState}
-                faTrue={faPlayCircle}
-                faFalse={faPauseCircle}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={nextSong}>
-              <FontAwesomeIcon color="white" size={40} icon={faStepForward} />
-            </TouchableOpacity>
-          </View>
+          <AnimatedText
+            text={
+              <Subheading style={{color: 'white'}}>
+                {playlistPlayed.name}
+              </Subheading>
+            }
+            callback={playlistPlayed.name}
+          />
         </View>
-      </Modal>
-    </View>
+        <ProgressBar
+          style={{marginTop: 10}}
+          progress={props.progressionBarValue}
+          color="white"
+        />
+        <View style={styles.progressBarTime}>
+          <Text style={{color: 'white'}}>{displayTime(props.currentTime)}</Text>
+          <Text style={{color: 'white'}}>{displayTime(props.duration)}</Text>
+        </View>
+        <View style={styles.actionButtonContainer}>
+          <TouchableOpacity onPress={prevSong}>
+            <FontAwesomeIcon color="white" size={40} icon={faStepBackward} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{marginHorizontal: 20}}
+            onPress={() => setPlaying(!playing)}>
+            <PlayPauseButton
+              color="white"
+              size={70}
+              songState={props.songState}
+              faTrue={faPlayCircle}
+              faFalse={faPauseCircle}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={nextSong}>
+            <FontAwesomeIcon color="white" size={40} icon={faStepForward} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
   );
 };
 

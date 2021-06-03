@@ -1,17 +1,19 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import PlaylistList from '../components/PlaylistList';
 import PlaylistSearchBar from '../components/PlaylistSearchBar';
-import {FetchPlaylistList} from '../api/PlaylistEndpoint';
+import {DeletePlaylist, FetchPlaylistList} from '../api/PlaylistEndpoint';
 import PlaylistListSearchContext from '../contexts/PlaylistListSearchContext';
 import PlaylistCreationModal from '../components/PlaylistCreationModal';
+import PlaylistDeletionModal from '../components/PlaylistDeletionModal';
 
 const Playlist = props => {
-  const [playlistCollection, setPlaylistCollection] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [playlistToDeleteIndex, setPlaylistToDeleteIndex] = useState(undefined);
 
   const fetchPlaylist = useCallback(() => {
-    FetchPlaylistList(setPlaylistCollection, searchQuery);
+    FetchPlaylistList(props.setPlaylistCollection, searchQuery);
   }, [searchQuery]);
 
   useEffect(() => {
@@ -22,18 +24,36 @@ const Playlist = props => {
     <PlaylistListSearchContext.Provider value={{searchQuery, setSearchQuery}}>
       <PlaylistSearchBar
         context={PlaylistListSearchContext}
-        modalVisibility={props.modalVisibility}
+        opacity={
+          props.creationPlaylistModal || props.deletionPlaylistModal ? 0.4 : 1
+        }
       />
-      <ScrollView style={styles.playlistList}>
+      <ScrollView style={{margin: 10}}>
         <PlaylistList
-          playlistCollection={playlistCollection}
+          playlistCollection={props.playlistCollection}
           navigation={props.navigation}
+          setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+          setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
         />
       </ScrollView>
       <PlaylistCreationModal
-        modalVisibility={props.modalVisibility}
-        setModalVisibility={props.setModalVisibility}
-        setPlaylistCollection={setPlaylistCollection}
+        creationPlaylistModal={props.creationPlaylistModal}
+        setCreationPlaylistModal={props.setCreationPlaylistModal}
+        setPlaylistCollection={props.setPlaylistCollection}
+      />
+      <PlaylistDeletionModal
+        deletionPlaylistModal={props.deletionPlaylistModal}
+        setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+        toDelete={props.playlistCollection[playlistToDeleteIndex]}
+        deleteFunction={
+          props.playlistCollection[playlistToDeleteIndex] !== undefined
+            ? () =>
+                DeletePlaylist(
+                  props.setPlaylistCollection,
+                  props.playlistCollection[playlistToDeleteIndex].id,
+                )
+            : undefined
+        }
       />
     </PlaylistListSearchContext.Provider>
   );
@@ -41,8 +61,4 @@ const Playlist = props => {
 
 export default Playlist;
 
-const styles = StyleSheet.create({
-  playlistList: {
-    margin: 10,
-  },
-});
+const styles = StyleSheet.create({});

@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faCameraRetro, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
+import {faCameraRetro} from '@fortawesome/free-solid-svg-icons';
 import PlaylistContext from '../contexts/PlaylistContext';
 
 const PlaylistElement = props => {
@@ -33,6 +33,10 @@ const PlaylistElement = props => {
         onPress={() => {
           setPlaylistDisplayed(props.playlist);
           props.navigation.navigate('SongDetails');
+        }}
+        onLongPress={() => {
+          props.setPlaylistToDeleteIndex(props.index);
+          props.setDeletionPlaylistModal(true);
         }}>
         <FontAwesomeIcon size={70} icon={faCameraRetro} />
         <View style={styles.playlistElementContent}>
@@ -40,9 +44,6 @@ const PlaylistElement = props => {
             <Subheading>{props.playlist.name}</Subheading>
             <SongNumber playlist={props.playlist} />
           </View>
-          <TouchableOpacity>
-            <FontAwesomeIcon size={20} icon={faEllipsisV} />
-          </TouchableOpacity>
         </View>
       </TouchableOpacity>
       <Divider />

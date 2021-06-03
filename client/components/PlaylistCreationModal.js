@@ -19,8 +19,8 @@ const PlaylistCreationModal = props => {
     <Provider>
       <Portal>
         <Dialog
-          visible={props.modalVisibility}
-          onDismiss={() => props.setModalVisibility(false)}
+          visible={props.creationPlaylistModal}
+          onDismiss={() => props.setCreationPlaylistModal(false)}
           style={styles.dialogContainer}>
           <Dialog.Content style={styles.textInputContainer}>
             <TextInput
@@ -43,7 +43,7 @@ const PlaylistCreationModal = props => {
             <Button
               color="#899ed6"
               onPress={() => {
-                props.setModalVisibility(false);
+                props.setCreationPlaylistModal(false);
                 if (inputIsEmpty) {
                   setInputIsEmpty(false);
                 }
@@ -69,7 +69,7 @@ const PlaylistCreationModal = props => {
                       flashMessageFailure,
                     ),
                   );
-                  props.setModalVisibility(false);
+                  props.setCreationPlaylistModal(false);
                   setPlaylistName('');
                 }
               }}>
