@@ -33,8 +33,33 @@ export const FetchPlaylistSong = async (setter, query, playlistId) => {
 export const CreatePlaylist = async (setter, playlistName) => {
   try {
     await axios.post(URL + '/playlists', JSON.stringify({name: playlistName}));
+
     return FetchPlaylistList(setter, '');
   } catch (error) {
+    return false;
+  }
+};
+
+export const DeletePlaylist = async (setter, playlistId) => {
+  try {
+    await axios.delete(URL + '/playlists/' + playlistId);
+
+    return FetchPlaylistList(setter, '');
+  } catch (error) {
+    return false;
+  }
+};
+
+export const DeleteSong = async (setter, playlistId, songId) => {
+  try {
+    await axios.put(
+      URL + '/playlists/removeSong/' + playlistId,
+      JSON.stringify({id: songId}),
+    );
+
+    return FetchPlaylistList(setter, '');
+  } catch (error) {
+    console.log(error);
     return false;
   }
 };

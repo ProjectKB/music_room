@@ -6,12 +6,15 @@ import PlaylistElement from './PlaylistElement';
 const PlaylistList = props => {
   const PlaylistCollection = () => {
     if (props.playlistCollection.length !== 0) {
-      return props.playlistCollection.map(elem => {
+      return props.playlistCollection.map((elem, index) => {
         return (
           <PlaylistElement
             key={elem.id}
             playlist={elem}
             navigation={props.navigation}
+            setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+            setPlaylistToDeleteIndex={props.setPlaylistToDeleteIndex}
+            index={index}
           />
         );
       });

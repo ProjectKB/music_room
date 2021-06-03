@@ -8,7 +8,9 @@ import SongsList from '../views/SongsList';
 const Stack = createStackNavigator();
 
 const PlaylistStackNavigator = () => {
-  const [modalVisibility, setModalVisibility] = useState(false);
+  const [creationPlaylistModal, setCreationPlaylistModal] = useState(false);
+  const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
+  const [playlistCollection, setPlaylistCollection] = useState([]);
 
   return (
     <Stack.Navigator>
@@ -17,8 +19,12 @@ const PlaylistStackNavigator = () => {
         children={props => (
           <Playlist
             navigation={props.navigation}
-            modalVisibility={modalVisibility}
-            setModalVisibility={setModalVisibility}
+            creationPlaylistModal={creationPlaylistModal}
+            setCreationPlaylistModal={setCreationPlaylistModal}
+            deletionPlaylistModal={deletionPlaylistModal}
+            setDeletionPlaylistModal={setDeletionPlaylistModal}
+            playlistCollection={playlistCollection}
+            setPlaylistCollection={setPlaylistCollection}
           />
         )}
         options={{
@@ -26,14 +32,26 @@ const PlaylistStackNavigator = () => {
           headerTitle: props => (
             <PlaylistStackHeader
               navigation={props}
-              addAction={() => setModalVisibility(true)}
+              addAction={() => {
+                if (!deletionPlaylistModal) {
+                  setCreationPlaylistModal(true);
+                }
+              }}
             />
           ),
         }}
       />
       <Stack.Screen
         name="SongDetails"
-        children={props => <SongsList {...props} />}
+        children={props => (
+          <SongsList
+            navigation={props.navigation}
+            deletionPlaylistModal={deletionPlaylistModal}
+            setDeletionPlaylistModal={setDeletionPlaylistModal}
+            playlistCollection={playlistCollection}
+            setPlaylistCollection={setPlaylistCollection}
+          />
+        )}
         options={{
           title: 'Playlist Song',
           headerTitle: props => <PlaylistStackHeader navigation={props} />,

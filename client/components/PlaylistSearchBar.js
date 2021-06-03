@@ -9,11 +9,9 @@ const PlaylistSearchBar = props => {
 
   const onChangeSearch = query => setSearchQuery(query);
 
-  const opacity = {opacity: props.modalVisibility ? 0.3 : 1};
-
   return (
     <Searchbar
-      style={[styles.searchBar, opacity]}
+      style={[styles.searchBar, {opacity: props.opacity}]}
       selectionColor="gray"
       placeholder="Search"
       onChangeText={onChangeSearch}
