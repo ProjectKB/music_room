@@ -1,4 +1,5 @@
-import React, {useContext} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useContext, useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Player from './Player';
 import TabBarButton from './TabBarButton';
@@ -10,13 +11,20 @@ import {
   faCommentDots,
 } from '@fortawesome/free-solid-svg-icons';
 import ShowPlayerContext from '../contexts/ShowPlayerContext';
+import SongIndexContext from '../contexts/SongIndexContext';
 
 const TabBar = ({state, navigation}) => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
+  const {songIndex, setSongIndex} = useContext(SongIndexContext);
+
+  const PlayerCallback = useCallback(
+    () => (showPlayer ? <Player /> : null),
+    [songIndex],
+  );
 
   return (
     <View>
-      {showPlayer ? <Player /> : null}
+      <PlayerCallback />
       <View style={styles.tabBarButtonContainer}>
         <TabBarButton
           title="Home"
