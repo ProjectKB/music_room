@@ -107,7 +107,7 @@ const Player = () => {
         setCurrentSong={setCurrentSong}
       />
       <View style={{opacity: 0}}>
-        {/* <YoutubePlayer
+        <YoutubePlayer
           ref={playerRef}
           height={1}
           play={playing}
@@ -116,10 +116,10 @@ const Player = () => {
             setPlaying(true);
           }}
           onChangeState={onStateChange}
-        /> */}
+        />
       </View>
       <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-        <ProgressBar progress={progressionBarValue} color="#685a5e" />
+        <ProgressBar progress={progressionBarValue} color="#806851" />
         <View style={styles.songPlayerContainer}>
           <View style={styles.songPlayerPicture}>
             <FontAwesomeIcon color="white" size={20} icon={faMusic} />
