@@ -19,8 +19,6 @@ import PlayerDetails from './PlayerDetails';
 import PlayPauseButton from './PlayPauseButton';
 
 const Player = () => {
-  const {songIndex, setSongIndex} = useContext(SongIndexContext);
-  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
   const {
     playlistDisplayed,
     setPlaylistDisplayed,
@@ -28,12 +26,20 @@ const Player = () => {
     setPlaylistPlayed,
   } = useContext(PlaylistContext);
 
+  const {songIndex, setSongIndex} = useContext(SongIndexContext);
+  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
+
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(songIndex);
-  const [songState, setSongState] = useState('undefined');
+
+  if (showPlayer) {
+    console.log(playlistPlayed.songs[index]);
+  }
+
   const [currentSong, setCurrentSong] = useState(
     playlistPlayed.songs[index].id,
   );
+  const [songState, setSongState] = useState('undefined');
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [progressionBarValue, setProgressionBarValue] = useState(0);
