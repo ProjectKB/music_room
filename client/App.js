@@ -20,7 +20,7 @@ const App = () => {
   const [showPlayer, setShowPlayer] = useState(false);
   const [playlistDisplayed, setPlaylistDisplayed] = useState([]);
   const [playlistPlayed, setPlaylistPlayed] = useState([]);
-  const [songIndex, setSongIndex] = useState(0);
+  const [songIndex, setSongIndex] = useState(-1);
 
   return (
     <>

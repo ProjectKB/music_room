@@ -12,14 +12,22 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import ShowPlayerContext from '../contexts/ShowPlayerContext';
 import SongIndexContext from '../contexts/SongIndexContext';
+import PlaylistContext from '../contexts/PlaylistContext';
 
 const TabBar = ({state, navigation}) => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
   const {songIndex, setSongIndex} = useContext(SongIndexContext);
 
+  const {
+    playlistDisplayed,
+    setPlaylistDisplayed,
+    playlistPlayed,
+    setPlaylistPlayed,
+  } = useContext(PlaylistContext);
+
   const PlayerCallback = useCallback(
     () => (showPlayer ? <Player /> : null),
-    [songIndex],
+    [songIndex, playlistPlayed],
   );
 
   return (
