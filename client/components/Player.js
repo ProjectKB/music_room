@@ -30,15 +30,11 @@ const Player = () => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
 
   const [playing, setPlaying] = useState(false);
-  const [index, setIndex] = useState(songIndex);
-
-  if (showPlayer) {
-    console.log(playlistPlayed.songs[index]);
-  }
 
   const [currentSong, setCurrentSong] = useState(
-    playlistPlayed.songs[index].id,
+    playlistPlayed.songs[songIndex].id,
   );
+
   const [songState, setSongState] = useState('undefined');
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -48,18 +44,18 @@ const Player = () => {
   const onStateChange = useCallback(
     state => {
       if (state === 'ended') {
-        if (index !== playlistPlayed.songs.length - 1) {
-          setCurrentSong(playlistPlayed.songs[index + 1].id);
-          setIndex(index + 1);
+        if (songIndex !== playlistPlayed.songs.length - 1) {
+          setCurrentSong(playlistPlayed.songs[songIndex + 1].id);
+          setSongIndex(songIndex + 1);
         } else {
-          setShowPlayer(false);
+          setProgressionBarValue(1);
         }
 
         setPlaying(false);
       }
       setSongState(state);
     },
-    [playlistPlayed, setShowPlayer, index, setIndex],
+    [playlistPlayed, songIndex, setSongIndex],
   );
 
   const togglePlaying = useCallback(() => {
@@ -93,8 +89,8 @@ const Player = () => {
   useEffect(() => {
     setPlaying(false);
     setCurrentSong(playlistPlayed.songs[songIndex].id);
-    setIndex(songIndex);
-  }, [songIndex, playlistPlayed]);
+    setSongIndex(songIndex);
+  }, [playlistPlayed, songIndex, setSongIndex]);
 
   return (
     <View>
@@ -107,9 +103,9 @@ const Player = () => {
         songState={songState}
         playing={playing}
         setPlaying={setPlaying}
-        index={index}
-        setIndex={setIndex}
-        songName={playlistPlayed.songs[index].name}
+        index={songIndex}
+        setIndex={setSongIndex}
+        songName={playlistPlayed.songs[songIndex].name}
         setCurrentSong={setCurrentSong}
       />
       <View style={{opacity: 0}}>
@@ -138,7 +134,7 @@ const Player = () => {
               scroll={false}
               repeatSpacer={50}
               marqueeDelay={1000}>
-              {playlistPlayed.songs[index].name}
+              {playlistPlayed.songs[songIndex].name}
             </TextTicker>
           </View>
           <TouchableOpacity
