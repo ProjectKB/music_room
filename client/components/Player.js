@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   useState,
   useCallback,
@@ -47,10 +48,9 @@ const Player = () => {
         if (songIndex !== playlistPlayed.songs.length - 1) {
           setCurrentSong(playlistPlayed.songs[songIndex + 1].id);
           setSongIndex(songIndex + 1);
-        } else {
-          setProgressionBarValue(1);
         }
 
+        setProgressionBarValue(1);
         setPlaying(false);
       }
       setSongState(state);
