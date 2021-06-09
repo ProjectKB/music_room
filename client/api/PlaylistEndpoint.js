@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = 'http://10.19.1.129:8080';
+const URL = 'http://192.168.0.12:8080';
 
 export const FetchPlaylistList = async (setter, query) => {
   try {
