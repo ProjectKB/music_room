@@ -10,8 +10,8 @@ import {
   faStepForward,
 } from '@fortawesome/free-solid-svg-icons';
 import {Headline, ProgressBar, Subheading} from 'react-native-paper';
-import PlaylistContext from '../contexts/PlaylistContext';
-import AnimatedText from './AnimatedText';
+import PlaylistContext from '../../contexts/PlaylistContext';
+import AnimatedText from '../AnimatedText';
 import PlayPauseButton from './PlayPauseButton';
 
 const PlayerDetails = props => {

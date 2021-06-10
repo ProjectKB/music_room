@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import SearchSongList from '../components/SearchSongList';
+import React from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
+import SearchSongList from './SearchSongList';
 
 const SearchSong = props => {
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {

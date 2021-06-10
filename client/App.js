@@ -10,9 +10,9 @@ import TabBar from './components/TabBar';
 import ShowPlayerContext from './contexts/ShowPlayerContext';
 import PlaylistContext from './contexts/PlaylistContext';
 import SongIndexContext from './contexts/SongIndexContext';
-import PlaylistStackNavigator from './components/PlaylistStackNavigator';
+import PlaylistStackNavigator from './components/Playlist/PlaylistStackNavigator';
 import FlashMessage from 'react-native-flash-message';
-import SearchStackNavigator from './components/SearchStackNavigator';
+import SearchStackNavigator from './components/Search/SearchStackNavigator';
 
 const Tab = createMaterialTopTabNavigator();
 

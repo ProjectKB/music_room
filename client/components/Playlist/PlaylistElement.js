@@ -3,7 +3,7 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCameraRetro} from '@fortawesome/free-solid-svg-icons';
-import PlaylistContext from '../contexts/PlaylistContext';
+import PlaylistContext from '../../contexts/PlaylistContext';
 
 const PlaylistElement = props => {
   const {

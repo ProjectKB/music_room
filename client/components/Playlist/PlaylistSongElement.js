@@ -3,9 +3,9 @@ import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMusic, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
-import ShowPlayerContext from '../contexts/ShowPlayerContext';
-import SongIndexContext from '../contexts/SongIndexContext';
-import PlaylistContext from '../contexts/PlaylistContext';
+import ShowPlayerContext from '../../contexts/ShowPlayerContext';
+import SongIndexContext from '../../contexts/SongIndexContext';
+import PlaylistContext from '../../contexts/PlaylistContext';
 
 const PlaylistSongElement = props => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
