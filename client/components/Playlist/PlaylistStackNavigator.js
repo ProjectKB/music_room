@@ -54,7 +54,9 @@ const PlaylistStackNavigator = () => {
         )}
         options={{
           title: 'Playlist Song',
-          headerTitle: props => <PlaylistStackHeader navigation={props} />,
+          headerTitle: props => (
+            <PlaylistStackHeader navigation={props} displayAddButton={true} />
+          ),
         }}
       />
     </Stack.Navigator>
