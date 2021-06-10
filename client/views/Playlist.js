@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import PlaylistList from '../components/PlaylistList';
-import PlaylistSearchBar from '../components/PlaylistSearchBar';
+import PlaylistList from '../components/Playlist/PlaylistList';
+import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
 import {DeletePlaylist, FetchPlaylistList} from '../api/PlaylistEndpoint';
 import PlaylistListSearchContext from '../contexts/PlaylistListSearchContext';
-import PlaylistCreationModal from '../components/PlaylistCreationModal';
-import PlaylistDeletionModal from '../components/PlaylistDeletionModal';
+import PlaylistCreationModal from '../components/Playlist/PlaylistCreationModal';
+import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
 
 const Playlist = props => {
   const [searchQuery, setSearchQuery] = useState('');

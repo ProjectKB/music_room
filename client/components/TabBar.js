@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
-import Player from './Player';
+import Player from './Player/Player';
 import TabBarButton from './TabBarButton';
 import {
   faHome,

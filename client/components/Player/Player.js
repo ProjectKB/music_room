@@ -13,9 +13,9 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faPlay, faPause, faMusic} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
-import PlaylistContext from '../contexts/PlaylistContext';
-import SongIndexContext from '../contexts/SongIndexContext';
-import ShowPlayerContext from '../contexts/ShowPlayerContext';
+import PlaylistContext from '../../contexts/PlaylistContext';
+import SongIndexContext from '../../contexts/SongIndexContext';
+import ShowPlayerContext from '../../contexts/ShowPlayerContext';
 import PlayerDetails from './PlayerDetails';
 import PlayPauseButton from './PlayPauseButton';
 

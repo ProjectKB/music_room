@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Portal, Provider, Dialog, Button} from 'react-native-paper';
-import {FlashMessage} from './FlashMessage';
+import {FlashMessage} from '../FlashMessage';
 
 const PlaylistDeletionModal = props => {
   const [inputIsEmpty, setInputIsEmpty] = useState(false);

@@ -1,9 +1,9 @@
 import React, {useState, useContext, useCallback} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import Playlist from '../views/Playlist';
+import Playlist from '../../views/Playlist';
 import PlaylistStackHeader from './PlaylistStackHeader';
-import SongsList from '../views/SongsList';
+import SongsList from '../../views/SongsList';
 
 const Stack = createStackNavigator();
 

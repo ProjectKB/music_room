@@ -3,10 +3,10 @@ import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import PlaylistSongSearchContext from '../contexts/PlaylistSongSearchContext';
 import {DeleteSong, FetchPlaylistSong} from '../api/PlaylistEndpoint';
-import PlaylistSearchBar from '../components/PlaylistSearchBar';
-import PlaylistSongList from '../components/PlaylistSongList';
+import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
+import PlaylistSongList from '../components/Playlist/PlaylistSongList';
 import PlaylistContext from '../contexts/PlaylistContext';
-import PlaylistDeletionModal from '../components/PlaylistDeletionModal';
+import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
 
 const SongsList = props => {
   const [playlistSongCollection, setPlaylistSongCollection] =

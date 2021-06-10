@@ -2,10 +2,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import PlaylistSearchBar from '../components/PlaylistSearchBar';
-import SearchChips from '../components/SearchChips';
+import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
+import SearchChips from '../components/Search/SearchChips';
 import SearchContext from '../contexts/SearchContext';
-import SearchSong from '../components/SearchSong';
+import SearchSong from '../components/Search/SearchSong';
 import {ReadSong} from '../api/SearchEndpoint';
 
 const Search = () => {
