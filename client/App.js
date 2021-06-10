@@ -5,7 +5,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Home from './views/Home';
 import Event from './views/Event';
-import Search from './views/Search';
 import Chat from './views/Chat';
 import TabBar from './components/TabBar';
 import ShowPlayerContext from './contexts/ShowPlayerContext';
@@ -13,6 +12,7 @@ import PlaylistContext from './contexts/PlaylistContext';
 import SongIndexContext from './contexts/SongIndexContext';
 import PlaylistStackNavigator from './components/PlaylistStackNavigator';
 import FlashMessage from 'react-native-flash-message';
+import SearchStackNavigator from './components/SearchStackNavigator';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -61,7 +61,7 @@ const App = () => {
               </PlaylistContext.Provider>
             )}
           />
-          <Tab.Screen name={'Search'} component={Search} />
+          <Tab.Screen name={'Search'} component={SearchStackNavigator} />
           <Tab.Screen name={'Event'} component={Event} />
           <Tab.Screen name={'Chat'} component={Chat} />
         </Tab.Navigator>
