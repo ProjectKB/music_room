@@ -4,18 +4,18 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Headline} from 'react-native-paper';
 
-const PlaylistStackHeader = props => {
-  return (
-    <View style={styles.playlistStackHeaderContainer}>
-      <Headline style={styles.playlistStackHeaderTitle}>
-        {props.navigation.children}
-      </Headline>
+const PlaylistStackHeader = props => (
+  <View style={styles.playlistStackHeaderContainer}>
+    <Headline style={styles.playlistStackHeaderTitle}>
+      {props.navigation.children}
+    </Headline>
+    {!props.displayAddButton ? (
       <TouchableOpacity onPress={props.addAction}>
         <FontAwesomeIcon size={20} icon={faPlus} />
       </TouchableOpacity>
-    </View>
-  );
-};
+    ) : null}
+  </View>
+);
 
 export default PlaylistStackHeader;
 
