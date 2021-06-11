@@ -68,7 +68,7 @@ func SearchEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var results []model.Event
+	var results model.EventSearch
 	var toSearch string
 
 	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {

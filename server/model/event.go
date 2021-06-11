@@ -16,6 +16,12 @@ type Event struct {
 	// Location    string             `bson:"location,omitempty" json:"location,omitempty"`
 }
 
+type EventSearch struct {
+	Pending  []Event `bson:"pending,omitempty" json:"pending,omitempty"`
+	Ongoing  []Event `bson:"ongoing,omitempty" json:"ongoing,omitempty"`
+	Finished []Event `bson:"finished,omitempty" json:"finished,omitempty"`
+}
+
 // TODO ADD MSG FOR FLASH MSG (FRONT)
 // TODO modify typeof start/end
 // TODO START END -> Add status field [pending, inGoing, ended]

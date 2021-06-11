@@ -112,7 +112,7 @@ func Update(fields bson.M, param string) int {
 	return response.Ok
 }
 
-func SearchEvent(events *[]model.Event, toSearch string) int {
+func SearchEvent(events *model.EventSearch, toSearch string) int {
 	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}}
 
 	cur, err := db.EventCollection.Find(context.TODO(), filter)
@@ -130,7 +130,17 @@ func SearchEvent(events *[]model.Event, toSearch string) int {
 			return response.BddError
 		}
 
-		*events = append(*events, elem)
+		if elem.Status == "pending" {
+			events.Pending = append(events.Pending, elem)
+		}
+		if elem.Status == "ongoing" {
+			events.Ongoing = append(events.Ongoing, elem)
+		}
+		if elem.Status == "finished" {
+
+			events.Finished = append(events.Finished, elem)
+		}
+
 	}
 
 	// Close the cursor once finished
