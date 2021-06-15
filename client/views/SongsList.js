@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
-import PlaylistSongSearchContext from '../contexts/PlaylistSongSearchContext';
 import {DeleteSong, FetchPlaylistSong} from '../api/PlaylistEndpoint';
-import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
+import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
 import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
 
@@ -12,6 +11,7 @@ const SongsList = props => {
     useState(undefined);
   const [searchQuery, setSearchQuery] = useState('');
   const [songToDeleteIndex, setSongToDeleteIndex] = useState(undefined);
+  const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
 
   const fetchPlaylistSong = useCallback(() => {
     if (playlistSongCollection !== undefined) {
@@ -31,12 +31,10 @@ const SongsList = props => {
   }, [fetchPlaylistSong]);
 
   return (
-    <PlaylistSongSearchContext.Provider value={{searchQuery, setSearchQuery}}>
-      <PlaylistSearchBar
-        context={PlaylistSongSearchContext}
-        opacity={
-          props.creationPlaylistModal || props.deletionPlaylistModal ? 0.4 : 1
-        }
+    <>
+      <SearchBar
+        setSearchQuery={setSearchQuery}
+        opacity={deletionPlaylistModal ? 0.4 : 1}
       />
       <ScrollView style={styles.playlistList}>
         <PlaylistSongList
@@ -45,14 +43,14 @@ const SongsList = props => {
               ? props.playlist.songs
               : playlistSongCollection
           }
-          setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+          setDeletionPlaylistModal={setDeletionPlaylistModal}
           setSongToDeleteIndex={setSongToDeleteIndex}
           playlist={props.playlist}
         />
       </ScrollView>
       <PlaylistDeletionModal
-        deletionPlaylistModal={props.deletionPlaylistModal}
-        setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+        deletionPlaylistModal={deletionPlaylistModal}
+        setDeletionPlaylistModal={setDeletionPlaylistModal}
         toDelete={
           playlistSongCollection !== undefined
             ? playlistSongCollection[songToDeleteIndex]
@@ -69,7 +67,7 @@ const SongsList = props => {
             : undefined
         }
       />
-    </PlaylistSongSearchContext.Provider>
+    </>
   );
 };
 

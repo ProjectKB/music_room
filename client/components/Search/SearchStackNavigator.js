@@ -7,7 +7,6 @@ import SongsList from '../../views/SongsList';
 const Stack = createStackNavigator();
 
 const SearchStackNavigator = () => {
-  const [creationPlaylistModal, setCreationPlaylistModal] = useState(false);
   const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
   const [collection, setCollection] = useState([]);
 
@@ -18,14 +17,18 @@ const SearchStackNavigator = () => {
         children={props => (
           <Search
             navigation={props.navigation}
-            creationPlaylistModal={creationPlaylistModal}
-            setCreationPlaylistModal={setCreationPlaylistModal}
             deletionPlaylistModal={deletionPlaylistModal}
             setDeletionPlaylistModal={setDeletionPlaylistModal}
             collection={collection}
             setCollection={setCollection}
           />
         )}
+        options={{
+          title: 'Search',
+          headerTitle: props => (
+            <PlaylistStackHeader navigation={props} displayAddButton={false} />
+          ),
+        }}
       />
       <Stack.Screen
         name="SongDetails"
@@ -42,7 +45,7 @@ const SearchStackNavigator = () => {
         options={{
           title: 'Playlist Song',
           headerTitle: props => (
-            <PlaylistStackHeader navigation={props} displayAddButton={true} />
+            <PlaylistStackHeader navigation={props} displayAddButton={false} />
           ),
         }}
       />

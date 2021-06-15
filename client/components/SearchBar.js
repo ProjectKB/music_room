@@ -1,13 +1,11 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
-const PlaylistSearchBar = props => {
-  const {setSearchQuery} = useContext(props.context);
-
-  const onChangeSearch = query => setSearchQuery(query);
+const SearchBar = props => {
+  const onChangeSearch = query => props.setSearchQuery(query);
 
   return (
     <Searchbar
@@ -21,7 +19,7 @@ const PlaylistSearchBar = props => {
   );
 };
 
-export default PlaylistSearchBar;
+export default SearchBar;
 
 const styles = StyleSheet.create({
   searchBar: {

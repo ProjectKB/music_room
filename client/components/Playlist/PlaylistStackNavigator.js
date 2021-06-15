@@ -31,6 +31,7 @@ const PlaylistStackNavigator = () => {
           headerTitle: props => (
             <PlaylistStackHeader
               navigation={props}
+              displayAddButton={true}
               addAction={() => {
                 if (!deletionPlaylistModal) {
                   setCreationPlaylistModal(true);
@@ -46,8 +47,6 @@ const PlaylistStackNavigator = () => {
           <SongsList
             navigation={props.navigation}
             playlist={props.route.params.playlist}
-            deletionPlaylistModal={deletionPlaylistModal}
-            setDeletionPlaylistModal={setDeletionPlaylistModal}
             playlistCollection={playlistCollection}
             setPlaylistCollection={setPlaylistCollection}
           />
@@ -55,7 +54,7 @@ const PlaylistStackNavigator = () => {
         options={{
           title: 'Playlist Song',
           headerTitle: props => (
-            <PlaylistStackHeader navigation={props} displayAddButton={true} />
+            <PlaylistStackHeader navigation={props} displayAddButton={false} />
           ),
         }}
       />

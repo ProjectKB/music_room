@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
-import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
+import SearchBar from '../components/SearchBar';
 import {FetchPlaylistList} from '../api/PlaylistEndpoint';
-import PlaylistListSearchContext from '../contexts/PlaylistListSearchContext';
 import PlaylistContent from '../components/Playlist/PlaylistContent';
 
 const Playlist = props => {
@@ -17,9 +16,9 @@ const Playlist = props => {
   }, [fetchPlaylist]);
 
   return (
-    <PlaylistListSearchContext.Provider value={{searchQuery, setSearchQuery}}>
-      <PlaylistSearchBar
-        context={PlaylistListSearchContext}
+    <>
+      <SearchBar
+        setSearchQuery={setSearchQuery}
         opacity={
           props.creationPlaylistModal || props.deletionPlaylistModal ? 0.4 : 1
         }
@@ -33,7 +32,7 @@ const Playlist = props => {
         deletionPlaylistModal={props.deletionPlaylistModal}
         setDeletionPlaylistModal={props.setDeletionPlaylistModal}
       />
-    </PlaylistListSearchContext.Provider>
+    </>
   );
 };
 

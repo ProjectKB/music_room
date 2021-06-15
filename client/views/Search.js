@@ -2,13 +2,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useCallback, useEffect} from 'react';
 import {View} from 'react-native';
-import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
+import SearchBar from '../components/SearchBar';
 import SearchChips from '../components/Search/SearchChips';
-import SearchContext from '../contexts/SearchContext';
-import SearchSong from '../components/Search/SearchSong';
 import {ReadSong} from '../api/SearchEndpoint';
 import {FetchPlaylistList} from '../api/PlaylistEndpoint';
-import PlaylistContent from '../components/Playlist/PlaylistContent';
+import SearchElementList from '../components/Search/SearchElementList';
 
 const Search = props => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,48 +40,28 @@ const Search = props => {
     riseMaxResults();
   }, [riseMaxResults]);
 
-  const ElementList = () => {
-    if (chipSelected === 'Song') {
-      return (
-        <SearchSong
-          collection={props.collection}
-          setCollection={props.setCollection}
-          setMaxResults={setMaxResults}
-        />
-      );
-    } else if (chipSelected === 'Playlist') {
-      return (
-        <PlaylistContent
-          navigation={props.navigation}
-          playlistCollection={props.collection}
-          setPlaylistCollection={props.setCollection}
-          creationPlaylistModal={props.creationPlaylistModal}
-          setCreationPlaylistModal={props.setCreationPlaylistModal}
-          deletionPlaylistModal={props.deletionPlaylistModal}
-          setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-        />
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
-    <SearchContext.Provider value={{searchQuery, setSearchQuery}}>
-      <View style={{flex: 1}}>
-        <PlaylistSearchBar
-          context={SearchContext}
-          opacity={props.deletionPlaylistModal ? 0.4 : 1}
+    <View style={{flex: 1}}>
+      <SearchBar
+        setSearchQuery={setSearchQuery}
+        opacity={props.deletionPlaylistModal ? 0.4 : 1}
+      />
+      {searchQuery !== '' ? (
+        <SearchChips
+          chipSelected={chipSelected}
+          setChipSelected={setChipSelected}
         />
-        {searchQuery !== '' ? (
-          <SearchChips
-            chipSelected={chipSelected}
-            setChipSelected={setChipSelected}
-          />
-        ) : null}
-        <ElementList />
-      </View>
-    </SearchContext.Provider>
+      ) : null}
+      <SearchElementList
+        navigation={props.navigation}
+        chipSelected={chipSelected}
+        collection={props.collection}
+        setCollection={props.setCollection}
+        setMaxResults={setMaxResults}
+        deletionPlaylistModal={props.deletionPlaylistModal}
+        setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+      />
+    </View>
   );
 };
 
