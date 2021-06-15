@@ -12,7 +12,7 @@ import {
 import ShowPlayerContext from '../contexts/ShowPlayerContext';
 
 const TabBar = ({state, navigation}) => {
-  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
+  const {showPlayer} = useContext(ShowPlayerContext);
 
   return (
     <View>

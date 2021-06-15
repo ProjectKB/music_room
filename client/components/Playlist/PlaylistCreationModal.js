@@ -1,5 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {StyleSheet, Text, TextInput} from 'react-native';
 import {Portal, Provider, Dialog, Button} from 'react-native-paper';
 import {CreatePlaylist} from '../../api/PlaylistEndpoint';
 import {FlashMessage} from '../FlashMessage';

@@ -1,5 +1,4 @@
-import React, {useState, useContext, useCallback} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import Playlist from '../../views/Playlist';
 import PlaylistStackHeader from './PlaylistStackHeader';
@@ -46,6 +45,7 @@ const PlaylistStackNavigator = () => {
         children={props => (
           <SongsList
             navigation={props.navigation}
+            playlist={props.route.params.playlist}
             deletionPlaylistModal={deletionPlaylistModal}
             setDeletionPlaylistModal={setDeletionPlaylistModal}
             playlistCollection={playlistCollection}
@@ -64,5 +64,3 @@ const PlaylistStackNavigator = () => {
 };
 
 export default PlaylistStackNavigator;
-
-const styles = StyleSheet.create({});

@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
 const PlaylistSearchBar = props => {
-  const {searchQuery, setSearchQuery} = useContext(props.context);
+  const {setSearchQuery} = useContext(props.context);
 
   const onChangeSearch = query => setSearchQuery(query);
 
@@ -15,6 +15,7 @@ const PlaylistSearchBar = props => {
       selectionColor="gray"
       placeholder="Search"
       onChangeText={onChangeSearch}
+      // onPress={onChangeSearch}
       icon={() => <FontAwesomeIcon size={20} color={'gray'} icon={faSearch} />}
     />
   );

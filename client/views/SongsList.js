@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
 import PlaylistSongSearchContext from '../contexts/PlaylistSongSearchContext';
 import {DeleteSong, FetchPlaylistSong} from '../api/PlaylistEndpoint';
 import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
-import PlaylistContext from '../contexts/PlaylistContext';
 import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
 
 const SongsList = props => {
@@ -14,22 +13,20 @@ const SongsList = props => {
   const [searchQuery, setSearchQuery] = useState('');
   const [songToDeleteIndex, setSongToDeleteIndex] = useState(undefined);
 
-  const {playlistDisplayed, setPlaylistDisplayed} = useContext(PlaylistContext);
-
   const fetchPlaylistSong = useCallback(() => {
     if (playlistSongCollection !== undefined) {
       FetchPlaylistSong(
         setPlaylistSongCollection,
         searchQuery,
-        playlistDisplayed.id,
+        props.playlist.id,
       );
     } else {
-      setPlaylistSongCollection(playlistDisplayed.songs);
+      setPlaylistSongCollection(props.playlist.songs);
     }
   }, [searchQuery, props.playlistCollection]);
 
   useEffect(() => {
-    props.navigation.setOptions({title: playlistDisplayed.name});
+    props.navigation.setOptions({title: props.playlist.name});
     fetchPlaylistSong();
   }, [fetchPlaylistSong]);
 
@@ -45,11 +42,12 @@ const SongsList = props => {
         <PlaylistSongList
           playlistSongCollection={
             playlistSongCollection === undefined
-              ? playlistDisplayed.songs
+              ? props.playlist.songs
               : playlistSongCollection
           }
           setDeletionPlaylistModal={props.setDeletionPlaylistModal}
           setSongToDeleteIndex={setSongToDeleteIndex}
+          playlist={props.playlist}
         />
       </ScrollView>
       <PlaylistDeletionModal
@@ -65,7 +63,7 @@ const SongsList = props => {
             ? () =>
                 DeleteSong(
                   props.setPlaylistCollection,
-                  playlistDisplayed.id,
+                  props.playlist.id,
                   playlistSongCollection[songToDeleteIndex].id,
                 )
             : undefined

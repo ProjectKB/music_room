@@ -1,21 +1,16 @@
 import React, {useContext} from 'react';
 import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
-import {Subheading, Divider, Text} from 'react-native-paper';
+import {Subheading, Divider} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMusic, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
+import {faMusic} from '@fortawesome/free-solid-svg-icons';
 import ShowPlayerContext from '../../contexts/ShowPlayerContext';
 import SongIndexContext from '../../contexts/SongIndexContext';
 import PlaylistContext from '../../contexts/PlaylistContext';
 
 const PlaylistSongElement = props => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
-  const {songIndex, setSongIndex} = useContext(SongIndexContext);
-  const {
-    playlistDisplayed,
-    setPlaylistDisplayed,
-    playlistPlayed,
-    setPlaylistPlayed,
-  } = useContext(PlaylistContext);
+  const {setSongIndex} = useContext(SongIndexContext);
+  const {setPlaylistPlayed} = useContext(PlaylistContext);
 
   return (
     <>
@@ -26,7 +21,7 @@ const PlaylistSongElement = props => {
             setShowPlayer(true);
           }
 
-          setPlaylistPlayed(playlistDisplayed);
+          setPlaylistPlayed(props.playlist);
           setSongIndex(props.index);
         }}
         onLongPress={() => {

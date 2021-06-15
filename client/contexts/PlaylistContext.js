@@ -1,10 +1,8 @@
 import {createContext} from 'react';
 
 const PlaylistContext = createContext({
-  displayed: [],
-  setdisplayed: () => {},
-  played: [],
-  setplayed: () => {},
+  getter: [],
+  setter: () => {},
 });
 
 export default PlaylistContext;
