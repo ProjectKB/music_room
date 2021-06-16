@@ -1,11 +1,23 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import {FlashMessage} from '../FlashMessage';
-import {Button, Divider, Title, Text} from 'react-native-paper';
+import {Button, Divider, Title} from 'react-native-paper';
+import {AddSong} from '../../api/PlaylistEndpoint';
+import FetchContext from '../../contexts/FetchContext';
 
 const SearchAddSongModal = props => {
-  const flashMessageSuccess = `${props.songToAdd.name} has been successfully added to x!`;
+  const [playlistPicked, setPlaylistPicked] = useState(undefined);
+
+  const {mustFetch, setMustFetch} = useContext(FetchContext);
+
+  const flashMessageSuccess = `${
+    props.songToAdd.name
+  } has been successfully added to ${
+    playlistPicked !== undefined ? playlistPicked.name : null
+  }!`;
+
   const flashMessageFailure = 'An error has occurred, please retry later!';
 
   return (
@@ -16,28 +28,43 @@ const SearchAddSongModal = props => {
         </View>
         <Divider />
         <View style={styles.picker}>
-          <Text>I'll be a picker soon</Text>
+          <Picker
+            selectedValue={playlistPicked}
+            onValueChange={itemValue => setPlaylistPicked(itemValue)}
+            prompt="Playlists">
+            {props.playlistCollection.map(item => (
+              <Picker.Item
+                style={{fontSize: 20}}
+                label={item.name}
+                value={item}
+                key={item.id}
+                color="black"
+              />
+            ))}
+          </Picker>
         </View>
         <View style={styles.actionContainer}>
           <Button
             color="#899ed6"
-            onPress={() => {
-              props.setModalVisibility(false);
-            }}>
+            onPress={() => props.setModalVisibility(false)}>
             No
           </Button>
           <Button
             color="#899ed6"
             onPress={() => {
-              // const responseStatus = props.deleteFunction();
+              const responseStatus = AddSong(playlistPicked.id, {
+                id: props.songToAdd.id,
+                name: props.songToAdd.name,
+              });
 
-              // responseStatus.then(status =>
-              //   FlashMessage(
-              //     status,
-              //     flashMessageSuccess,
-              //     flashMessageFailure,
-              //   ),
-              // );
+              responseStatus.then(status => {
+                FlashMessage(status, flashMessageSuccess, flashMessageFailure);
+
+                if (status) {
+                  setMustFetch(true);
+                }
+              });
+
               props.setModalVisibility(false);
             }}>
             Off Course
@@ -63,7 +90,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     backgroundColor: 'white',
-    padding: 20,
+    paddingHorizontal: 20,
   },
   actionContainer: {
     flexDirection: 'row',

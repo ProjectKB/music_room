@@ -52,6 +52,7 @@ const Search = props => {
       ) : null}
       <SearchElementList
         navigation={props.navigation}
+        searchQuery={searchQuery}
         chipSelected={chipSelected}
         collection={props.collection}
         setCollection={props.setCollection}

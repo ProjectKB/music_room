@@ -63,3 +63,17 @@ export const DeleteSong = async (setter, playlistId, songId) => {
     return false;
   }
 };
+
+export const AddSong = async (playlistId, song) => {
+  try {
+    const response = await axios.put(
+      URL + '/playlists/addSong/' + playlistId,
+      JSON.stringify(song),
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};

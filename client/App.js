@@ -10,6 +10,7 @@ import TabBar from './components/TabBar';
 import ShowPlayerContext from './contexts/ShowPlayerContext';
 import PlaylistContext from './contexts/PlaylistContext';
 import SongIndexContext from './contexts/SongIndexContext';
+import FetchContext from './contexts/FetchContext';
 import PlaylistStackNavigator from './components/Playlist/PlaylistStackNavigator';
 import FlashMessage from 'react-native-flash-message';
 import SearchStackNavigator from './components/Search/SearchStackNavigator';
@@ -20,26 +21,32 @@ const App = () => {
   const [showPlayer, setShowPlayer] = useState(false);
   const [playlistPlayed, setPlaylistPlayed] = useState([]);
   const [songIndex, setSongIndex] = useState(-1);
+  const [mustFetch, setMustFetch] = useState(false);
 
   return (
     <>
       <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
         <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
           <PlaylistContext.Provider value={{playlistPlayed, setPlaylistPlayed}}>
-            <NavigationContainer>
-              <Tab.Navigator
-                tabBar={props => <TabBar {...props} />}
-                tabBarPosition="bottom">
-                <Tab.Screen name={'Home'} component={Home} />
-                <Tab.Screen
-                  name={'Playlist'}
-                  component={PlaylistStackNavigator}
-                />
-                <Tab.Screen name={'Search'} component={SearchStackNavigator} />
-                <Tab.Screen name={'Event'} component={Event} />
-                <Tab.Screen name={'Chat'} component={Chat} />
-              </Tab.Navigator>
-            </NavigationContainer>
+            <FetchContext.Provider value={{mustFetch, setMustFetch}}>
+              <NavigationContainer>
+                <Tab.Navigator
+                  tabBar={props => <TabBar {...props} />}
+                  tabBarPosition="bottom">
+                  <Tab.Screen name={'Home'} component={Home} />
+                  <Tab.Screen
+                    name={'Playlist'}
+                    component={PlaylistStackNavigator}
+                  />
+                  <Tab.Screen
+                    name={'Search'}
+                    component={SearchStackNavigator}
+                  />
+                  <Tab.Screen name={'Event'} component={Event} />
+                  <Tab.Screen name={'Chat'} component={Chat} />
+                </Tab.Navigator>
+              </NavigationContainer>
+            </FetchContext.Provider>
           </PlaylistContext.Provider>
         </SongIndexContext.Provider>
       </ShowPlayerContext.Provider>

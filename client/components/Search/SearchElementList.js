@@ -30,7 +30,12 @@ const SearchElementList = props => {
     } else {
       return null;
     }
-  }, [props.collection, props.deletionPlaylistModal, playlistToDeleteIndex]);
+  }, [
+    props.collection,
+    props.deletionPlaylistModal,
+    playlistToDeleteIndex,
+    props.searchQuery,
+  ]);
 
   return <SearchElementListCallback />;
 };
