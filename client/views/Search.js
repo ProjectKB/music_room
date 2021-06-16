@@ -12,6 +12,7 @@ const Search = props => {
   const [searchQuery, setSearchQuery] = useState('');
   const [chipSelected, setChipSelected] = useState('Playlist');
   const [maxResults, setMaxResults] = useState(10);
+  const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
 
   const fetchGlobal = useCallback(() => {
     if (searchQuery !== '') {
@@ -42,10 +43,7 @@ const Search = props => {
 
   return (
     <View style={{flex: 1}}>
-      <SearchBar
-        setSearchQuery={setSearchQuery}
-        opacity={props.deletionPlaylistModal ? 0.4 : 1}
-      />
+      <SearchBar setSearchQuery={setSearchQuery} />
       {searchQuery !== '' ? (
         <SearchChips
           chipSelected={chipSelected}
@@ -58,8 +56,8 @@ const Search = props => {
         collection={props.collection}
         setCollection={props.setCollection}
         setMaxResults={setMaxResults}
-        deletionPlaylistModal={props.deletionPlaylistModal}
-        setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+        deletionPlaylistModal={deletionPlaylistModal}
+        setDeletionPlaylistModal={setDeletionPlaylistModal}
       />
     </View>
   );

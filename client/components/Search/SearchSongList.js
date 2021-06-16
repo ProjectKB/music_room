@@ -13,6 +13,8 @@ const SearchSongList = props => {
             picture={elem.snippet.thumbnails.default.url}
             title={elem.snippet.title}
             channelTitle={elem.snippet.channelTitle}
+            setSongToAdd={props.setSongToAdd}
+            setModalVisibility={props.setModalVisibility}
           />
         );
       });

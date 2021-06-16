@@ -9,7 +9,7 @@ const SearchBar = props => {
 
   return (
     <Searchbar
-      style={[styles.searchBar, {opacity: props.opacity}]}
+      style={styles.searchBar}
       selectionColor="gray"
       placeholder="Search"
       onChangeText={onChangeSearch}

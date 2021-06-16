@@ -5,6 +5,7 @@ import {DeleteSong, FetchPlaylistSong} from '../api/PlaylistEndpoint';
 import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
 import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
+import CustomModal from '../components/CustomModal';
 
 const SongsList = props => {
   const [playlistSongCollection, setPlaylistSongCollection] =
@@ -32,10 +33,7 @@ const SongsList = props => {
 
   return (
     <>
-      <SearchBar
-        setSearchQuery={setSearchQuery}
-        opacity={deletionPlaylistModal ? 0.4 : 1}
-      />
+      <SearchBar setSearchQuery={setSearchQuery} />
       <ScrollView style={styles.playlistList}>
         <PlaylistSongList
           playlistSongCollection={
@@ -48,24 +46,23 @@ const SongsList = props => {
           playlist={props.playlist}
         />
       </ScrollView>
-      <PlaylistDeletionModal
-        deletionPlaylistModal={deletionPlaylistModal}
-        setDeletionPlaylistModal={setDeletionPlaylistModal}
-        toDelete={
-          playlistSongCollection !== undefined
-            ? playlistSongCollection[songToDeleteIndex]
-            : undefined
-        }
-        deleteFunction={
-          playlistSongCollection !== undefined
-            ? () =>
-                DeleteSong(
-                  props.setPlaylistCollection,
-                  props.playlist.id,
-                  playlistSongCollection[songToDeleteIndex].id,
-                )
-            : undefined
-        }
+      <CustomModal
+        modalVisibility={deletionPlaylistModal}
+        setModalVisibility={setDeletionPlaylistModal}
+        secu={playlistSongCollection}
+        Component={() => (
+          <PlaylistDeletionModal
+            setDeletionPlaylistModal={setDeletionPlaylistModal}
+            toDelete={playlistSongCollection[songToDeleteIndex]}
+            deleteFunction={() =>
+              DeleteSong(
+                props.setPlaylistCollection,
+                props.playlist.id,
+                playlistSongCollection[songToDeleteIndex].id,
+              )
+            }
+          />
+        )}
       />
     </>
   );

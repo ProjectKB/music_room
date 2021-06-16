@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import SearchSong from './SearchSong';
 import PlaylistContent from '../Playlist/PlaylistContent';
 
 const SearchElementList = props => {
+  const [playlistToDeleteIndex, setPlaylistToDeleteIndex] = useState(undefined);
+
   const SearchElementListCallback = useCallback(() => {
     if (props.chipSelected === 'Song') {
       return (
@@ -21,12 +23,14 @@ const SearchElementList = props => {
           setPlaylistCollection={props.setCollection}
           deletionPlaylistModal={props.deletionPlaylistModal}
           setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+          playlistToDeleteIndex={playlistToDeleteIndex}
+          setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
         />
       );
     } else {
       return null;
     }
-  }, [props.collection]);
+  }, [props.collection, props.deletionPlaylistModal, playlistToDeleteIndex]);
 
   return <SearchElementListCallback />;
 };

@@ -17,8 +17,6 @@ const SearchStackNavigator = () => {
         children={props => (
           <Search
             navigation={props.navigation}
-            deletionPlaylistModal={deletionPlaylistModal}
-            setDeletionPlaylistModal={setDeletionPlaylistModal}
             collection={collection}
             setCollection={setCollection}
           />

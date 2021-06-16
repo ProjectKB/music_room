@@ -6,6 +6,7 @@ import PlaylistContent from '../components/Playlist/PlaylistContent';
 
 const Playlist = props => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [playlistToDeleteIndex, setPlaylistToDeleteIndex] = useState(undefined);
 
   const fetchPlaylist = useCallback(() => {
     FetchPlaylistList(props.setPlaylistCollection, searchQuery);
@@ -17,12 +18,7 @@ const Playlist = props => {
 
   return (
     <>
-      <SearchBar
-        setSearchQuery={setSearchQuery}
-        opacity={
-          props.creationPlaylistModal || props.deletionPlaylistModal ? 0.4 : 1
-        }
-      />
+      <SearchBar setSearchQuery={setSearchQuery} />
       <PlaylistContent
         navigation={props.navigation}
         playlistCollection={props.playlistCollection}
@@ -31,6 +27,8 @@ const Playlist = props => {
         setCreationPlaylistModal={props.setCreationPlaylistModal}
         deletionPlaylistModal={props.deletionPlaylistModal}
         setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+        playlistToDeleteIndex={playlistToDeleteIndex}
+        setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
       />
     </>
   );
