@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = 'http://192.168.0.12:8080';
+const URL = 'http://10.19.1.129:8080';
 
 export const FetchPlaylistList = async (setter, query) => {
   try {
@@ -40,24 +40,24 @@ export const CreatePlaylist = async (setter, playlistName) => {
   }
 };
 
-export const DeletePlaylist = async (setter, playlistId) => {
+export const DeletePlaylist = async playlistId => {
   try {
     await axios.delete(URL + '/playlists/' + playlistId);
 
-    return FetchPlaylistList(setter, '');
+    return true;
   } catch (error) {
     return false;
   }
 };
 
-export const DeleteSong = async (setter, playlistId, songId) => {
+export const DeleteSong = async (playlistId, songId) => {
   try {
     await axios.put(
       URL + '/playlists/removeSong/' + playlistId,
       JSON.stringify({id: songId}),
     );
 
-    return FetchPlaylistList(setter, '');
+    return true;
   } catch (error) {
     console.log(error);
     return false;

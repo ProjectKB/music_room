@@ -4,7 +4,12 @@ import PlaylistElement from './PlaylistElement';
 
 const PlaylistList = props => {
   const PlaylistCollection = () => {
-    if (props.playlistCollection.length !== 0) {
+    if (
+      props.playlistCollection.length === 0 ||
+      (props.screen === 'Search' && props.searchQuery === '')
+    ) {
+      return <Text>There is no playlist here.</Text>;
+    } else {
       return props.playlistCollection.map((elem, index) => {
         return (
           <PlaylistElement
@@ -17,8 +22,6 @@ const PlaylistList = props => {
           />
         );
       });
-    } else {
-      return <Text>There is no playlist here.</Text>;
     }
   };
 

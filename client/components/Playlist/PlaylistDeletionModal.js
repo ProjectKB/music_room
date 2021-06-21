@@ -1,11 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Title} from 'react-native-paper';
 import {FlashMessage} from '../FlashMessage';
+import FetchContext from '../../contexts/FetchContext';
 
 const PlaylistDeletionModal = props => {
   const [inputIsEmpty, setInputIsEmpty] = useState(false);
+
+  const {setMustFetch} = useContext(FetchContext);
 
   if (props.toDelete !== undefined) {
     const flashMessageSuccess = `${props.toDelete.name} has been successfully deleted!`;
@@ -34,13 +37,15 @@ const PlaylistDeletionModal = props => {
               onPress={() => {
                 const responseStatus = props.deleteFunction();
 
-                responseStatus.then(status =>
+                responseStatus.then(status => {
                   FlashMessage(
                     status,
                     flashMessageSuccess,
                     flashMessageFailure,
-                  ),
-                );
+                  );
+
+                  setMustFetch(true);
+                });
                 props.setDeletionPlaylistModal(false);
               }}>
               I'm sure

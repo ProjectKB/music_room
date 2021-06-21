@@ -56,7 +56,6 @@ const SongsList = props => {
             toDelete={playlistSongCollection[songToDeleteIndex]}
             deleteFunction={() =>
               DeleteSong(
-                props.setPlaylistCollection,
                 props.playlist.id,
                 playlistSongCollection[songToDeleteIndex].id,
               )

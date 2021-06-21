@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
 import CustomModal from '../CustomModal';
 import SearchAddSongModal from './SearchAddSongModal';
 import SearchSongList from './SearchSongList';
-import {FetchPlaylistList} from '../../api/PlaylistEndpoint';
 
 const SearchSong = props => {
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
@@ -13,10 +12,6 @@ const SearchSong = props => {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [songToAdd, setSongToAdd] = useState(undefined);
   const [playlistCollection, setPlaylistCollection] = useState(undefined);
-
-  useEffect(() => {
-    FetchPlaylistList(setPlaylistCollection, '');
-  }, []);
 
   return (
     <>

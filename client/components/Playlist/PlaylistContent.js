@@ -15,6 +15,8 @@ const PlaylistContent = props => (
         navigation={props.navigation}
         setDeletionPlaylistModal={props.setDeletionPlaylistModal}
         setPlaylistToDeleteIndex={props.setPlaylistToDeleteIndex}
+        screen={props.screen}
+        searchQuery={props.searchQuery}
       />
     </ScrollView>
     <CustomModal
@@ -38,7 +40,6 @@ const PlaylistContent = props => (
           toDelete={props.playlistCollection[props.playlistToDeleteIndex]}
           deleteFunction={() =>
             DeletePlaylist(
-              props.setPlaylistCollection,
               props.playlistCollection[props.playlistToDeleteIndex].id,
             )
           }

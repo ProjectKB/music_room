@@ -25,6 +25,8 @@ const SearchElementList = props => {
           setDeletionPlaylistModal={props.setDeletionPlaylistModal}
           playlistToDeleteIndex={playlistToDeleteIndex}
           setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
+          screen="Search"
+          searchQuery={props.searchQuery}
         />
       );
     } else {
