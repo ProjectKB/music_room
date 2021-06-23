@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import {Chip} from 'react-native-paper';
 
 const SearchChips = props => {
@@ -16,24 +16,24 @@ const SearchChips = props => {
         Global
       </Chip>
       <Chip
-        mode={chipSelected === 'Songs' ? 'outlined' : 'flat'}
-        onPress={() => setChipSelected('Songs')}>
-        Songs
+        mode={chipSelected === 'Song' ? 'outlined' : 'flat'}
+        onPress={() => setChipSelected('Song')}>
+        Song
       </Chip>
       <Chip
-        mode={chipSelected === 'Playlists' ? 'outlined' : 'flat'}
-        onPress={() => setChipSelected('Playlists')}>
-        Playlists
+        mode={chipSelected === 'Playlist' ? 'outlined' : 'flat'}
+        onPress={() => setChipSelected('Playlist')}>
+        Playlist
       </Chip>
       <Chip
-        mode={chipSelected === 'Events' ? 'outlined' : 'flat'}
-        onPress={() => setChipSelected('Events')}>
-        Events
+        mode={chipSelected === 'Event' ? 'outlined' : 'flat'}
+        onPress={() => setChipSelected('Event')}>
+        Event
       </Chip>
       <Chip
-        mode={chipSelected === 'Users' ? 'outlined' : 'flat'}
-        onPress={() => setChipSelected('Users')}>
-        Users
+        mode={chipSelected === 'User' ? 'outlined' : 'flat'}
+        onPress={() => setChipSelected('User')}>
+        User
       </Chip>
     </View>
   );

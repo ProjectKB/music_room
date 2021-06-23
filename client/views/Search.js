@@ -1,33 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useContext} from 'react';
 import {View} from 'react-native';
-import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
+import SearchBar from '../components/SearchBar';
 import SearchChips from '../components/Search/SearchChips';
-import SearchContext from '../contexts/SearchContext';
-import SearchSong from '../components/Search/SearchSong';
 import {ReadSong} from '../api/SearchEndpoint';
+import {FetchPlaylistList} from '../api/PlaylistEndpoint';
+import SearchElementList from '../components/Search/SearchElementList';
+import FetchContext from '../contexts/FetchContext';
 
-const Search = () => {
+const Search = props => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [chipSelected, setChipSelected] = useState('Songs');
-  const [collection, setCollection] = useState([]);
+  const [chipSelected, setChipSelected] = useState('Playlist');
   const [maxResults, setMaxResults] = useState(10);
+  const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
+  const [playlistCollection, setPlaylistCollection] = useState(undefined);
+
+  const {mustFetch, setMustFetch} = useContext(FetchContext);
 
   const fetchGlobal = useCallback(() => {
-    if (searchQuery !== '') {
-      if (chipSelected === 'Songs') {
-        ReadSong(setCollection, searchQuery);
-        setMaxResults(10);
+    if (chipSelected === 'Song') {
+      ReadSong(props.setCollection, searchQuery);
+      FetchPlaylistList(setPlaylistCollection, '');
+      setMaxResults(10);
+    } else if (chipSelected === 'Playlist') {
+      FetchPlaylistList(props.setCollection, searchQuery);
+
+      if (setMustFetch) {
+        setMustFetch(false);
       }
-    } else {
-      setCollection([]);
     }
-  }, [searchQuery]);
+  }, [searchQuery, chipSelected, mustFetch]);
 
   const riseMaxResults = useCallback(() => {
     if (searchQuery !== '') {
-      ReadSong(setCollection, searchQuery, maxResults);
+      ReadSong(props.setCollection, searchQuery, maxResults);
     }
   }, [maxResults]);
 
@@ -39,33 +46,27 @@ const Search = () => {
     riseMaxResults();
   }, [riseMaxResults]);
 
-  const ElementList = () => {
-    if (chipSelected === 'Songs') {
-      return (
-        <SearchSong
-          collection={collection}
-          setCollection={setCollection}
-          setMaxResults={setMaxResults}
-        />
-      );
-    } else {
-      return null;
-    }
-  };
-
   return (
-    <SearchContext.Provider value={{searchQuery, setSearchQuery}}>
-      <View style={{flex: 1}}>
-        <PlaylistSearchBar context={SearchContext} opacity={1} />
-        {searchQuery !== '' ? (
-          <SearchChips
-            chipSelected={chipSelected}
-            setChipSelected={setChipSelected}
-          />
-        ) : null}
-        <ElementList />
-      </View>
-    </SearchContext.Provider>
+    <View style={{flex: 1}}>
+      <SearchBar setSearchQuery={setSearchQuery} />
+      {searchQuery !== '' ? (
+        <SearchChips
+          chipSelected={chipSelected}
+          setChipSelected={setChipSelected}
+        />
+      ) : null}
+      <SearchElementList
+        navigation={props.navigation}
+        searchQuery={searchQuery}
+        chipSelected={chipSelected}
+        collection={props.collection}
+        setCollection={props.setCollection}
+        playlistCollection={playlistCollection}
+        setMaxResults={setMaxResults}
+        deletionPlaylistModal={deletionPlaylistModal}
+        setDeletionPlaylistModal={setDeletionPlaylistModal}
+      />
+    </View>
   );
 };
 

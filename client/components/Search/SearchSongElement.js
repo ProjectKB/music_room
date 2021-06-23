@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,25 +8,56 @@ import {
   ScrollView,
 } from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
+import PlaylistContext from '../../contexts/PlaylistContext';
+import SongIndexContext from '../../contexts/SongIndexContext';
+import ShowPlayerContext from '../../contexts/ShowPlayerContext';
 
-const SearchSongElement = props => (
-  <>
-    <TouchableOpacity style={styles.searchElementContainer}>
-      <Image style={styles.pictureContainer} source={{uri: props.picture}} />
-      <View>
-        <ScrollView
-          horizontal={true}
-          contentContainerStyle={{alignItems: 'flex-end'}}>
-          <Subheading>{props.title}</Subheading>
-        </ScrollView>
-        <ScrollView horizontal={true}>
-          <Text>{props.channelTitle}</Text>
-        </ScrollView>
-      </View>
-    </TouchableOpacity>
-    <Divider />
-  </>
-);
+const SearchSongElement = props => {
+  const {setPlaylistPlayed} = useContext(PlaylistContext);
+  const {setSongIndex} = useContext(SongIndexContext);
+  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
+
+  const fakePlaylistTemplate = {
+    songs: [
+      {
+        id: props.id,
+        name: props.title,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <TouchableOpacity
+        style={styles.searchElementContainer}
+        onPress={() => {
+          if (!showPlayer) {
+            setShowPlayer(true);
+          }
+
+          setPlaylistPlayed(fakePlaylistTemplate);
+          setSongIndex(0);
+        }}
+        onLongPress={() => {
+          props.setSongToAdd({id: props.id, name: props.title});
+          props.setModalVisibility(true);
+        }}>
+        <Image style={styles.pictureContainer} source={{uri: props.picture}} />
+        <View>
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={{alignItems: 'flex-end'}}>
+            <Subheading>{props.title}</Subheading>
+          </ScrollView>
+          <ScrollView horizontal={true}>
+            <Text>{props.channelTitle}</Text>
+          </ScrollView>
+        </View>
+      </TouchableOpacity>
+      <Divider />
+    </>
+  );
+};
 
 export default SearchSongElement;
 

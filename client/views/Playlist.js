@@ -1,64 +1,44 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
-import PlaylistList from '../components/Playlist/PlaylistList';
-import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
-import {DeletePlaylist, FetchPlaylistList} from '../api/PlaylistEndpoint';
-import PlaylistListSearchContext from '../contexts/PlaylistListSearchContext';
-import PlaylistCreationModal from '../components/Playlist/PlaylistCreationModal';
-import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
+import React, {useState, useEffect, useCallback, useContext} from 'react';
+import SearchBar from '../components/SearchBar';
+import {FetchPlaylistList} from '../api/PlaylistEndpoint';
+import PlaylistContent from '../components/Playlist/PlaylistContent';
+import FetchContext from '../contexts/FetchContext';
 
 const Playlist = props => {
   const [searchQuery, setSearchQuery] = useState('');
   const [playlistToDeleteIndex, setPlaylistToDeleteIndex] = useState(undefined);
 
+  const {mustFetch, setMustFetch} = useContext(FetchContext);
+
   const fetchPlaylist = useCallback(() => {
     FetchPlaylistList(props.setPlaylistCollection, searchQuery);
-  }, [searchQuery]);
+
+    if (mustFetch) {
+      setMustFetch(false);
+    }
+  }, [searchQuery, mustFetch]);
 
   useEffect(() => {
     fetchPlaylist();
   }, [fetchPlaylist]);
 
   return (
-    <PlaylistListSearchContext.Provider value={{searchQuery, setSearchQuery}}>
-      <PlaylistSearchBar
-        context={PlaylistListSearchContext}
-        opacity={
-          props.creationPlaylistModal || props.deletionPlaylistModal ? 0.4 : 1
-        }
-      />
-      <ScrollView style={{margin: 10}}>
-        <PlaylistList
-          playlistCollection={props.playlistCollection}
-          navigation={props.navigation}
-          setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-          setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
-        />
-      </ScrollView>
-      <PlaylistCreationModal
+    <>
+      <SearchBar setSearchQuery={setSearchQuery} />
+      <PlaylistContent
+        navigation={props.navigation}
+        playlistCollection={props.playlistCollection}
+        setPlaylistCollection={props.setPlaylistCollection}
         creationPlaylistModal={props.creationPlaylistModal}
         setCreationPlaylistModal={props.setCreationPlaylistModal}
-        setPlaylistCollection={props.setPlaylistCollection}
-      />
-      <PlaylistDeletionModal
         deletionPlaylistModal={props.deletionPlaylistModal}
         setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-        toDelete={props.playlistCollection[playlistToDeleteIndex]}
-        deleteFunction={
-          props.playlistCollection[playlistToDeleteIndex] !== undefined
-            ? () =>
-                DeletePlaylist(
-                  props.setPlaylistCollection,
-                  props.playlistCollection[playlistToDeleteIndex].id,
-                )
-            : undefined
-        }
+        playlistToDeleteIndex={playlistToDeleteIndex}
+        setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
       />
-    </PlaylistListSearchContext.Provider>
+    </>
   );
 };
 
 export default Playlist;
-
-const styles = StyleSheet.create({});

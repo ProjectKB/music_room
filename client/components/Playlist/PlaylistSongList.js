@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 import PlaylistSongElement from './PlaylistSongElement';
 
@@ -18,6 +17,7 @@ const PlaylistSongList = props => {
             deletionPlaylistModal={props.deletionPlaylistModal}
             setSongToDeleteIndex={props.setSongToDeleteIndex}
             index={index}
+            playlist={props.playlist}
           />
         );
       });
@@ -30,5 +30,3 @@ const PlaylistSongList = props => {
 };
 
 export default PlaylistSongList;
-
-const styles = StyleSheet.create({});

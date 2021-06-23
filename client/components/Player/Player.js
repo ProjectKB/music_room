@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-native/no-inline-styles */
 import React, {
   useState,
   useCallback,
@@ -15,20 +15,12 @@ import {faPlay, faPause, faMusic} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import SongIndexContext from '../../contexts/SongIndexContext';
-import ShowPlayerContext from '../../contexts/ShowPlayerContext';
 import PlayerDetails from './PlayerDetails';
 import PlayPauseButton from './PlayPauseButton';
 
 const Player = () => {
-  const {
-    playlistDisplayed,
-    setPlaylistDisplayed,
-    playlistPlayed,
-    setPlaylistPlayed,
-  } = useContext(PlaylistContext);
-
+  const {playlistPlayed} = useContext(PlaylistContext);
   const {songIndex, setSongIndex} = useContext(SongIndexContext);
-  const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
 
   const [playing, setPlaying] = useState(false);
 

@@ -9,7 +9,7 @@ const PlaylistStackHeader = props => (
     <Headline style={styles.playlistStackHeaderTitle}>
       {props.navigation.children}
     </Headline>
-    {!props.displayAddButton ? (
+    {props.displayAddButton ? (
       <TouchableOpacity onPress={props.addAction}>
         <FontAwesomeIcon size={20} icon={faPlus} />
       </TouchableOpacity>

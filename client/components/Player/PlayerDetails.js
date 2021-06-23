@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useContext} from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -23,12 +24,7 @@ const PlayerDetails = props => {
   const [playing, setPlaying] = [props.playing, props.setPlaying];
   const [index, setIndex] = [props.index, props.setIndex];
 
-  const {
-    playlistDisplayed,
-    setPlaylistDisplayed,
-    playlistPlayed,
-    setPlaylistPlayed,
-  } = useContext(PlaylistContext);
+  const {playlistPlayed} = useContext(PlaylistContext);
 
   const displayTime = toConvert => {
     let h = Math.trunc(toConvert / 3600);

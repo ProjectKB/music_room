@@ -1,8 +1,8 @@
 import {createContext} from 'react';
 
-const PlaylistContext = createContext({
+const FetchContext = createContext({
   getter: [],
   setter: () => {},
 });
 
-export default PlaylistContext;
+export default FetchContext;

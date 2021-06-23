@@ -1,77 +1,69 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import PlaylistSongSearchContext from '../contexts/PlaylistSongSearchContext';
+import React, {useState, useEffect, useCallback} from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
 import {DeleteSong, FetchPlaylistSong} from '../api/PlaylistEndpoint';
-import PlaylistSearchBar from '../components/Playlist/PlaylistSearchBar';
+import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
-import PlaylistContext from '../contexts/PlaylistContext';
 import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
+import CustomModal from '../components/CustomModal';
 
 const SongsList = props => {
   const [playlistSongCollection, setPlaylistSongCollection] =
     useState(undefined);
   const [searchQuery, setSearchQuery] = useState('');
   const [songToDeleteIndex, setSongToDeleteIndex] = useState(undefined);
-
-  const {playlistDisplayed, setPlaylistDisplayed} = useContext(PlaylistContext);
+  const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
 
   const fetchPlaylistSong = useCallback(() => {
     if (playlistSongCollection !== undefined) {
       FetchPlaylistSong(
         setPlaylistSongCollection,
         searchQuery,
-        playlistDisplayed.id,
+        props.playlist.id,
       );
     } else {
-      setPlaylistSongCollection(playlistDisplayed.songs);
+      setPlaylistSongCollection(props.playlist.songs);
     }
   }, [searchQuery, props.playlistCollection]);
 
   useEffect(() => {
-    props.navigation.setOptions({title: playlistDisplayed.name});
+    props.navigation.setOptions({title: props.playlist.name});
     fetchPlaylistSong();
   }, [fetchPlaylistSong]);
 
   return (
-    <PlaylistSongSearchContext.Provider value={{searchQuery, setSearchQuery}}>
-      <PlaylistSearchBar
-        context={PlaylistSongSearchContext}
-        opacity={
-          props.creationPlaylistModal || props.deletionPlaylistModal ? 0.4 : 1
-        }
-      />
+    <>
+      <SearchBar setSearchQuery={setSearchQuery} />
       <ScrollView style={styles.playlistList}>
         <PlaylistSongList
           playlistSongCollection={
             playlistSongCollection === undefined
-              ? playlistDisplayed.songs
+              ? props.playlist.songs
               : playlistSongCollection
           }
-          setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+          setDeletionPlaylistModal={setDeletionPlaylistModal}
           setSongToDeleteIndex={setSongToDeleteIndex}
+          playlist={props.playlist}
         />
       </ScrollView>
-      <PlaylistDeletionModal
-        deletionPlaylistModal={props.deletionPlaylistModal}
-        setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-        toDelete={
-          playlistSongCollection !== undefined
-            ? playlistSongCollection[songToDeleteIndex]
-            : undefined
-        }
-        deleteFunction={
-          playlistSongCollection !== undefined
-            ? () =>
-                DeleteSong(
-                  props.setPlaylistCollection,
-                  playlistDisplayed.id,
-                  playlistSongCollection[songToDeleteIndex].id,
-                )
-            : undefined
-        }
+      <CustomModal
+        modalVisibility={deletionPlaylistModal}
+        setModalVisibility={setDeletionPlaylistModal}
+        secu={playlistSongCollection}
+        Component={() => (
+          <PlaylistDeletionModal
+            setDeletionPlaylistModal={setDeletionPlaylistModal}
+            toDelete={playlistSongCollection[songToDeleteIndex]}
+            deleteFunction={() =>
+              DeleteSong(
+                props.playlist.id,
+                playlistSongCollection[songToDeleteIndex].id,
+              )
+            }
+          />
+        )}
       />
-    </PlaylistSongSearchContext.Provider>
+    </>
   );
 };
 

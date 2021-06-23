@@ -1,9 +1,9 @@
-import React, {useContext} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Divider, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCameraRetro} from '@fortawesome/free-solid-svg-icons';
-import PlaylistContext from '../../contexts/PlaylistContext';
 
 const PlaylistElement = props => {
   const {
@@ -30,10 +30,9 @@ const PlaylistElement = props => {
     <>
       <TouchableOpacity
         style={styles.playlistElementContainer}
-        onPress={() => {
-          setPlaylistDisplayed(props.playlist);
-          props.navigation.navigate('SongDetails');
-        }}
+        onPress={() =>
+          props.navigation.navigate('SongDetails', {playlist: props.playlist})
+        }
         onLongPress={() => {
           props.setPlaylistToDeleteIndex(props.index);
           props.setDeletionPlaylistModal(true);
