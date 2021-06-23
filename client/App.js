@@ -17,9 +17,9 @@ const Stack = createStackNavigator();
 
 const App = () => {
   
-  global.URL = 'http://10.18.168.38:8080';
+  // global.URL = 'http://192.168.1.65:8080';
 
-  // global.URL = 'http://10.18.168.38:8080';
+  global.URL = 'http://10.18.168.38:8080';
 
   const playlistStackNavigation = () => {
     return (
