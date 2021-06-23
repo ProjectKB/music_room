@@ -23,6 +23,8 @@ const App = () => {
   const [songIndex, setSongIndex] = useState(-1);
   const [mustFetch, setMustFetch] = useState(false);
 
+  global.URL = 'http://10.18.168.38:8080';
+
   return (
     <>
       <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>

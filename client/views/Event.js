@@ -38,7 +38,7 @@ const Event = () => {
 		}
 		else
 		{
-			Alert.alert("invalid form", "");
+			alert("invalid form");
 		}
 	}
 	
