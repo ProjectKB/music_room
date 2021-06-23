@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-const URL = 'http://192.168.0.12:8080';
-
 export const FetchPlaylistList = async (setter, query) => {
   try {
     const response = await axios.post(
-      URL + '/playlists/searchPlaylist',
+      global.URL + '/playlists/searchPlaylist',
       JSON.stringify(query),
     );
 
@@ -20,7 +18,7 @@ export const FetchPlaylistList = async (setter, query) => {
 export const FetchPlaylistSong = async (setter, query, playlistId) => {
   try {
     const response = await axios.post(
-      URL + '/playlists/searchSong/' + playlistId,
+      global.URL + '/playlists/searchSong/' + playlistId,
       JSON.stringify(query),
     );
 
@@ -32,7 +30,7 @@ export const FetchPlaylistSong = async (setter, query, playlistId) => {
 
 export const CreatePlaylist = async (setter, playlistName) => {
   try {
-    await axios.post(URL + '/playlists', JSON.stringify({name: playlistName}));
+    await axios.post(global.URL + '/playlists', JSON.stringify({name: playlistName}));
 
     return FetchPlaylistList(setter, '');
   } catch (error) {
@@ -42,7 +40,7 @@ export const CreatePlaylist = async (setter, playlistName) => {
 
 export const DeletePlaylist = async (setter, playlistId) => {
   try {
-    await axios.delete(URL + '/playlists/' + playlistId);
+    await axios.delete(global.URL + '/playlists/' + playlistId);
 
     return FetchPlaylistList(setter, '');
   } catch (error) {
@@ -53,7 +51,7 @@ export const DeletePlaylist = async (setter, playlistId) => {
 export const DeleteSong = async (setter, playlistId, songId) => {
   try {
     await axios.put(
-      URL + '/playlists/removeSong/' + playlistId,
+      global.URL + '/playlists/removeSong/' + playlistId,
       JSON.stringify({id: songId}),
     );
 
