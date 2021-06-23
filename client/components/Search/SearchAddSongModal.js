@@ -10,7 +10,7 @@ import FetchContext from '../../contexts/FetchContext';
 const SearchAddSongModal = props => {
   const [playlistPicked, setPlaylistPicked] = useState(undefined);
 
-  const {mustFetch, setMustFetch} = useContext(FetchContext);
+  const {setMustFetch} = useContext(FetchContext);
 
   const flashMessageSuccess = `${
     props.songToAdd.name
@@ -82,11 +82,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 25,
   },
   modalContentContainer: {
     marginHorizontal: 25,
     backgroundColor: '#f8f8f8',
     borderRadius: 5,
+    width: '100%',
   },
   picker: {
     backgroundColor: 'white',

@@ -14,12 +14,14 @@ const Search = props => {
   const [chipSelected, setChipSelected] = useState('Playlist');
   const [maxResults, setMaxResults] = useState(10);
   const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
+  const [playlistCollection, setPlaylistCollection] = useState(undefined);
 
   const {mustFetch, setMustFetch} = useContext(FetchContext);
 
   const fetchGlobal = useCallback(() => {
     if (chipSelected === 'Song') {
       ReadSong(props.setCollection, searchQuery);
+      FetchPlaylistList(setPlaylistCollection, '');
       setMaxResults(10);
     } else if (chipSelected === 'Playlist') {
       FetchPlaylistList(props.setCollection, searchQuery);
@@ -59,6 +61,7 @@ const Search = props => {
         chipSelected={chipSelected}
         collection={props.collection}
         setCollection={props.setCollection}
+        playlistCollection={playlistCollection}
         setMaxResults={setMaxResults}
         deletionPlaylistModal={deletionPlaylistModal}
         setDeletionPlaylistModal={setDeletionPlaylistModal}

@@ -11,7 +11,6 @@ const SearchSong = props => {
 
   const [modalVisibility, setModalVisibility] = useState(false);
   const [songToAdd, setSongToAdd] = useState(undefined);
-  const [playlistCollection, setPlaylistCollection] = useState(undefined);
 
   return (
     <>
@@ -37,7 +36,7 @@ const SearchSong = props => {
           <SearchAddSongModal
             songToAdd={songToAdd}
             setModalVisibility={setModalVisibility}
-            playlistCollection={playlistCollection}
+            playlistCollection={props.playlistCollection}
           />
         )}
       />

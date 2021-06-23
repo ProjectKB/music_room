@@ -13,6 +13,7 @@ const SearchElementList = props => {
           collection={props.collection}
           setCollection={props.setCollection}
           setMaxResults={props.setMaxResults}
+          playlistCollection={props.playlistCollection}
         />
       );
     } else if (props.chipSelected === 'Playlist') {
