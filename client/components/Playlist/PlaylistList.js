@@ -7,7 +7,7 @@ const PlaylistList = props => {
       props.playlistCollection.length === 0 ||
       (props.screen === 'Search' && props.searchQuery === '')
     ) {
-      return <Text>There is no playlist here.</Text>;
+      return <Text style={{color: 'white'}}>There is no playlist here.</Text>;
     } else {
       return props.playlistCollection.map((elem, index) => {
         return (
@@ -26,4 +26,3 @@ const PlaylistList = props => {
   return <PlaylistCollection />;
 };
 export default PlaylistList;
-

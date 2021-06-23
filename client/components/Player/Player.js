@@ -100,7 +100,7 @@ const Player = () => {
         songName={playlistPlayed.songs[songIndex].name}
         setCurrentSong={setCurrentSong}
       />
-      <View style={{opacity: 0}}>
+      <View style={{opacity: 1}}>
         <YoutubePlayer
           ref={playerRef}
           height={1}
@@ -113,7 +113,7 @@ const Player = () => {
         />
       </View>
       <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-        <ProgressBar progress={progressionBarValue} color="#806851" />
+        <ProgressBar progress={progressionBarValue} color="#383839" />
         <View style={styles.songPlayerContainer}>
           <View style={styles.songPlayerPicture}>
             <FontAwesomeIcon color="white" size={20} icon={faMusic} />
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#77656a',
+    backgroundColor: '#383839',
   },
   songPlayerPicture: {
     height: 50,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     paddingRight: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3c3132',
+    backgroundColor: '#474749',
     flex: 1,
   },
   songPLayerTitle: {

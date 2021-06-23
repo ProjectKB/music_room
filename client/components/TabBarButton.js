@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 const TabBarButton = props => {
   let color =
     props.state.routeNames[props.state.index] === props.title
-      ? 'black'
+      ? 'white'
       : 'gray';
 
   return (

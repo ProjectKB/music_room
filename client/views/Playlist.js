@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback, useContext} from 'react';
+import {StyleSheet, View} from 'react-native';
 import SearchBar from '../components/SearchBar';
 import {FetchPlaylistList} from '../api/PlaylistEndpoint';
 import PlaylistContent from '../components/Playlist/PlaylistContent';
@@ -24,7 +25,7 @@ const Playlist = props => {
   }, [fetchPlaylist]);
 
   return (
-    <>
+    <View style={styles.mainContainer}>
       <SearchBar setSearchQuery={setSearchQuery} />
       <PlaylistContent
         navigation={props.navigation}
@@ -37,8 +38,15 @@ const Playlist = props => {
         playlistToDeleteIndex={playlistToDeleteIndex}
         setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
       />
-    </>
+    </View>
   );
 };
 
 export default Playlist;
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    backgroundColor: '#1a1a1a',
+    flex: 1,
+  },
+});

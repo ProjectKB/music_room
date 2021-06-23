@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Home from './views/Home';
@@ -23,10 +23,11 @@ const App = () => {
   const [songIndex, setSongIndex] = useState(-1);
   const [mustFetch, setMustFetch] = useState(false);
 
-  global.URL = 'http://10.18.168.38:8080';
+  global.URL = 'http://10.19.1.129:8080';
 
   return (
     <>
+      <StatusBar backgroundColor="#1a1a1a" />
       <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
         <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
           <PlaylistContext.Provider value={{playlistPlayed, setPlaylistPlayed}}>

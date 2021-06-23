@@ -4,7 +4,6 @@ import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faChevronDown,
-  faEllipsisV,
   faPlayCircle,
   faPauseCircle,
   faStepBackward,
@@ -59,9 +58,6 @@ const PlayerDetails = props => {
       <View style={styles.playerDetailsHeaderContainer}>
         <TouchableOpacity onPress={() => setModalVisible(false)}>
           <FontAwesomeIcon color="white" size={20} icon={faChevronDown} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <FontAwesomeIcon color="white" size={20} icon={faEllipsisV} />
         </TouchableOpacity>
       </View>
       <View style={styles.pictureContainer}>
@@ -122,12 +118,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#77656a',
+    backgroundColor: '#383839',
     padding: 15,
   },
   pictureContainer: {
     flex: 4,
-    backgroundColor: '#77656a',
+    backgroundColor: '#383839',
     padding: 30,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -138,12 +134,13 @@ const styles = StyleSheet.create({
   pictureSize: {
     width: '100%',
     height: '90%',
-    backgroundColor: '#3c3132',
+    borderRadius: 10,
+    backgroundColor: '#292929',
   },
   playerActionContainer: {
     flex: 3,
     paddingHorizontal: 40,
-    backgroundColor: '#77656a',
+    backgroundColor: '#383839',
   },
   progressBarTime: {
     flexDirection: 'row',

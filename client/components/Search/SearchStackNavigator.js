@@ -23,6 +23,7 @@ const SearchStackNavigator = () => {
         )}
         options={{
           title: 'Search',
+          headerStyle: {backgroundColor: '#1a1a1a'},
           headerTitle: props => (
             <PlaylistStackHeader navigation={props} displayAddButton={false} />
           ),
@@ -42,6 +43,8 @@ const SearchStackNavigator = () => {
         )}
         options={{
           title: 'Playlist Song',
+          headerStyle: {backgroundColor: '#1a1a1a'},
+          headerTintColor: 'white',
           headerTitle: props => (
             <PlaylistStackHeader navigation={props} displayAddButton={false} />
           ),

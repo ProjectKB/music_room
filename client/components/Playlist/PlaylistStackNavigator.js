@@ -28,6 +28,7 @@ const PlaylistStackNavigator = () => {
         )}
         options={{
           title: 'Playlist',
+          headerStyle: {backgroundColor: '#1a1a1a'},
           headerTitle: props => (
             <PlaylistStackHeader
               navigation={props}
@@ -53,6 +54,8 @@ const PlaylistStackNavigator = () => {
         )}
         options={{
           title: 'Playlist Song',
+          headerStyle: {backgroundColor: '#1a1a1a'},
+          headerTintColor: 'white',
           headerTitle: props => (
             <PlaylistStackHeader navigation={props} displayAddButton={false} />
           ),

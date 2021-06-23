@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useCallback, useEffect, useContext} from 'react';
-import {View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import SearchBar from '../components/SearchBar';
 import SearchChips from '../components/Search/SearchChips';
 import {ReadSong} from '../api/SearchEndpoint';
@@ -47,7 +47,7 @@ const Search = props => {
   }, [riseMaxResults]);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.mainContainer}>
       <SearchBar setSearchQuery={setSearchQuery} />
       {searchQuery !== '' ? (
         <SearchChips
@@ -71,3 +71,10 @@ const Search = props => {
 };
 
 export default Search;
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    backgroundColor: '#1a1a1a',
+    flex: 1,
+  },
+});

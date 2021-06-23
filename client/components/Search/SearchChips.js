@@ -8,30 +8,38 @@ const SearchChips = props => {
     props.setChipSelected,
   ];
 
+  const chipColor = chipName =>
+    chipSelected === chipName ? '#706f71' : '#474749';
+
   return (
     <View style={styles.chipsContainer}>
       <Chip
-        mode={chipSelected === 'Global' ? 'outlined' : 'flat'}
+        style={{backgroundColor: chipColor('Global')}}
+        textStyle={{color: 'white'}}
         onPress={() => setChipSelected('Global')}>
         Global
       </Chip>
       <Chip
-        mode={chipSelected === 'Song' ? 'outlined' : 'flat'}
+        style={{backgroundColor: chipColor('Song')}}
+        textStyle={{color: 'white'}}
         onPress={() => setChipSelected('Song')}>
         Song
       </Chip>
       <Chip
-        mode={chipSelected === 'Playlist' ? 'outlined' : 'flat'}
+        style={{backgroundColor: chipColor('Playlist')}}
+        textStyle={{color: 'white'}}
         onPress={() => setChipSelected('Playlist')}>
         Playlist
       </Chip>
       <Chip
-        mode={chipSelected === 'Event' ? 'outlined' : 'flat'}
+        style={{backgroundColor: chipColor('Event')}}
+        textStyle={{color: 'white'}}
         onPress={() => setChipSelected('Event')}>
         Event
       </Chip>
       <Chip
-        mode={chipSelected === 'User' ? 'outlined' : 'flat'}
+        style={{backgroundColor: chipColor('User')}}
+        textStyle={{color: 'white'}}
         onPress={() => setChipSelected('User')}>
         User
       </Chip>

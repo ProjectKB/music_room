@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView, View} from 'react-native';
 import {DeleteSong, FetchPlaylistSong} from '../api/PlaylistEndpoint';
 import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
@@ -32,7 +32,7 @@ const SongsList = props => {
   }, [fetchPlaylistSong]);
 
   return (
-    <>
+    <View style={styles.mainContainer}>
       <SearchBar setSearchQuery={setSearchQuery} />
       <ScrollView style={styles.playlistList}>
         <PlaylistSongList
@@ -63,7 +63,7 @@ const SongsList = props => {
           />
         )}
       />
-    </>
+    </View>
   );
 };
 
@@ -72,5 +72,9 @@ export default SongsList;
 const styles = StyleSheet.create({
   playlistList: {
     margin: 10,
+  },
+  mainContainer: {
+    backgroundColor: '#1a1a1a',
+    flex: 1,
   },
 });

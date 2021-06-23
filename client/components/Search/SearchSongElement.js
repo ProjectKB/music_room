@@ -47,10 +47,10 @@ const SearchSongElement = props => {
           <ScrollView
             horizontal={true}
             contentContainerStyle={{alignItems: 'flex-end'}}>
-            <Subheading>{props.title}</Subheading>
+            <Subheading style={{color: 'white'}}>{props.title}</Subheading>
           </ScrollView>
           <ScrollView horizontal={true}>
-            <Text>{props.channelTitle}</Text>
+            <Text style={{color: 'white'}}>{props.channelTitle}</Text>
           </ScrollView>
         </View>
       </TouchableOpacity>
@@ -70,5 +70,6 @@ const styles = StyleSheet.create({
     width: 90,
     height: 70,
     marginRight: 10,
+    borderRadius: 5,
   },
 });

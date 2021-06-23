@@ -28,14 +28,15 @@ const PlaylistSongElement = props => {
           props.setSongToDeleteIndex(props.index);
           props.setDeletionPlaylistModal(true);
         }}>
-        <FontAwesomeIcon size={50} icon={faMusic} />
+        <View style={styles.playlistPictureContainer}>
+          <FontAwesomeIcon size={50} icon={faMusic} color="white" />
+        </View>
         <View style={styles.playlistElementContent}>
           <ScrollView horizontal={true} style={{marginHorizontal: 15}}>
-            <Subheading>{props.song.name}</Subheading>
+            <Subheading style={{color: 'white'}} >{props.song.name}</Subheading>
           </ScrollView>
         </View>
       </TouchableOpacity>
-      <Divider />
     </>
   );
 };
@@ -52,5 +53,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flex: 1,
+  },
+  playlistPictureContainer: {
+    backgroundColor: '#434243',
+    borderRadius: 5,
+    width: 75,
+    height: 75,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
