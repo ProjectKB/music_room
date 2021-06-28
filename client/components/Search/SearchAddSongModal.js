@@ -86,12 +86,12 @@ const styles = StyleSheet.create({
   },
   modalContentContainer: {
     marginHorizontal: 25,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f3f1f4',
     borderRadius: 5,
     width: '100%',
   },
   picker: {
-    backgroundColor: 'white',
+    backgroundColor: '#fcfafe',
     paddingHorizontal: 20,
   },
   actionContainer: {

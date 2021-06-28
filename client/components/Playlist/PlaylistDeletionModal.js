@@ -69,12 +69,12 @@ const styles = StyleSheet.create({
     margin: 25,
   },
   dialogContainer: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f3f1f4',
     borderRadius: 5,
     width: '100%',
   },
   dialogActionContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#e8e6e9',
     borderRadius: 5,
     flexDirection: 'row',
     justifyContent: 'flex-end',

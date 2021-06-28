@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     margin: 25,
   },
   textInputContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#f3f1f4',
     padding: 10,
     paddingBottom: 5,
     borderTopLeftRadius: 5,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     justifyContent: 'flex-end',
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#e8e6e9',
     width: '100%',
     borderBottomEndRadius: 5,
     borderBottomStartRadius: 5,
