@@ -3,11 +3,12 @@ import React, {useState} from 'react';
 import {StyleSheet, StatusBar, View, Dimensions} from 'react-native';
 import Video from 'react-native-video';
 import AppContent from './components/AppContent';
+import {NETWORK} from '@env';
 
 const App = () => {
   const [showApp, setShowApp] = useState(false);
 
-  global.URL = 'http://10.19.1.129:8080';
+  global.URL = NETWORK;
 
   return (
     <View style={styles.mainContainer}>

@@ -61,3 +61,4 @@ buck-out/
 # Local
 todo
 .gitignore
+.env
