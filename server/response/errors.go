@@ -10,6 +10,7 @@ const (
 	FieldIsMissing
 	UpdateEmpty
 	Unauthorized
+	Nonexistence
 	Ok
 )
 
@@ -21,5 +22,6 @@ var ErrorMessages = []string {
 	"There are some fields who can't be empty.",
 	"You can't update without providing data.",
 	"Nice try sweety.",
+	"nonexistence",
 	"There are no mistakes.",
 }

@@ -45,6 +45,24 @@ func Create(elem *model.User) int {
 	return response.Ok
 }
 
+func Login(elem *model.User) int {
+
+	filter := bson.D{{"Mail", elem.Mail},{"Password", elem.Password}}
+	mail_regex := "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+	match, _ := regexp.MatchString(mail_regex, elem.Mail)
+
+	
+	if elem.Mail == "" || elem.Password == "" {
+		return response.FieldIsMissing
+	} else if !match {
+		return response.InvalidFormat
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&elem); err != nil {
+		return response.Nonexistence
+	}
+	fmt.Println("Connected")
+	return response.Ok
+}
+
 func Read(param string, result *model.User) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}

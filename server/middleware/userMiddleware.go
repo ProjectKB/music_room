@@ -82,6 +82,25 @@ func CreateOneUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Create))
 }
 
+func LoginUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var user model.User
+
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.Login(&user); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Connected))
+}
+
 func updateUserFilter(doc *model.User) bson.M {
 	filter := bson.M{}
 	default_avatar := "path_to_default_avatar"
