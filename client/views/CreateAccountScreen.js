@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
-import { createAccount } from '../api/mock';
-import EmailForm from '../components/EmailForm';
+import React, {useState} from 'react';
+import {View, Text, Button} from 'react-native';
+import {createAccount} from '../api/authentication';
+import CreateForm from '../components/CreateForm';
 
-const CreateAccount = ({ navigation }) => {
+const CreateAccount = ({navigation}) => {
   return (
-    <EmailForm
+    <CreateForm
       buttonText="Sign up"
       onSubmit={createAccount}
-      onAuthentication={() => navigation.navigate('Home')}
-    >
+      onAuthentication={() => navigation.navigate('LoginScreen')}>
       <Button
         title="Back to log in"
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('LoginScreen')}
       />
-    </EmailForm>
+    </CreateForm>
   );
 };
 

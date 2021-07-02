@@ -9,7 +9,7 @@ type User struct {
 	Login       string             `bson:"login,omitempty" json:"login,omitempty"`
 	Mail        string             `bson:"mail,omitempty" json:"mail,omitempty"`
 	Password    string             `bson:"password,omitempty" json:"password,omitempty"`
-	Token		string				`bson:"password,omitempty" json:"password,omitempty"`
+	Token       string             `bson:"token,omitempty" json:"token,omitempty"`
 	Preferences []string           `bson:"preference,omitempty" json:"preference,omitempty"`
 	Friends     []string           `bson:"friends,omitempty" json:"friends,omitempty"`
 	Events      []string           `bson:"events,omitempty" json:"events,omitempty"`

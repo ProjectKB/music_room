@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"server/helpers"
@@ -45,13 +47,12 @@ func Create(elem *model.User) int {
 	return response.Ok
 }
 
-func Login(elem *model.User) int {
+func Login(elem *model.User, token *string) int {
 
-	filter := bson.D{{"Mail", elem.Mail},{"Password", elem.Password}}
+	filter := bson.D{{"mail", elem.Mail}, {"password", elem.Password}}
 	mail_regex := "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
 	match, _ := regexp.MatchString(mail_regex, elem.Mail)
 
-	
 	if elem.Mail == "" || elem.Password == "" {
 		return response.FieldIsMissing
 	} else if !match {
@@ -59,7 +60,15 @@ func Login(elem *model.User) int {
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&elem); err != nil {
 		return response.Nonexistence
 	}
-	fmt.Println("Connected")
+
+	b := make([]byte, 20)
+	if _, err := rand.Read(b); err != nil {
+		return response.InvalidFormat
+	}
+	*token = hex.EncodeToString(b)
+
+	Update(bson.M{"token": *token}, elem.Id.Hex())
+	fmt.Println("Connected!")
 	return response.Ok
 }
 

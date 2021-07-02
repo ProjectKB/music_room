@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 import {ScrollView, StyleSheet, TextInput, Button, Text} from 'react-native';
 import {setToken} from '../api/token';
 
-const EmailForm = ({buttonText, onSubmit, children, onAuthentication}) => {
+const CreateForm = ({buttonText, onSubmit, children, onAuthentication}) => {
+  const [login, onChangeLogin] = useState('');
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const submit = () => {
-    onSubmit(email, password)
+    onSubmit(login, email, password)
       .then(async res => {
         await setToken(res.token);
         onAuthentication();
@@ -23,6 +24,12 @@ const EmailForm = ({buttonText, onSubmit, children, onAuthentication}) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <TextInput
+        style={styles.input}
+        onChangeText={text => onChangeLogin(text)}
+        value={login}
+        placeholder="login"
+      />
       <TextInput
         style={styles.input}
         onChangeText={text => onChangeEmail(text)}
@@ -59,4 +66,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EmailForm;
+export default CreateForm;

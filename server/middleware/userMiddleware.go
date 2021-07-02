@@ -89,15 +89,17 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	var user model.User
+	var token string
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.Login(&user); err != response.Ok {
+	} else if err := userController.Login(&user, &token); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(user)
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Connected))
 }
 

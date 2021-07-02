@@ -1,5 +1,5 @@
-import { API_URL } from './ApiUrl';
-import { getToken } from './token';
+import {API_URL} from './ApiUrl';
+import {getToken} from './token';
 
 const getHeaders = async () => {
   const token = await getToken();
@@ -29,10 +29,10 @@ export const post = async (destination, body) => {
   if (result.ok) {
     return await result.json();
   }
-  throw { error: result.status };
+  throw {error: result.status};
 };
 
-export const get = async (destination) => {
+export const get = async destination => {
   const headers = await getHeaders();
 
   const result = await fetch(`${API_URL}${destination}`, {
@@ -44,5 +44,5 @@ export const get = async (destination) => {
     return await result.json();
   }
 
-  throw { error: result.status };
+  throw {error: result.status};
 };

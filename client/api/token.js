@@ -11,7 +11,7 @@ export const getToken = async () => {
   }
 };
 
-export const setToken = async (token) => {
+export const setToken = async token => {
   try {
     await AsyncStorage.setItem('auth_token', token);
   } catch (e) {
