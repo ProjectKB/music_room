@@ -101,8 +101,6 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(user)
-	json.NewEncoder(w).Encode(token)
-	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Connected))
 }
 
 func updateUserFilter(doc *model.User) bson.M {

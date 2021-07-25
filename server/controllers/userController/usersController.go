@@ -72,6 +72,7 @@ func Login(elem *model.User, token *string) int {
 		return response.InvalidFormat
 	}
 	*token = hex.EncodeToString(b)
+	elem.Token = *token
 
 	Update(bson.M{"token": *token}, elem.Id.Hex())
 	fmt.Println("Connected!")
