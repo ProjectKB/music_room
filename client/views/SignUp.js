@@ -1,23 +1,21 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
-  View,
-  TextInput,
-  Image,
   Text,
+  TextInput,
+  View,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import {Login} from '../api/AuthEndpoint';
-import {AuthContext} from '../contexts/AuthContext';
-import {FlashMessage} from '../components/FlashMessage';
 
-const SignIn = ({navigation}) => {
+const SignUp = ({navigation}) => {
   const [login, setLogin] = useState('');
+  const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
 
-  const {signIn} = useContext(AuthContext);
+  const [loginError, setLoginError] = useState(false);
+  const [mailError, setMailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const onChangeText = (input, setInput, inputError, setInputError) => {
     setInput(input);
@@ -25,6 +23,13 @@ const SignIn = ({navigation}) => {
     input.length === 0 && !inputError
       ? setInputError(true)
       : setInputError(false);
+  };
+
+  const validateEmail = email => {
+    const mailRegex =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    return mailRegex.test(email);
   };
 
   return (
@@ -63,61 +68,70 @@ const SignIn = ({navigation}) => {
             {passwordError ? "* password can't be empty" : ''}
           </Text>
         </View>
+        <View style={styles.inputText}>
+          <TextInput
+            style={styles.input}
+            onChangeText={input =>
+              onChangeText(input, setMail, mailError, setMailError)
+            }
+            value={mail}
+            placeholder="email"
+          />
+          <Text style={styles.inputError}>
+            {mailError
+              ? mailError === 'format'
+                ? '* invalid format'
+                : "* email can't be empty"
+              : ''}
+          </Text>
+        </View>
         <TouchableOpacity
           style={styles.submit}
           onPress={() => {
-            if (!passwordError && !loginError) {
-              if (login.length !== 0 && password.length !== 0) {
-                Login(login, password).then(res =>
-                  res
-                    ? signIn(res.data)
-                    : FlashMessage(res, 'Bonjour', 'Wrong Login/Password'),
-                );
-              } else if (login.length === 0 || password.length === 0) {
-                if (login.length === 0) {
-                  setLoginError(true);
-                }
+            if (
+              login.length !== 0 &&
+              password.length !== 0 &&
+              mail.length !== 0 &&
+              validateEmail(mail)
+            ) {
+              // SIGN UP
+              console.log("I'm OK");
+            } else {
+              if (login.length === 0) {
+                setLoginError(true);
+              }
 
-                if (password.length === 0) {
-                  setPasswordError(true);
-                }
+              if (password.length === 0) {
+                setPasswordError(true);
+              }
+
+              if (mail.length === 0) {
+                setMailError(true);
+              } else if (!validateEmail(mail)) {
+                setMailError('format');
               }
             }
           }}>
-          <Text style={{fontSize: 20}}>SIGN IN</Text>
+          <Text style={{fontSize: 20}}>SIGN UP</Text>
         </TouchableOpacity>
         <View style={{flexDirection: 'row'}}>
-          <Text style={styles.question}>Don't have an account ?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <Text style={{color: 'white'}}>Sign Up</Text>
+          <Text style={styles.question}>Already have an account ?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+            <Text style={{color: 'white'}}>Sign In</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
-          <Text style={{color: 'white'}}>Forgot Password</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default SignIn;
+export default SignUp;
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: 'black',
     justifyContent: 'center',
-  },
-  inputContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  imageContainer: {
-    alignItems: 'center',
-  },
-  inputText: {
-    width: '70%',
-    marginBottom: 7,
   },
   input: {
     paddingHorizontal: 20,
@@ -127,6 +141,19 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     fontSize: 24,
   },
+  inputContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  inputText: {
+    width: '70%',
+    marginBottom: 7,
+  },
+  inputError: {
+    color: '#b00012',
+    paddingHorizontal: 20,
+    marginTop: 5,
+  },
   submit: {
     width: '60%',
     height: 45,
@@ -134,19 +161,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff4884',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15,
-  },
-  image: {
-    width: 275,
-    height: 275,
-  },
-  inputError: {
-    color: '#b00012',
-    paddingHorizontal: 20,
-    marginTop: 5,
+    marginBottom: 10,
   },
   question: {
     color: 'lightgray',
     marginRight: 5,
+  },
+  imageContainer: {
+    alignItems: 'center',
+  },
+  image: {
+    width: 275,
+    height: 275,
   },
 });
