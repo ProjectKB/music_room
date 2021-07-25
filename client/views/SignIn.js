@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,10 +7,15 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
+import {Login} from '../api/AuthEndpoint';
+import {AuthContext} from '../contexts/AuthContext';
+import {FlashMessage} from '../components/FlashMessage';
 
 const SignIn = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+
+  const {signIn} = useContext(AuthContext);
 
   const onChangeLogin = input => {
     setLogin(input);
@@ -42,7 +47,15 @@ const SignIn = () => {
           placeholder="password"
           secureTextEntry={true}
         />
-        <TouchableOpacity style={styles.submit}>
+        <TouchableOpacity
+          style={styles.submit}
+          onPress={() =>
+            Login(login, password).then(res =>
+              res
+                ? signIn(res.data)
+                : FlashMessage(res, 'Bonjour', 'Wrong Login/Password'),
+            )
+          }>
           <Text style={{fontSize: 20}}>SIGN IN</Text>
         </TouchableOpacity>
         <View style={{flexDirection: 'row'}}>

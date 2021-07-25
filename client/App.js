@@ -14,7 +14,6 @@ const App = () => {
 
   const initialLoginState = {
     isLoading: true,
-    userName: null,
     userToken: null,
   };
 
@@ -23,28 +22,25 @@ const App = () => {
       case 'RETRIEVE_TOKEN':
         return {
           ...prevState,
-          userToken: action.token,
+          userToken: action.userToken,
           isLoading: false,
         };
       case 'LOGIN':
         return {
           ...prevState,
-          userName: action.id,
-          userToken: action.token,
+          userToken: action.userToken,
           isLoading: false,
         };
       case 'LOGOUT':
         return {
           ...prevState,
-          userName: null,
           userToken: null,
           isLoading: false,
         };
       case 'REGISTER':
         return {
           ...prevState,
-          userName: action.id,
-          userToken: action.token,
+          userToken: action.userToken,
           isLoading: false,
         };
     }
@@ -54,17 +50,13 @@ const App = () => {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async foundUser => {
-        // call API SIGNIN
-        const userToken = 'token';
-        const userName = 'username';
-
+      signIn: async userToken => {
         try {
           await AsyncStorage.setItem('userToken', userToken);
         } catch (e) {
           console.log(e);
         }
-        dispatch({type: 'LOGIN', id: userName, token: userToken});
+        dispatch({type: 'LOGIN', userToken: userToken});
       },
 
       signOut: async () => {
@@ -90,7 +82,7 @@ const App = () => {
           source={require('./assets/video/intro.mp4')}
           style={styles.introVideo}
           onEnd={async () => {
-            let userToken = null;
+            let userToken;
 
             try {
               userToken = await AsyncStorage.getItem('userToken');
@@ -98,7 +90,10 @@ const App = () => {
               console.log(e);
             }
 
-            dispatch({type: 'RETRIEVE_TOKEN', token: userToken});
+            dispatch({
+              type: 'RETRIEVE_TOKEN',
+              userToken: userToken,
+            });
           }}
         />
       );
