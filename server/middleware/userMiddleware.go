@@ -98,8 +98,10 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
+
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(token)
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Connected))
 }
 
