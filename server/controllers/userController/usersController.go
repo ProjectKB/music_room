@@ -62,7 +62,6 @@ func Login(elem *model.User, token *string) int {
 	}
 	
 	*token = hex.EncodeToString(b)
-	elem.Token = *token
 
 	Update(bson.M{"token": *token}, elem.Id.Hex())
 
