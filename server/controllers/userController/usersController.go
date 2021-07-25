@@ -48,21 +48,10 @@ func Create(elem *model.User) int {
 }
 
 func Login(elem *model.User, token *string) int {
-	var filter primitive.D
+	filter := bson.D{{"login", elem.Login}, {"password", elem.Password}}
 
-	if elem.Mail != "" {
-		filter = bson.D{{"mail", elem.Mail}, {"password", elem.Password}}
-	} else if elem.Login != "" {
-		filter = bson.D{{"login", elem.Login}, {"password", elem.Password}}
-	}
-
-	mail_regex := "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
-	match, _ := regexp.MatchString(mail_regex, elem.Mail)
-
-	if (elem.Mail == "" && elem.Login == "") || elem.Password == "" {
+	if elem.Login == "" || elem.Password == "" {
 		return response.FieldIsMissing
-	} else if elem.Mail != "" && !match {
-		return response.InvalidFormat
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&elem); err != nil {
 		return response.Nonexistence
 	}
@@ -71,11 +60,14 @@ func Login(elem *model.User, token *string) int {
 	if _, err := rand.Read(b); err != nil {
 		return response.InvalidFormat
 	}
+	
 	*token = hex.EncodeToString(b)
 	elem.Token = *token
 
 	Update(bson.M{"token": *token}, elem.Id.Hex())
+
 	fmt.Println("Connected!")
+
 	return response.Ok
 }
 
