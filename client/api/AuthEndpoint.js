@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Login = async (login, password) => {
   try {
@@ -19,5 +20,18 @@ export const CreateUser = async (login, password, mail) => {
     );
   } catch (error) {
     return error.response;
+  }
+};
+
+export const DefineUser = async () => {
+  try {
+    let token = await AsyncStorage.getItem('userToken');
+
+    return await axios.post(
+      global.URL + '/users/define',
+      JSON.stringify(token),
+    );
+  } catch (error) {
+    return false;
   }
 };
