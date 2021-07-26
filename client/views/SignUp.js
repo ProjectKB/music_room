@@ -34,6 +34,46 @@ const SignUp = ({navigation}) => {
     return mailRegex.test(email);
   };
 
+  const handleSubmit = () => {
+    if (
+      login.length !== 0 &&
+      password.length !== 0 &&
+      mail.length !== 0 &&
+      validateEmail(mail)
+    ) {
+      CreateUser(login, password, mail).then(res => {
+        if (res === undefined) {
+          FlashMessage(false, '', 'An error has occurred, please retry later!');
+        } else {
+          if (res.status === 201) {
+            FlashMessage(
+              true,
+              'Creation is successfull, you can now Log In!',
+              '',
+            );
+            navigation.navigate('SignIn');
+          } else {
+            FlashMessage(false, '', res.data);
+          }
+        }
+      });
+    } else {
+      if (login.length === 0) {
+        setLoginError(true);
+      }
+
+      if (password.length === 0) {
+        setPasswordError(true);
+      }
+
+      if (mail.length === 0) {
+        setMailError(true);
+      } else if (!validateEmail(mail)) {
+        setMailError('format');
+      }
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.imageContainer}>
@@ -87,51 +127,7 @@ const SignUp = ({navigation}) => {
               : ''}
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.submit}
-          onPress={() => {
-            if (
-              login.length !== 0 &&
-              password.length !== 0 &&
-              mail.length !== 0 &&
-              validateEmail(mail)
-            ) {
-              CreateUser(login, password, mail).then(res => {
-                if (res === undefined) {
-                  FlashMessage(
-                    false,
-                    '',
-                    'An error has occurred, please retry later!',
-                  );
-                } else {
-                  if (res.status === 201) {
-                    FlashMessage(
-                      true,
-                      'Creation is successfull, you can now Log In!',
-                      '',
-                    );
-                    navigation.navigate('SignIn');
-                  } else {
-                    FlashMessage(false, '', res.data);
-                  }
-                }
-              });
-            } else {
-              if (login.length === 0) {
-                setLoginError(true);
-              }
-
-              if (password.length === 0) {
-                setPasswordError(true);
-              }
-
-              if (mail.length === 0) {
-                setMailError(true);
-              } else if (!validateEmail(mail)) {
-                setMailError('format');
-              }
-            }
-          }}>
+        <TouchableOpacity style={styles.submit} onPress={() => handleSubmit()}>
           <Text style={{fontSize: 20}}>SIGN UP</Text>
         </TouchableOpacity>
         <View style={{flexDirection: 'row'}}>
