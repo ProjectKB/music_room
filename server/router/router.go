@@ -14,6 +14,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/users/{id}", middleware.ReadOneUser).Methods("GET", "OPTIONS")
 	router.HandleFunc("/users/{id}", middleware.DeleteOneUser).Methods("DELETE", "OPTIONS")
 	router.HandleFunc("/users", middleware.CreateOneUser).Methods("POST", "OPTIONS")
+	router.HandleFunc("/users/define", middleware.DefineUser).Methods("POST", "OPTIONS")
 	router.HandleFunc("/users/login" ,middleware.LoginUser).Methods("POST", "OPTIONS")
 	router.HandleFunc("/users/{id}", middleware.UpdateOneUser).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/addFriend/{id}", middleware.AddFriendToUser).Methods("PUT", "OPTIONS")

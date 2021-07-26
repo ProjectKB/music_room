@@ -81,6 +81,16 @@ func Read(param string, result *model.User) int {
 	return response.Ok
 }
 
+func Define(token *string, result *model.User) int {
+	filter := bson.D{{"token", *token}}
+
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
+		return response.BddError
+	}
+
+	return response.Ok
+}
+
 func ReadAll(users *[]model.User) int {
 	// Passing bson.D{} as the filter matches all documents in the User collection
 	cur, err := db.UserCollection.Find(context.TODO(), bson.D{})
