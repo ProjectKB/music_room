@@ -27,6 +27,26 @@ const SignIn = ({navigation}) => {
       : setInputError(false);
   };
 
+  const handleSubmit = () => {
+    if (!passwordError && !loginError) {
+      if (login.length !== 0 && password.length !== 0) {
+        Login(login, password).then(res =>
+          res
+            ? signIn(res.data)
+            : FlashMessage(res, '', 'Wrong Login/Password'),
+        );
+      } else if (login.length === 0 || password.length === 0) {
+        if (login.length === 0) {
+          setLoginError(true);
+        }
+
+        if (password.length === 0) {
+          setPasswordError(true);
+        }
+      }
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.imageContainer}>
@@ -63,27 +83,7 @@ const SignIn = ({navigation}) => {
             {passwordError ? "* password can't be empty" : ''}
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.submit}
-          onPress={() => {
-            if (!passwordError && !loginError) {
-              if (login.length !== 0 && password.length !== 0) {
-                Login(login, password).then(res =>
-                  res
-                    ? signIn(res.data)
-                    : FlashMessage(res, '', 'Wrong Login/Password'),
-                );
-              } else if (login.length === 0 || password.length === 0) {
-                if (login.length === 0) {
-                  setLoginError(true);
-                }
-
-                if (password.length === 0) {
-                  setPasswordError(true);
-                }
-              }
-            }
-          }}>
+        <TouchableOpacity style={styles.submit} onPress={() => handleSubmit()}>
           <Text style={{fontSize: 20}}>SIGN IN</Text>
         </TouchableOpacity>
         <View style={{flexDirection: 'row'}}>
