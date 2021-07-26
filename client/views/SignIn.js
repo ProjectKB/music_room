@@ -71,7 +71,7 @@ const SignIn = ({navigation}) => {
                 Login(login, password).then(res =>
                   res
                     ? signIn(res.data)
-                    : FlashMessage(res, 'Bonjour', 'Wrong Login/Password'),
+                    : FlashMessage(res, '', 'Wrong Login/Password'),
                 );
               } else if (login.length === 0 || password.length === 0) {
                 if (login.length === 0) {

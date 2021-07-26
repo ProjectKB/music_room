@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import {CreateUser} from '../api/AuthEndpoint';
+import {FlashMessage} from '../components/FlashMessage';
 
 const SignUp = ({navigation}) => {
   const [login, setLogin] = useState('');
@@ -94,8 +96,26 @@ const SignUp = ({navigation}) => {
               mail.length !== 0 &&
               validateEmail(mail)
             ) {
-              // SIGN UP
-              console.log("I'm OK");
+              CreateUser(login, password, mail).then(res => {
+                if (res === undefined) {
+                  FlashMessage(
+                    false,
+                    '',
+                    'An error has occurred, please retry later!',
+                  );
+                } else {
+                  if (res.status === 201) {
+                    FlashMessage(
+                      true,
+                      'Creation is successfull, you can now Log In!',
+                      '',
+                    );
+                    navigation.navigate('SignIn');
+                  } else {
+                    FlashMessage(false, '', res.data);
+                  }
+                }
+              });
             } else {
               if (login.length === 0) {
                 setLoginError(true);
