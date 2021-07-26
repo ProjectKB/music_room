@@ -35,10 +35,10 @@ func Create(elem *model.User) int {
 		return response.Unauthorized
 	} else if !match {
 		return response.InvalidFormat
-	} else if dbErr := db.UserCollection.FindOne(context.TODO(), bson.D{{"mail", elem.Mail}}).Decode(&isDuplicated); dbErr == nil {
+	} else if err := db.UserCollection.FindOne(context.TODO(), bson.D{{"login", elem.Login}}).Decode(&isDuplicated); err == nil {
+		return response.LoginAlreadyExist
+	} else if err := db.UserCollection.FindOne(context.TODO(), bson.D{{"mail", elem.Mail}}).Decode(&isDuplicated); err == nil {
 		return response.MailAlreadyExist
-	} else if isDuplicated != nil {
-		return response.AlreadyExist
 	} else if _, err := db.UserCollection.InsertOne(context.TODO(), elem); err != nil {
 		return response.BddError
 	}

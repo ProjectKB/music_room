@@ -6,6 +6,7 @@ const (
 	BddError = iota
 	AlreadyExist
 	MailAlreadyExist
+	LoginAlreadyExist
 	InvalidFormat
 	FieldIsMissing
 	UpdateEmpty
@@ -18,6 +19,7 @@ var ErrorMessages = []string{
 	"Bdd Error.",
 	"This record already exist.",
 	"This mail already exist.",
+	"This login already exist.",
 	"Invalid format.",
 	"There are some fields who can't be empty.",
 	"You can't update without providing data.",
