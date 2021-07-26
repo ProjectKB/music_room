@@ -13,6 +13,8 @@ Name | Type
 **Login*** | `string`
 **Mail*** | `string`
 **Password*** | `string`
+**Token*** | `string`
+**Preferences** | `string[]`
 **Friends** | `string[]`
 **Events** | `string[]`
 **Playlists** | `string[]`
@@ -28,6 +30,8 @@ Route | Method | Utility
 `/users` | **POST** | create one user
 `/users/{id}` | **PUT** | update one user
 `/users/{id}` | **DELETE** | delete one user
+`/users/login` | **POST** | check user validity and return token
+`/users/define` | **POST** | read a token a return the corresponding user
 `/users/addFriend/{id}` | **PUT** | add a friend to `friends` field
 `/users/friends/{id}` | **GET** | read every friends
 `/users/removeFriend/{id}` | **PUT** | remove a friend from `friends` field
