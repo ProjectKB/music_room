@@ -36,10 +36,10 @@ func SearchPlaylist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
+	var toSearch model.Search
 	var results []model.Playlist
-	var toSearch string
-
-	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil && err != io.EOF {
+	
+	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := playlistController.SearchPlaylist(&results, toSearch); err != response.Ok {

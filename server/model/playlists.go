@@ -4,6 +4,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type Search struct {
+	Query   string `bson:"query,omitempty" json:"query,omitempty"`
+	Scope   string `bson:"scope,omitempty" json:"scope,omitempty"`
+	User_id string `bson:"user_id,omitempty" json:"user_id,omitempty"`
+}
+
 type Song struct {
 	Id    string `bson:"id,omitempty" json:"id,omitempty"`
 	Name  string `bson:"name,omitempty" json:"name,omitempty"`

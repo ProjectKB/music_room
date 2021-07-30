@@ -102,8 +102,8 @@ func ReadAll(playlists *[]model.Playlist) int {
 	return response.Ok
 }
 
-func SearchPlaylist(playlists *[]model.Playlist, toSearch string) int {
-	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}}
+func SearchPlaylist(playlists *[]model.Playlist, toSearch model.Search) int {
+	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch.Query + ".*"}}
 	cur, err := db.PlaylistCollection.Find(context.TODO(), filter)
 
 	if err != nil {
@@ -118,8 +118,12 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch string) int {
 		if err := cur.Decode(&elem); err != nil {
 			return response.BddError
 		}
-		
-		*playlists = append(*playlists, elem)
+
+		if toSearch.Scope == "playlist" && toSearch.User_id == elem.Owner_id {
+			*playlists = append(*playlists, elem)
+		} else if toSearch.Scope == "search" && toSearch.User_id != elem.Owner_id {
+			*playlists = append(*playlists, elem)
+		}
 	}
 
 	// Close the cursor once finished
