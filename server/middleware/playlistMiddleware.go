@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"reflect"
 	playlistController "server/controllers/playlistController"
-	"server/helpers"
 	"server/model"
 	"server/response"
 	"strings"
@@ -117,7 +116,7 @@ func CreateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&playlist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := playlistController.Create(params["id"], &playlist); err != response.Ok {
+	} else if err := playlistController.Create(params["id"], &playlist, "playlist"); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -158,10 +157,11 @@ func UpdateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&playlist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := helpers.CheckPlaylistBlacklistedFields(&playlist); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
 	}
+	// } else if err := helpers.CheckPlaylistBlacklistedFields(&playlist); err != response.Ok {
+	// 	http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+	// 	return
+	// }
 
 	filter := updatePlaylistFilter(&playlist)
 

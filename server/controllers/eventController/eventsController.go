@@ -39,12 +39,12 @@ func Create(elem *model.Event) int {
 		if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
 			return response.BddError
 		}
-	} else {
-		playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, "", elem.Status, nil, elem.Picture}
+	}
 
-		if err := playlistController.Create(elem.Owner_id, &playlist); err != response.Ok {
-			return err
-		}
+	playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, "", elem.Status, playlist.Songs, elem.Picture, true}
+
+	if err := playlistController.Create(elem.Owner_id, &playlist, "event"); err != response.Ok {
+		return err
 	}
 
 	elem.Playlist_id = playlist.Id.Hex()
@@ -181,16 +181,25 @@ func SearchEventStatus(events *[]model.Event, toSearch string) int {
 }
 
 func Delete(param string) int {
+	var event model.Event
+
+	if err := Read(param, &event); err != response.Ok {
+		return err
+	}
+
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
 
-	deleteResult, err := db.EventCollection.DeleteOne(context.TODO(), filter)
+	_, event_err := db.EventCollection.DeleteOne(context.TODO(), filter)
 
-	if err != nil {
+	if event_err != nil {
 		return response.BddError
+	} else if err := playlistController.Delete(event.Playlist_id); err != response.Ok {
+		return err
 	}
 
-	fmt.Printf("Deleted %v documents in the event collection\n", deleteResult.DeletedCount)
+	fmt.Printf("Event Deleted\n")
+
 	return response.Ok
 }
 

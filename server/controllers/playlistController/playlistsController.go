@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Create(owner_id string, elem *model.Playlist) int {
+func Create(owner_id string, elem *model.Playlist, origin string) int {
 	var owner_tmp model.User
 
 	default_picture := "path_to_default_picture"
@@ -30,7 +30,7 @@ func Create(owner_id string, elem *model.Playlist) int {
 		return response.FieldIsMissing
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&owner_tmp); err != nil {
 		return response.BddError
-	} else if err := helpers.CheckPlaylistBlacklistedFields(elem); err != response.Ok {
+	} else if err := helpers.CheckPlaylistBlacklistedFields(elem, origin); err != response.Ok {
 		return response.Unauthorized
 	}
 
@@ -59,6 +59,7 @@ func Read(param string, result *model.Playlist) int {
 
 	return response.Ok
 }
+
 func SearchSong(playlistId string, toSearch string, playlist *model.Playlist, songsSearched *[]model.Song) int {
 	id, _ := primitive.ObjectIDFromHex(playlistId)
 	filter := bson.D{{"_id", id}}
@@ -77,6 +78,7 @@ func SearchSong(playlistId string, toSearch string, playlist *model.Playlist, so
 
 	return response.Ok
 }
+
 func ReadAll(playlists *[]model.Playlist) int {
 	// Passing bson.D{} as the filter matches all documents in the User collection
 	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.D{})
@@ -100,6 +102,7 @@ func ReadAll(playlists *[]model.Playlist) int {
 
 	return response.Ok
 }
+
 func SearchPlaylist(playlists *[]model.Playlist, toSearch string) int {
 	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch + ".*"}}
 	cur, err := db.PlaylistCollection.Find(context.TODO(), filter)
@@ -112,9 +115,11 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch string) int {
 	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(context.TODO()) {
 		var elem model.Playlist
+
 		if err := cur.Decode(&elem); err != nil {
 			return response.BddError
 		}
+		
 		*playlists = append(*playlists, elem)
 	}
 
@@ -139,19 +144,31 @@ func Update(fields bson.M, param string) int {
 
 	return response.Ok
 }
-func Delete(param string) int {
-	id, _ := primitive.ObjectIDFromHex(param)
-	filter := bson.D{{"_id", id}}
-	deleteResult, err := db.PlaylistCollection.DeleteOne(context.TODO(), filter)
 
-	if err != nil {
+func Delete(param string) int {
+	var playlist model.Playlist
+
+	if err := Read(param, &playlist); err != response.Ok {
+		return err
+	}
+
+	playlist_id, _ := primitive.ObjectIDFromHex(param)
+	authorization_id, _ := primitive.ObjectIDFromHex(playlist.Authorization_id)
+	playlist_filter := bson.D{{"_id", playlist_id}}
+	authorization_filter := bson.D{{"_id", authorization_id}}
+
+	_, playlist_err := db.PlaylistCollection.DeleteOne(context.TODO(), playlist_filter)
+	_, authorization_err := db.AuthorizationCollection.DeleteOne(context.TODO(), authorization_filter)
+
+	if playlist_err != nil || authorization_err != nil {
 		return response.BddError
 	}
 
-	fmt.Printf("Deleted %v documents in the playlist collection\n", deleteResult.DeletedCount)
+	fmt.Printf("Playlist and Authorization Deleted!\n")
 
 	return response.Ok
 }
+
 func DeleteAll() {
 	deleteResult, err := db.PlaylistCollection.DeleteMany(context.TODO(), bson.D{{}})
 
@@ -196,6 +213,7 @@ func AddSong(playlistId string, song *model.Song) int {
 
 	return response.Ok
 }
+
 func RemoveSong(playlistId string, song *model.Song) int {
 	id, _ := primitive.ObjectIDFromHex(playlistId)
 	filter := bson.D{{"_id", id}}

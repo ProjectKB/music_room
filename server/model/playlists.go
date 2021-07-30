@@ -18,4 +18,5 @@ type Playlist struct {
 	Status           string             `bson:"status,omitempty" json:"status,omitempty"`
 	Songs            []Song             `bson:"songs,omitempty" json:"songs,omitempty"`
 	Picture          string             `bson:"picture,omitempty" json:"picture,omitempty"`
+	Has_event        bool               `bson:"has_event,omitempty" json:"has_event,omitempty"`
 }

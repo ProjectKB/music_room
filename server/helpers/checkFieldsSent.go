@@ -25,8 +25,8 @@ func CheckEventBlacklistedFields(event *model.Event, action string) int {
 	return response.Ok
 }
 
-func CheckPlaylistBlacklistedFields(playlist *model.Playlist) int {
-	if playlist.Authorization_id != "" || playlist.Songs != nil {
+func CheckPlaylistBlacklistedFields(playlist *model.Playlist, origin string) int {
+	if playlist.Authorization_id != "" || (origin == "playlist" && (playlist.Songs != nil || playlist.Has_event != false)) {
 		return response.Unauthorized
 	}
 
