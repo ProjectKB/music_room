@@ -41,7 +41,7 @@ func Create(elem *model.Event) int {
 
 	playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, "", elem.Status, playlist.Songs, elem.Picture, true}
 
-	if err := playlistController.Create(elem.Owner_id, &playlist, "event"); err != response.Ok {
+	if err := playlistController.Create(&playlist, "event"); err != response.Ok {
 		return err
 	}
 

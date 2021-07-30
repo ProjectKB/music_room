@@ -30,7 +30,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/playlists", middleware.ReadAllPlaylist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.ReadOnePlaylist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.DeleteOnePlaylist).Methods("DELETE", "OPTIONS")
-	router.HandleFunc("/playlists/{id}", middleware.CreateOnePlaylist).Methods("POST", "OPTIONS")
+	router.HandleFunc("/playlists", middleware.CreateOnePlaylist).Methods("POST", "OPTIONS")
 	router.HandleFunc("/playlists/searchPlaylist", middleware.SearchPlaylist).Methods("POST", "OPTIONS")
 	router.HandleFunc("/playlists/searchSong/{id}", middleware.SearchSong).Methods("POST", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.UpdateOnePlaylist).Methods("PUT", "OPTIONS")
@@ -55,8 +55,6 @@ func Router() *mux.Router {
 	router.HandleFunc("/authorizations/addGuest/{id}", middleware.AddGuestToAuthorization).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/authorizations/guests/{id}", middleware.ReadAuthorizationGuests).Methods("GET", "OPTIONS")
 	router.HandleFunc("/authorizations/removeGuest/{id}", middleware.RemoveGuestFromAuthorization).Methods("PUT", "OPTIONS")
-
-	// TODO refacto
 
 	return router
 }

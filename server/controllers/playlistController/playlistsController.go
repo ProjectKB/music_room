@@ -15,11 +15,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Create(owner_id string, elem *model.Playlist, origin string) int {
+func Create(elem *model.Playlist, origin string) int {
 	var owner_tmp model.User
 
 	default_picture := "path_to_default_picture"
-	id, _ := primitive.ObjectIDFromHex(owner_id)
+	id, _ := primitive.ObjectIDFromHex(elem.Owner_id)
 	filter := bson.D{{"_id", id}}
 
 	if elem.Picture == "" {
@@ -35,7 +35,6 @@ func Create(owner_id string, elem *model.Playlist, origin string) int {
 	}
 
 	authorization := model.Authorization{primitive.NewObjectID(), elem.Owner_id, elem.Status, nil}
-	elem.Owner_id = owner_id
 	elem.Authorization_id = authorization.Id.Hex()
 
 	if err := authorizationController.Create(&authorization); err != response.Ok {
@@ -128,6 +127,7 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch string) int {
 
 	return response.Ok
 }
+
 func Update(fields bson.M, param string) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}

@@ -110,13 +110,12 @@ func CreateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	params := mux.Vars(r)
 	var playlist model.Playlist
 
 	if err := json.NewDecoder(r.Body).Decode(&playlist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := playlistController.Create(params["id"], &playlist, "playlist"); err != response.Ok {
+	} else if err := playlistController.Create(&playlist, "playlist"); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
