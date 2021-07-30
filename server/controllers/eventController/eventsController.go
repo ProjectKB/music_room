@@ -14,8 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// TODO Create blacklisted fields function
-
 func Create(elem *model.Event) int {
 	default_picture := "path_to_default_picture"
 	var playlist model.Playlist
@@ -24,7 +22,7 @@ func Create(elem *model.Event) int {
 		elem.Picture = default_picture
 	}
 
-	if elem.Status != "" {
+	if elem.Status != "public" && elem.Status != "private" {
 		return response.Unauthorized
 	} else if elem.Name == "" || elem.Start == "" || elem.End == "" {
 		return response.FieldIsMissing
