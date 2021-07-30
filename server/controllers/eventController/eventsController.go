@@ -40,9 +40,9 @@ func Create(elem *model.Event) int {
 			return response.BddError
 		}
 	} else {
-		playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, "", nil, elem.Picture}
+		playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, "", elem.Status, nil, elem.Picture}
 
-		if err := playlistController.Create(&playlist); err != response.Ok {
+		if err := playlistController.Create(elem.Owner_id, &playlist); err != response.Ok {
 			return err
 		}
 	}

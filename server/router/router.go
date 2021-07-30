@@ -30,7 +30,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/playlists", middleware.ReadAllPlaylist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.ReadOnePlaylist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.DeleteOnePlaylist).Methods("DELETE", "OPTIONS")
-	router.HandleFunc("/playlists", middleware.CreateOnePlaylist).Methods("POST", "OPTIONS")
+	router.HandleFunc("/playlists/{id}", middleware.CreateOnePlaylist).Methods("POST", "OPTIONS")
 	router.HandleFunc("/playlists/searchPlaylist", middleware.SearchPlaylist).Methods("POST", "OPTIONS")
 	router.HandleFunc("/playlists/searchSong/{id}", middleware.SearchSong).Methods("POST", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.UpdateOnePlaylist).Methods("PUT", "OPTIONS")
