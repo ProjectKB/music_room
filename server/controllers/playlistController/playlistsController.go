@@ -6,6 +6,7 @@ import (
 	"log"
 	"regexp"
 	authorizationController "server/controllers/authorizationController"
+	userController "server/controllers/userController"
 	"server/helpers"
 	"server/model"
 	"server/response"
@@ -103,6 +104,12 @@ func ReadAll(playlists *[]model.Playlist) int {
 }
 
 func SearchPlaylist(playlists *[]model.Playlist, toSearch model.Search) int {
+	var user model.User
+
+	if res := userController.Read(toSearch.User_id, &user); res != response.Ok {
+		return res
+	}
+
 	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch.Query + ".*"}}
 	cur, err := db.PlaylistCollection.Find(context.TODO(), filter)
 
