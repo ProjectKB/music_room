@@ -122,29 +122,31 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch model.Search) int {
 	for cur.Next(context.TODO()) {
 		var playlist model.Playlist
 		user_authorized := false
-		
+
 		if err := cur.Decode(&playlist); err != nil {
 			return response.BddError
 		}
-		
-		if toSearch.Scope == "playlist" && playlist.Status == "private" {
-			var authorization model.Authorization
 
-			if res := authorizationController.Read(playlist.Authorization_id, &authorization); res != response.Ok {
-				return res
-			}
+		if !playlist.Has_event {
+			if toSearch.Scope == "playlist" && playlist.Status == "private" {
+				var authorization model.Authorization
 
-			for i := 0; i < len(authorization.Guests); i++ {
-				if authorization.Guests[i].Id == user.Id.Hex() {
-					user_authorized = true
+				if res := authorizationController.Read(playlist.Authorization_id, &authorization); res != response.Ok {
+					return res
+				}
+
+				for i := 0; i < len(authorization.Guests); i++ {
+					if authorization.Guests[i].Id == user.Id.Hex() {
+						user_authorized = true
+					}
 				}
 			}
-		}
-			
-		if toSearch.Scope == "playlist" && (toSearch.User_id == playlist.Owner_id || user_authorized) {
-			*playlists = append(*playlists, playlist)
-		} else if toSearch.Scope == "search" && toSearch.User_id != playlist.Owner_id && playlist.Status != "private" {
-			*playlists = append(*playlists, playlist)
+
+			if toSearch.Scope == "playlist" && (toSearch.User_id == playlist.Owner_id || user_authorized) {
+				*playlists = append(*playlists, playlist)
+			} else if toSearch.Scope == "search" && toSearch.User_id != playlist.Owner_id && playlist.Status != "private" {
+				*playlists = append(*playlists, playlist)
+			}
 		}
 	}
 
