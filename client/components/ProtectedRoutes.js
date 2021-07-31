@@ -10,6 +10,7 @@ const ProtectedRoutes = () => {
   const initialLoginState = {
     isLoading: true,
     userToken: null,
+    userId: null,
   };
 
   const authReducer = (prevState, action) => {
@@ -18,18 +19,21 @@ const ProtectedRoutes = () => {
         return {
           ...prevState,
           userToken: action.userToken,
+          userId: action.userId,
           isLoading: false,
         };
       case 'LOGIN':
         return {
           ...prevState,
           userToken: action.userToken,
+          userId: action.userId,
           isLoading: false,
         };
       case 'LOGOUT':
         return {
           ...prevState,
           userToken: null,
+          userId: null,
           isLoading: false,
         };
     }
@@ -41,9 +45,11 @@ const ProtectedRoutes = () => {
     () => ({
       retrieveContext: async () => {
         let userToken;
+        let userId;
 
         try {
           userToken = await AsyncStorage.getItem('userToken');
+          userId = await AsyncStorage.getItem('userId');
         } catch (e) {
           console.log(e);
         }
@@ -51,16 +57,18 @@ const ProtectedRoutes = () => {
         dispatch({
           type: 'RETRIEVE_TOKEN',
           userToken: userToken,
+          userId: userId,
         });
       },
 
-      signIn: async userToken => {
+      signIn: async user => {
         try {
-          await AsyncStorage.setItem('userToken', userToken);
+          await AsyncStorage.setItem('userToken', user.token);
+          await AsyncStorage.setItem('userId', user.id);
         } catch (e) {
           console.log(e);
         }
-        dispatch({type: 'LOGIN', userToken: userToken});
+        dispatch({type: 'LOGIN', userToken: user.token, userId: user.id});
       },
 
       signOut: async () => {

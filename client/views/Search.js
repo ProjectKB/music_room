@@ -24,7 +24,7 @@ const Search = props => {
       FetchPlaylistList(setPlaylistCollection, '');
       setMaxResults(10);
     } else if (chipSelected === 'Playlist') {
-      FetchPlaylistList(props.setCollection, searchQuery);
+      FetchPlaylistList(props.setCollection, searchQuery, 'search');
 
       if (setMustFetch) {
         setMustFetch(false);

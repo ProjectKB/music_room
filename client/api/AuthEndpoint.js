@@ -25,12 +25,9 @@ export const CreateUser = async (login, password, mail) => {
 
 export const DefineUser = async () => {
   try {
-    let token = await AsyncStorage.getItem('userToken');
+    let user_id = await AsyncStorage.getItem('userId');
 
-    return await axios.post(
-      global.URL + '/users/define',
-      JSON.stringify(token),
-    );
+    return await axios.get(global.URL + '/users/' + user_id);
   } catch (error) {
     return false;
   }

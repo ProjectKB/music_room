@@ -1,10 +1,16 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const FetchPlaylistList = async (setter, query) => {
+export const FetchPlaylistList = async (setter, query, scope) => {
   try {
+    const userId = await AsyncStorage.getItem('userId');
     const response = await axios.post(
       global.URL + '/playlists/searchPlaylist',
-      JSON.stringify(query),
+      JSON.stringify({
+        query: query,
+        scope: scope,
+        user_id: userId,
+      }),
     );
 
     response.data != null ? setter(response.data) : setter([]);
@@ -41,7 +47,7 @@ export const CreatePlaylist = async (
       JSON.stringify({name: playlistName, status: status, owner_id: owner_id}),
     );
 
-    return FetchPlaylistList(setter, '');
+    return FetchPlaylistList(setter, '', 'playlist');
   } catch (error) {
     return false;
   }
