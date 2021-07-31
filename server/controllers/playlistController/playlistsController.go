@@ -120,16 +120,31 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch model.Search) int {
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(context.TODO()) {
-		var elem model.Playlist
-
-		if err := cur.Decode(&elem); err != nil {
+		var playlist model.Playlist
+		user_authorized := false
+		
+		if err := cur.Decode(&playlist); err != nil {
 			return response.BddError
 		}
+		
+		if toSearch.Scope == "playlist" && playlist.Status == "private" {
+			var authorization model.Authorization
 
-		if toSearch.Scope == "playlist" && toSearch.User_id == elem.Owner_id {
-			*playlists = append(*playlists, elem)
-		} else if toSearch.Scope == "search" && toSearch.User_id != elem.Owner_id {
-			*playlists = append(*playlists, elem)
+			if res := authorizationController.Read(playlist.Authorization_id, &authorization); res != response.Ok {
+				return res
+			}
+
+			for i := 0; i < len(authorization.Guests); i++ {
+				if authorization.Guests[i].Id == user.Id.Hex() {
+					user_authorized = true
+				}
+			}
+		}
+			
+		if toSearch.Scope == "playlist" && (toSearch.User_id == playlist.Owner_id || user_authorized) {
+			*playlists = append(*playlists, playlist)
+		} else if toSearch.Scope == "search" && toSearch.User_id != playlist.Owner_id && playlist.Status != "private" {
+			*playlists = append(*playlists, playlist)
 		}
 	}
 
