@@ -43,7 +43,6 @@ func SearchPlaylist(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	} else if err := playlistController.SearchPlaylist(&results, toSearch); err != response.Ok {
-		fmt.Println(err, results)
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
