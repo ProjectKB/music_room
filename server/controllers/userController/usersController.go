@@ -47,7 +47,7 @@ func Create(elem *model.User) int {
 	return response.Ok
 }
 
-func Login(elem *model.User, token *string) int {
+func Login(elem *model.User) int {
 	filter := bson.D{{"login", elem.Login}, {"password", elem.Password}}
 
 	if elem.Login == "" || elem.Password == "" {
@@ -61,9 +61,9 @@ func Login(elem *model.User, token *string) int {
 		return response.InvalidFormat
 	}
 	
-	*token = hex.EncodeToString(b)
+	elem.Token = hex.EncodeToString(b)
 
-	Update(bson.M{"token": *token}, elem.Id.Hex())
+	Update(bson.M{"token": elem.Token}, elem.Id.Hex())
 
 	fmt.Println("Connected!")
 
@@ -73,16 +73,6 @@ func Login(elem *model.User, token *string) int {
 func Read(param string, result *model.User) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
-
-	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
-		return response.BddError
-	}
-
-	return response.Ok
-}
-
-func Define(token *string, result *model.User) int {
-	filter := bson.D{{"token", *token}}
 
 	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
 		return response.BddError
