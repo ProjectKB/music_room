@@ -22,7 +22,7 @@ const PlaylistSongList = props => {
         );
       });
     } else {
-      return <Text>There is no song here.</Text>;
+      return <Text style={{color: 'white'}}>There is no song here.</Text>;
     }
   };
 
