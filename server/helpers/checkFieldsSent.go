@@ -8,7 +8,7 @@ import (
 // TODO Develop this logic for empty fields and others (the purpose is to refacto controllers/middlewares)
 
 func CheckUserBlacklistedFields(user *model.User) int {
-	if user.Friends != nil || user.Playlists != nil || user.Events != nil {
+	if user.Friends != nil || user.Events != nil {
 		return response.Unauthorized
 	}
 
