@@ -108,6 +108,8 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch model.Search) int {
 
 	if res := userController.Read(toSearch.User_id, &user); res != response.Ok {
 		return res
+	} else if toSearch.Scope != "playlist" && toSearch.Scope != "search" && toSearch.Scope != "picker" {
+		return response.Unauthorized
 	}
 
 	filter := bson.M{"name": bson.M{"$regex": "(?i).*" + toSearch.Query + ".*"}}
@@ -128,21 +130,30 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch model.Search) int {
 		}
 
 		if !playlist.Has_event {
-			if toSearch.Scope == "playlist" && playlist.Status == "private" {
+			if (toSearch.Scope == "playlist" || toSearch.Scope == "picker") && playlist.Status == "private" {
 				var authorization model.Authorization
 
 				if res := authorizationController.Read(playlist.Authorization_id, &authorization); res != response.Ok {
 					return res
 				}
 
-				for i := 0; i < len(authorization.Guests); i++ {
-					if authorization.Guests[i].Id == user.Id.Hex() {
-						user_authorized = true
+				if toSearch.Scope == "playlist" {
+					for i := 0; i < len(authorization.Guests); i++ {
+						if authorization.Guests[i].Id == user.Id.Hex() {
+							user_authorized = true
+						}
+					}
+				} else {
+					for i := 0; i < len(authorization.Guests); i++ {
+						if authorization.Guests[i].Id == user.Id.Hex() && authorization.Guests[i].Contributor {
+							user_authorized = true
+						}
 					}
 				}
+
 			}
 
-			if toSearch.Scope == "playlist" && (toSearch.User_id == playlist.Owner_id || user_authorized) {
+			if (toSearch.Scope == "playlist" || toSearch.Scope == "picker") && (toSearch.User_id == playlist.Owner_id || user_authorized) {
 				*playlists = append(*playlists, playlist)
 			} else if toSearch.Scope == "search" && toSearch.User_id != playlist.Owner_id && playlist.Status != "private" {
 				*playlists = append(*playlists, playlist)
