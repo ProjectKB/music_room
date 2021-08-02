@@ -23,6 +23,7 @@ const PlaylistList = props => {
       });
     }
   };
+
   return <PlaylistCollection />;
 };
 export default PlaylistList;

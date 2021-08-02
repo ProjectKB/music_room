@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Playlist from '../../views/Playlist';
 import PlaylistStackHeader from './PlaylistStackHeader';
 import SongsList from '../../views/SongsList';
+import EditPlaylist from '../../views/EditPlaylist';
 
 const Stack = createStackNavigator();
 
@@ -54,6 +55,23 @@ const PlaylistStackNavigator = () => {
         )}
         options={{
           title: 'Playlist Song',
+          headerStyle: {backgroundColor: '#1a1a1a'},
+          headerTintColor: 'white',
+          headerTitle: props => (
+            <PlaylistStackHeader navigation={props} displayAddButton={false} />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="EditPlaylist"
+        children={props => (
+          <EditPlaylist
+            navigation={props.navigation}
+            playlist={props.route.params.playlist}
+          />
+        )}
+        options={{
+          title: 'Edit Playlist',
           headerStyle: {backgroundColor: '#1a1a1a'},
           headerTintColor: 'white',
           headerTitle: props => (

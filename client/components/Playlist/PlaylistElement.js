@@ -1,10 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMusic} from '@fortawesome/free-solid-svg-icons';
+import {faMusic, faPen, faTrash} from '@fortawesome/free-solid-svg-icons';
+import UserContext from '../../contexts/UserContext';
+import {FlashMessage} from '../FlashMessage';
+
 const PlaylistElement = props => {
+  const {user} = useContext(UserContext);
+
+  const [canEdit, setCanEdit] = useState(false);
+  const [canDelete, setCanDelete] = useState(false);
+  const [showActionButton, setShowActionButton] = useState(false);
+
+  useEffect(() => {
+    if (props.playlist.owner_id === user.id) {
+      setCanEdit(true);
+      setCanDelete(true);
+    } else if (props.playlist.guests !== undefined) {
+      props.playlist.guests.map(guest => {
+        if (guest.id === user.id && guest.contributor) {
+          setCanEdit(true);
+        }
+      });
+    }
+  }, []);
+
   const SongNumber = songNumberProps => {
     const songNumber =
       songNumberProps.playlist.songs !== undefined
@@ -16,6 +39,46 @@ const PlaylistElement = props => {
       <Text style={{color: 'white'}}>{songNumber.toString()} songs</Text>
     );
   };
+
+  const ShowActionButton = () => {
+    if (showActionButton) {
+      const editButton = canEdit ? (
+        <TouchableOpacity
+          onPress={() =>
+            props.navigation.navigate('EditPlaylist', {
+              playlist: props.playlist,
+            })
+          }>
+          <FontAwesomeIcon size={20} icon={faPen} color="white" />
+        </TouchableOpacity>
+      ) : null;
+
+      const deleteButton = canDelete ? (
+        <TouchableOpacity
+          onPress={() => {
+            props.setPlaylistToDeleteIndex(props.index);
+            props.setDeletionPlaylistModal(true);
+          }}>
+          <FontAwesomeIcon
+            style={{marginLeft: 20}}
+            size={20}
+            icon={faTrash}
+            color="white"
+          />
+        </TouchableOpacity>
+      ) : null;
+
+      return (
+        <View style={{flexDirection: 'row'}}>
+          {editButton}
+          {deleteButton}
+        </View>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
     <>
       <TouchableOpacity
@@ -24,8 +87,13 @@ const PlaylistElement = props => {
           props.navigation.navigate('SongDetails', {playlist: props.playlist})
         }
         onLongPress={() => {
-          props.setPlaylistToDeleteIndex(props.index);
-          props.setDeletionPlaylistModal(true);
+          canDelete || canEdit
+            ? setShowActionButton(!showActionButton)
+            : FlashMessage(
+                false,
+                '',
+                "You don't have any rights to bring modififications to this playlist.",
+              );
         }}>
         <View style={styles.playlistPictureContainer}>
           <FontAwesomeIcon size={50} icon={faMusic} color="white" />
@@ -37,12 +105,15 @@ const PlaylistElement = props => {
             </Subheading>
             <SongNumber playlist={props.playlist} />
           </View>
+          <ShowActionButton />
         </View>
       </TouchableOpacity>
     </>
   );
 };
+
 export default PlaylistElement;
+
 const styles = StyleSheet.create({
   playlistElementContainer: {
     flexDirection: 'row',
