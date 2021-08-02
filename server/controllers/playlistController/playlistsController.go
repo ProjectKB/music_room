@@ -287,9 +287,10 @@ func AddGuest(playlistId string, guest *model.Guest) int {
 	if guest.Id == "" {
 		return response.FieldIsMissing
 	} else if err := db.UserCollection.FindOne(context.TODO(), guestFilter).Decode(&user); err != nil {
-		// TODO verif is not Owner_ID
 		return response.BddError
 	} else if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&result); err != nil {
+		return response.BddError
+	} else if result.Owner_id == user.Id.Hex() {
 		return response.BddError
 	}
 
