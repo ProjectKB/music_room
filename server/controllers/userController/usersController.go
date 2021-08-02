@@ -227,88 +227,6 @@ func RemoveFriend(userId string, idToAdd *string) int {
 	return response.Ok
 }
 
-func AddPlaylist(userId string, idToAdd *string) int {
-	id, _ := primitive.ObjectIDFromHex(userId)
-	playlistId, _ := primitive.ObjectIDFromHex(*idToAdd)
-	filter := bson.D{{"_id", id}}
-	playlistFilter := bson.D{{"_id", playlistId}}
-	var user model.User
-	var playlist model.Event
-
-	if *idToAdd == "" {
-		return response.FieldIsMissing
-	} else if userId == *idToAdd {
-		return response.Unauthorized
-	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
-		return response.BddError
-	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return response.BddError
-	}
-
-	for i := 0; i < len(user.Playlists); i++ {
-		if user.Playlists[i] == *idToAdd {
-			return response.Unauthorized
-		}
-	}
-
-	user.Playlists = append(user.Playlists, *idToAdd)
-
-	update := bson.M{
-		"$set": bson.D{
-			{"playlists", user.Playlists},
-		},
-	}
-
-	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return response.BddError
-	}
-
-	return response.Ok
-}
-
-func RemovePlaylist(userId string, idToAdd *string) int {
-	id, _ := primitive.ObjectIDFromHex(userId)
-	playlistId, _ := primitive.ObjectIDFromHex(*idToAdd)
-	filter := bson.D{{"_id", id}}
-	playlistFilter := bson.D{{"_id", playlistId}}
-	playlistExist := false
-	var user model.User
-	var playlist model.Playlist
-
-	if *idToAdd == "" {
-		return response.FieldIsMissing
-	} else if userId == *idToAdd {
-		return response.Unauthorized
-	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
-		return response.BddError
-	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return response.BddError
-	}
-
-	for i := 0; i < len(user.Playlists); i++ {
-		if user.Playlists[i] == *idToAdd {
-			playlistExist = true
-			user.Playlists = append(user.Playlists[:i], user.Playlists[i+1:]...)
-		}
-	}
-
-	if !playlistExist {
-		return response.Unauthorized
-	}
-
-	update := bson.M{
-		"$set": bson.D{
-			{"playlists", user.Playlists},
-		},
-	}
-
-	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		return response.BddError
-	}
-
-	return response.Ok
-}
-
 func AddEvent(userId string, idToAdd *string) int {
 	id, _ := primitive.ObjectIDFromHex(userId)
 	eventId, _ := primitive.ObjectIDFromHex(*idToAdd)
@@ -425,48 +343,6 @@ func ReadFriends(param string, users *[]model.User) int {
 		}
 
 		*users = append(*users, elem)
-	}
-
-	// Close the cursor once finished
-	cur.Close(context.TODO())
-
-	return response.Ok
-}
-
-func ReadPlaylists(param string, playlists *[]model.Playlist) int {
-	id, _ := primitive.ObjectIDFromHex(param)
-	filter := bson.D{{"_id", id}}
-	var user model.User
-
-	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return response.BddError
-	}
-
-	var playlistsIds []primitive.ObjectID
-
-	for _, playlist := range user.Playlists {
-		objID, err := primitive.ObjectIDFromHex(playlist)
-		if err == nil {
-			playlistsIds = append(playlistsIds, objID)
-		}
-	}
-
-	cur, err := db.PlaylistCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": playlistsIds}})
-
-	if err != nil {
-		return response.BddError
-	}
-
-	// Finding multiple documents returns a cursor
-	// Iterating through the cursor allows us to decode documents one at a time
-	for cur.Next(context.TODO()) {
-		var elem model.Playlist
-
-		if err := cur.Decode(&elem); err != nil {
-			return response.BddError
-		}
-
-		*playlists = append(*playlists, elem)
 	}
 
 	// Close the cursor once finished

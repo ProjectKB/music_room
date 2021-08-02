@@ -17,7 +17,6 @@ Name | Type
 **Preferences** | `string[]`
 **Friends** | `string[]`
 **Events** | `string[]`
-**Playlists** | `string[]`
 **Avatar** | `string`
 
 (*) mandatory fields
@@ -35,9 +34,6 @@ Route | Method | Utility
 `/users/addFriend/{id}` | **PUT** | add a friend to `friends` field
 `/users/friends/{id}` | **GET** | read every friends
 `/users/removeFriend/{id}` | **PUT** | remove a friend from `friends` field
-`/users/addPlaylist/{id}` | **PUT** | add a playlist to `playlists` field
-`/users/playlists/{id}` | **GET** | read every playlists
-`/users/removePlaylist/{id}` | **PUT** | remove a playlist from `playlists` field
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
 `/users/events/{id}` | **GET** | read every events
 `/users/removeEvent/{id}` | **PUT** | remove an event from `events` field

@@ -195,46 +195,6 @@ func RemoveFriendFromUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend", response.Delete))
 }
 
-func AddPlaylistToUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	var playlistId string
-	params := mux.Vars(r)
-
-	if err := json.NewDecoder(r.Body).Decode(&playlistId); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	} else if err := userController.AddPlaylist(params["id"], &playlistId); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
-	}
-
-	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Create))
-}
-
-func RemovePlaylistFromUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	var playlistId string
-	params := mux.Vars(r)
-
-	if err := json.NewDecoder(r.Body).Decode(&playlistId); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	} else if err := userController.RemovePlaylist(params["id"], &playlistId); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
-	}
-
-	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Delete))
-}
-
 func AddEventToUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -288,21 +248,6 @@ func ReadUserFriends(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(friends)
-}
-
-func ReadUserPlaylists(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	params := mux.Vars(r)
-	var playlists []model.Playlist
-
-	if err := userController.ReadPlaylists(params["id"], &playlists); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
-	}
-
-	json.NewEncoder(w).Encode(playlists)
 }
 
 func ReadUserEvents(w http.ResponseWriter, r *http.Request) {
