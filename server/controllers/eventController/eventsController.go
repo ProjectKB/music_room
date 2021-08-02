@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	playlistController "server/controllers/playlistController"
-	"server/helpers"
 	"server/model"
 	"server/response"
 	db "server/system/db"
@@ -22,13 +21,13 @@ func Create(elem *model.Event) int {
 		elem.Picture = default_picture
 	}
 
+	
 	if elem.Status != "public" && elem.Status != "private" {
 		return response.Unauthorized
 	} else if elem.Name == "" || elem.Start == "" || elem.End == "" {
 		return response.FieldIsMissing
-	} else if err := helpers.CheckEventBlacklistedFields(elem, "CREATE"); err != response.Ok {
-		return response.Unauthorized
 	}
+
 
 	if elem.Playlist_id != "" {
 		playlistId, _ := primitive.ObjectIDFromHex(elem.Playlist_id)
@@ -39,7 +38,7 @@ func Create(elem *model.Event) int {
 		}
 	}
 
-	playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, "", elem.Status, playlist.Songs, elem.Picture, true}
+	playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, elem.Status, playlist.Songs, playlist.Guests, elem.Picture, true}
 
 	if err := playlistController.Create(&playlist, "event"); err != response.Ok {
 		return err

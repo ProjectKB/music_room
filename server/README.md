@@ -36,7 +36,7 @@ Route | Method | Utility
 `/users/friends/{id}` | **GET** | read every friends
 `/users/removeFriend/{id}` | **PUT** | remove a friend from `friends` field
 `/users/addPlaylist/{id}` | **PUT** | add a playlist to `playlists` field
-`/users/playlists/{id}` | **GET** | read every playlistss
+`/users/playlists/{id}` | **GET** | read every playlists
 `/users/removePlaylist/{id}` | **PUT** | remove a playlist from `playlists` field
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
 `/users/events/{id}` | **GET** | read every events
@@ -52,17 +52,27 @@ Name | Type
  --- | ---
 **Id** | `primitive.ObjectID`
 **Name*** | `string`
-**Owner_id** | `string`
-**Authorization_id** | `string`
+**Owner_id*** | `string`
+**Status** | `string`
 **Songs** | `Song[]`
+**Guest** | `Guest[]`
+**Guests** | `Guest[]`
 **Picture** | `string`
+**Has_event** | `bool`
+
 
 #### Song
 Name | Type
  --- | ---
-**Id** | `string`
+**Id*** | `string`
 **Name*** | `string`
 **Score** | `uint`
+
+#### Guest
+Name | Type
+ --- | ---
+**Id*** | `string`
+**Contributor** | bool
 
 (*) mandatory fields
 
@@ -78,6 +88,9 @@ Route | Method | Utility
 `/playlists/{id}` | **DELETE** | delete one playlist
 `/playlists/addSong/{id}` | **PUT** | add a song to `songs` field
 `/playlists/removeSong/{id}` | **PUT** | remove a song from `songs` field
+`/playlists/addGuest/{id}` | **PUT** | add a guest to `guests` field
+`/playlists/removeGuest/{id}` | **PUT** | remove a guest from `guests` field
+`/playlists/guests/{id}` | **GET** | read every guests from one playlist
 </details>
 
 <details>
@@ -113,32 +126,3 @@ Route | Method | Utility
 </details>
 
 <details>
-
-<summary>AUTHORIZATION</summary>
-
-### MODEL
-Name | Type | Value
- --- | --- | ---
-**Id** | `primitive.ObjectID`
-**Owner_id** | `string`
-**Status** | `string` | public/private
-**Guest** | `Guest[]`
-
-#### Guest
-Name | Type
- --- | ---
-**Id** | `string`
-**Contributor** | bool
-
-### ENDPOINTS
-Route | Method | Utility
- --- | --- | ---
-`/authorizations` | **GET** | read every authorizations
-`/authorizations/{id}` | **GET** | read one authorization
-`/authorizations` | **POST** | create one authorization
-`/authorizations/{id}` | **DELETE** | delete one authorization
-`/authorizations/updateStatus/{id}` | **PUT** | update authorization status
-`/authorizations/addGuest/{id}` | **PUT** | add a guest to `guests` field
-`/authorization/guests/{id}` | **GET** | read every guests
-`/authorizations/removeGuest/{id}` | **PUT** | remove a guest from `guests` field
-</details>

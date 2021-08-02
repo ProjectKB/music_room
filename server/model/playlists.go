@@ -16,13 +16,18 @@ type Song struct {
 	Score uint   `bson:"score,omitempty" json:"score,omitempty"` // TODO sort algo
 }
 
+type Guest struct {
+	Id          string `bson:"id,omitempty" json:"id,omitempty"`
+	Contributor bool   `bson:"contributor,omitempty" json:"contributor,omitempty"`
+}
+
 type Playlist struct {
-	Id               primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-	Name             string             `bson:"name,omitempty" json:"name,omitempty"`
-	Owner_id         string             `bson:"owner_id,omitempty" json:"owner_id,omitempty"`
-	Authorization_id string             `bson:"authorization_id,omitempty" json:"authorization_id,omitempty"`
-	Status           string             `bson:"status,omitempty" json:"status,omitempty"`
-	Songs            []Song             `bson:"songs,omitempty" json:"songs,omitempty"`
-	Picture          string             `bson:"picture,omitempty" json:"picture,omitempty"`
-	Has_event        bool               `bson:"has_event,omitempty" json:"has_event,omitempty"`
+	Id        primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Name      string             `bson:"name,omitempty" json:"name,omitempty"`
+	Owner_id  string             `bson:"owner_id,omitempty" json:"owner_id,omitempty"`
+	Status    string             `bson:"status,omitempty" json:"status,omitempty"`
+	Songs     []Song             `bson:"songs,omitempty" json:"songs,omitempty"`
+	Guests    []Guest            `bson:"guests,omitempty" json:"guests,omitempty"`
+	Picture   string             `bson:"picture,omitempty" json:"picture,omitempty"`
+	Has_event bool               `bson:"has_event,omitempty" json:"has_event,omitempty"`
 }

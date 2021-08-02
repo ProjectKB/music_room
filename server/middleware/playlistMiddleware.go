@@ -38,7 +38,7 @@ func SearchPlaylist(w http.ResponseWriter, r *http.Request) {
 
 	var toSearch model.Search
 	var results []model.Playlist
-	
+
 	if err := json.NewDecoder(r.Body).Decode(&toSearch); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -212,4 +212,59 @@ func RemoveSongFromPlaylist(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Song", response.Delete))
+}
+
+func AddGuestToPlaylist(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var guest model.Guest
+	params := mux.Vars(r)
+
+	if err := json.NewDecoder(r.Body).Decode(&guest); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.AddGuest(params["id"], &guest); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Guest", response.Create))
+}
+
+func RemoveGuestFromPlaylist(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	params := mux.Vars(r)
+	var guest model.Guest
+
+	if err := json.NewDecoder(r.Body).Decode(&guest); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.RemoveGuest(params["id"], &guest); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Guest", response.Delete))
+}
+
+func ReadPlaylistGuests(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	var users []model.User
+
+	if err := playlistController.ReadGuests(params["id"], &users); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(users)
 }
