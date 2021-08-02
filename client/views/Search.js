@@ -21,7 +21,7 @@ const Search = props => {
   const fetchGlobal = useCallback(() => {
     if (chipSelected === 'Song') {
       ReadSong(props.setCollection, searchQuery);
-      FetchPlaylistList(setPlaylistCollection, '');
+      FetchPlaylistList(setPlaylistCollection, '', 'playlist');
       setMaxResults(10);
     } else if (chipSelected === 'Playlist') {
       FetchPlaylistList(props.setCollection, searchQuery, 'search');
