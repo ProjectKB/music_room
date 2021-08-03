@@ -122,26 +122,31 @@ func SearchPlaylist(playlists *[]model.Playlist, toSearch model.Search) int {
 		}
 
 		if !playlist.Has_event {
-			if (toSearch.Scope == "playlist" || toSearch.Scope == "picker") && playlist.Status == "private" {
-				if toSearch.Scope == "playlist" {
-					for i := 0; i < len(playlist.Guests); i++ {
-						if playlist.Guests[i].Id == user.Id.Hex() {
-							user_authorized = true
-						}
-					}
-				} else {
-					for i := 0; i < len(playlist.Guests); i++ {
-						if playlist.Guests[i].Id == user.Id.Hex() && playlist.Guests[i].Contributor {
-							user_authorized = true
-						}
+			if toSearch.Scope == "playlist" {
+				for i := 0; i < len(playlist.Guests); i++ {
+					if playlist.Guests[i].Id == user.Id.Hex() {
+						user_authorized = true
 					}
 				}
+			} else if toSearch.Scope == "picker" {
+				for i := 0; i < len(playlist.Guests); i++ {
+					if playlist.Guests[i].Id == user.Id.Hex() && playlist.Guests[i].Contributor {
+						user_authorized = true
+					}
+				}
+			} else if toSearch.Scope == "search" && playlist.Status == "public" {
+				user_authorized = true
 
+				for i := 0; i < len(playlist.Guests); i++ {
+					if playlist.Guests[i].Id == user.Id.Hex() && playlist.Guests[i].Contributor {
+						user_authorized = false
+					}
+				}
 			}
 
 			if (toSearch.Scope == "playlist" || toSearch.Scope == "picker") && (toSearch.User_id == playlist.Owner_id || user_authorized) {
 				*playlists = append(*playlists, playlist)
-			} else if toSearch.Scope == "search" && toSearch.User_id != playlist.Owner_id && playlist.Status != "private" {
+			} else if toSearch.Scope == "search" && toSearch.User_id != playlist.Owner_id && playlist.Status != "private" && user_authorized {
 				*playlists = append(*playlists, playlist)
 			}
 		}
