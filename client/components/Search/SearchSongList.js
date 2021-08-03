@@ -15,6 +15,7 @@ const SearchSongList = props => {
             channelTitle={elem.snippet.channelTitle}
             setSongToAdd={props.setSongToAdd}
             setModalVisibility={props.setModalVisibility}
+            playlistCollection={props.playlistCollection}
           />
         );
       });

@@ -39,8 +39,10 @@ const SearchSongElement = props => {
           setSongIndex(0);
         }}
         onLongPress={() => {
-          props.setSongToAdd({id: props.id, name: props.title});
-          props.setModalVisibility(true);
+          if (props.playlistCollection.length > 0) {
+            props.setSongToAdd({id: props.id, name: props.title});
+            props.setModalVisibility(true);
+          }
         }}>
         <Image style={styles.pictureContainer} source={{uri: props.picture}} />
         <View>

@@ -26,6 +26,7 @@ const SearchSong = props => {
           searchCollection={props.collection}
           setSongToAdd={setSongToAdd}
           setModalVisibility={setModalVisibility}
+          playlistCollection={props.playlistCollection}
         />
       </ScrollView>
       <CustomModal

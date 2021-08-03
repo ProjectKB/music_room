@@ -8,7 +8,9 @@ import {AddSong} from '../../api/PlaylistEndpoint';
 import FetchContext from '../../contexts/FetchContext';
 
 const SearchAddSongModal = props => {
-  const [playlistPicked, setPlaylistPicked] = useState(undefined);
+  const [playlistPicked, setPlaylistPicked] = useState(
+    props.playlistCollection[0],
+  );
 
   const {setMustFetch} = useContext(FetchContext);
 
