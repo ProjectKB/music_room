@@ -51,6 +51,7 @@ const PlaylistStackNavigator = () => {
             playlist={props.route.params.playlist}
             playlistCollection={playlistCollection}
             setPlaylistCollection={setPlaylistCollection}
+            screen="Playlist"
           />
         )}
         options={{

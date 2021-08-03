@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
-import {Subheading, Divider} from 'react-native-paper';
+import {Subheading} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMusic} from '@fortawesome/free-solid-svg-icons';
 import ShowPlayerContext from '../../contexts/ShowPlayerContext';
@@ -25,15 +25,17 @@ const PlaylistSongElement = props => {
           setSongIndex(props.index);
         }}
         onLongPress={() => {
-          props.setSongToDeleteIndex(props.index);
-          props.setDeletionPlaylistModal(true);
+          if (props.screen === 'Playlist') {
+            props.setSongToDeleteIndex(props.index);
+            props.setDeletionPlaylistModal(true);
+          }
         }}>
         <View style={styles.playlistPictureContainer}>
           <FontAwesomeIcon size={50} icon={faMusic} color="white" />
         </View>
         <View style={styles.playlistElementContent}>
           <ScrollView horizontal={true} style={{marginHorizontal: 15}}>
-            <Subheading style={{color: 'white'}} >{props.song.name}</Subheading>
+            <Subheading style={{color: 'white'}}>{props.song.name}</Subheading>
           </ScrollView>
         </View>
       </TouchableOpacity>

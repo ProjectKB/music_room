@@ -18,6 +18,7 @@ const PlaylistSongList = props => {
             setSongToDeleteIndex={props.setSongToDeleteIndex}
             index={index}
             playlist={props.playlist}
+            screen={props.screen}
           />
         );
       });

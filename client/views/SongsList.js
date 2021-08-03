@@ -44,6 +44,7 @@ const SongsList = props => {
           setDeletionPlaylistModal={setDeletionPlaylistModal}
           setSongToDeleteIndex={setSongToDeleteIndex}
           playlist={props.playlist}
+          screen={props.screen}
         />
       </ScrollView>
       <CustomModal

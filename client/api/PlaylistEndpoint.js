@@ -101,3 +101,16 @@ export const AddGuestToPlaylist = async (playlistId, userId) => {
     return false;
   }
 };
+
+export const RemoveGuestFromPlaylist = async (playlistId, userId) => {
+  try {
+    const response = await axios.put(
+      global.URL + '/playlists/removeGuest/' + playlistId,
+      JSON.stringify({id: userId}),
+    );
+
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};

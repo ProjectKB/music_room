@@ -9,10 +9,14 @@ import {
   faPen,
   faTrash,
   faPlus,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import UserContext from '../../contexts/UserContext';
 import {FlashMessage} from '../FlashMessage';
-import {AddGuestToPlaylist} from '../../api/PlaylistEndpoint';
+import {
+  AddGuestToPlaylist,
+  RemoveGuestFromPlaylist,
+} from '../../api/PlaylistEndpoint';
 import FetchContext from '../../contexts/FetchContext';
 
 const PlaylistElement = props => {
@@ -23,6 +27,7 @@ const PlaylistElement = props => {
   const [canDelete, setCanDelete] = useState(false);
   const [showActionButton, setShowActionButton] = useState(false);
   const [canAddToPlaylist, setCanAddToPlaylist] = useState(false);
+  const [canRemoveFromPlaylist, setCanRemoveFromPlaylist] = useState(false);
 
   useEffect(() => {
     if (props.screen !== 'Search') {
@@ -30,6 +35,8 @@ const PlaylistElement = props => {
         setCanEdit(true);
         setCanDelete(true);
       } else if (props.playlist.guests !== undefined) {
+        setCanRemoveFromPlaylist(true);
+
         props.playlist.guests.map(guest => {
           if (guest.id === user.id && guest.contributor) {
             setCanEdit(true);
@@ -100,11 +107,36 @@ const PlaylistElement = props => {
         </TouchableOpacity>
       ) : null;
 
+      const removeFromPlaylistButton = canRemoveFromPlaylist ? (
+        <TouchableOpacity
+          onPress={() =>
+            RemoveGuestFromPlaylist(props.playlist.id, user.id).then(res => {
+              FlashMessage(
+                res,
+                `${props.playlist.name} has been removed from your playlists!`,
+                'An error has occurred, please retry later!',
+              );
+
+              if (res) {
+                setMustFetch(true);
+              }
+            })
+          }>
+          <FontAwesomeIcon
+            size={23}
+            style={{marginLeft: 17}}
+            icon={faTimes}
+            color="white"
+          />
+        </TouchableOpacity>
+      ) : null;
+
       return (
         <View style={{flexDirection: 'row'}}>
           {editButton}
           {deleteButton}
           {addToPlaylistButton}
+          {removeFromPlaylistButton}
         </View>
       );
     } else {
@@ -120,7 +152,7 @@ const PlaylistElement = props => {
           props.navigation.navigate('SongDetails', {playlist: props.playlist})
         }
         onLongPress={() => {
-          canDelete || canEdit || canAddToPlaylist
+          canDelete || canEdit || canAddToPlaylist || canRemoveFromPlaylist
             ? setShowActionButton(!showActionButton)
             : FlashMessage(
                 false,
