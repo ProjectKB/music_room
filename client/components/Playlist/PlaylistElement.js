@@ -4,27 +4,40 @@ import React, {useState, useContext, useEffect} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMusic, faPen, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {
+  faMusic,
+  faPen,
+  faTrash,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import UserContext from '../../contexts/UserContext';
 import {FlashMessage} from '../FlashMessage';
+import {AddGuestToPlaylist} from '../../api/PlaylistEndpoint';
+import FetchContext from '../../contexts/FetchContext';
 
 const PlaylistElement = props => {
   const {user} = useContext(UserContext);
+  const {setMustFetch} = useContext(FetchContext);
 
   const [canEdit, setCanEdit] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
   const [showActionButton, setShowActionButton] = useState(false);
+  const [canAddToPlaylist, setCanAddToPlaylist] = useState(false);
 
   useEffect(() => {
-    if (props.playlist.owner_id === user.id) {
-      setCanEdit(true);
-      setCanDelete(true);
-    } else if (props.playlist.guests !== undefined) {
-      props.playlist.guests.map(guest => {
-        if (guest.id === user.id && guest.contributor) {
-          setCanEdit(true);
-        }
-      });
+    if (props.screen !== 'Search') {
+      if (props.playlist.owner_id === user.id) {
+        setCanEdit(true);
+        setCanDelete(true);
+      } else if (props.playlist.guests !== undefined) {
+        props.playlist.guests.map(guest => {
+          if (guest.id === user.id && guest.contributor) {
+            setCanEdit(true);
+          }
+        });
+      }
+    } else {
+      setCanAddToPlaylist(true);
     }
   }, []);
 
@@ -68,10 +81,30 @@ const PlaylistElement = props => {
         </TouchableOpacity>
       ) : null;
 
+      const addToPlaylistButton = canAddToPlaylist ? (
+        <TouchableOpacity
+          onPress={() =>
+            AddGuestToPlaylist(props.playlist.id, user.id).then(res => {
+              FlashMessage(
+                res,
+                `${props.playlist.name} has been added to your playlists!`,
+                'An error has occurred, please retry later!',
+              );
+
+              if (res) {
+                setMustFetch(true);
+              }
+            })
+          }>
+          <FontAwesomeIcon size={20} icon={faPlus} color="white" />
+        </TouchableOpacity>
+      ) : null;
+
       return (
         <View style={{flexDirection: 'row'}}>
           {editButton}
           {deleteButton}
+          {addToPlaylistButton}
         </View>
       );
     } else {
@@ -87,7 +120,7 @@ const PlaylistElement = props => {
           props.navigation.navigate('SongDetails', {playlist: props.playlist})
         }
         onLongPress={() => {
-          canDelete || canEdit
+          canDelete || canEdit || canAddToPlaylist
             ? setShowActionButton(!showActionButton)
             : FlashMessage(
                 false,

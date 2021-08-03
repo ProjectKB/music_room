@@ -18,6 +18,7 @@ const PlaylistList = props => {
             setDeletionPlaylistModal={props.setDeletionPlaylistModal}
             setPlaylistToDeleteIndex={props.setPlaylistToDeleteIndex}
             index={index}
+            screen={props.screen}
           />
         );
       });

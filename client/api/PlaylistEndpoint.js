@@ -88,3 +88,16 @@ export const AddSong = async (playlistId, song) => {
     return false;
   }
 };
+
+export const AddGuestToPlaylist = async (playlistId, userId) => {
+  try {
+    const response = await axios.put(
+      global.URL + '/playlists/addGuest/' + playlistId,
+      JSON.stringify({id: userId, contributor: true}),
+    );
+
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
