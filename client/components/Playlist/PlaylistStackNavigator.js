@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 
 const PlaylistStackNavigator = () => {
   const [creationPlaylistModal, setCreationPlaylistModal] = useState(false);
-  const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
+  const [multiPlaylistModal, setMultiPlaylistModal] = useState(false);
   const [playlistCollection, setPlaylistCollection] = useState([]);
 
   return (
@@ -21,8 +21,8 @@ const PlaylistStackNavigator = () => {
             navigation={props.navigation}
             creationPlaylistModal={creationPlaylistModal}
             setCreationPlaylistModal={setCreationPlaylistModal}
-            deletionPlaylistModal={deletionPlaylistModal}
-            setDeletionPlaylistModal={setDeletionPlaylistModal}
+            multiPlaylistModal={multiPlaylistModal}
+            setMultiPlaylistModal={setMultiPlaylistModal}
             playlistCollection={playlistCollection}
             setPlaylistCollection={setPlaylistCollection}
           />
@@ -35,7 +35,7 @@ const PlaylistStackNavigator = () => {
               navigation={props}
               displayAddButton={true}
               addAction={() => {
-                if (!deletionPlaylistModal) {
+                if (!multiPlaylistModal) {
                   setCreationPlaylistModal(true);
                 }
               }}

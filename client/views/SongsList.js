@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, ScrollView, View} from 'react-native';
-import {DeleteSong, FetchPlaylistSong} from '../api/PlaylistEndpoint';
+import {FetchPlaylistSong} from '../api/PlaylistEndpoint';
 import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
-import PlaylistDeletionModal from '../components/Playlist/PlaylistDeletionModal';
+import PlaylistMultiModal from '../components/Playlist/PlaylistMultiModal';
 import CustomModal from '../components/CustomModal';
 
 const SongsList = props => {
@@ -52,15 +52,10 @@ const SongsList = props => {
         setModalVisibility={setDeletionPlaylistModal}
         secu={playlistSongCollection}
         Component={() => (
-          <PlaylistDeletionModal
-            setDeletionPlaylistModal={setDeletionPlaylistModal}
-            toDelete={playlistSongCollection[songToDeleteIndex]}
-            deleteFunction={() =>
-              DeleteSong(
-                props.playlist.id,
-                playlistSongCollection[songToDeleteIndex].id,
-              )
-            }
+          <PlaylistMultiModal
+            setMultiPlaylistModal={setDeletionPlaylistModal}
+            song={playlistSongCollection[songToDeleteIndex]}
+            playlist={props.playlist}
           />
         )}
       />

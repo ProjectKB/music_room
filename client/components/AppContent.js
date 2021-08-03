@@ -9,6 +9,7 @@ import PlaylistContext from '../contexts/PlaylistContext';
 import SongIndexContext from '../contexts/SongIndexContext';
 import FetchContext from '../contexts/FetchContext';
 import UserContext from '../contexts/UserContext';
+import MultiModalContext from '../contexts/MultiModalContext';
 import PlaylistStackNavigator from '../components/Playlist/PlaylistStackNavigator';
 import FlashMessage from 'react-native-flash-message';
 import SearchStackNavigator from '../components/Search/SearchStackNavigator';
@@ -21,6 +22,7 @@ const AppContent = () => {
   const [playlistPlayed, setPlaylistPlayed] = useState([]);
   const [songIndex, setSongIndex] = useState(-1);
   const [mustFetch, setMustFetch] = useState(false);
+  const [multiModalContext, setMultiModalContext] = useState('');
 
   const userTemplate = {
     avatar: '',
@@ -40,26 +42,29 @@ const AppContent = () => {
       <UserContext.Provider value={{user, setUser}}>
         <ShowPlayerContext.Provider value={{showPlayer, setShowPlayer}}>
           <SongIndexContext.Provider value={{songIndex, setSongIndex}}>
-            <PlaylistContext.Provider
-              value={{playlistPlayed, setPlaylistPlayed}}>
-              <FetchContext.Provider value={{mustFetch, setMustFetch}}>
-                <Tab.Navigator
-                  tabBar={props => <TabBar {...props} />}
-                  tabBarPosition="bottom">
-                  <Tab.Screen name={'Home'} component={Home} />
-                  <Tab.Screen
-                    name={'Playlist'}
-                    component={PlaylistStackNavigator}
-                  />
-                  <Tab.Screen
-                    name={'Search'}
-                    component={SearchStackNavigator}
-                  />
-                  <Tab.Screen name={'Event'} component={Event} />
-                  <Tab.Screen name={'Chat'} component={Chat} />
-                </Tab.Navigator>
-              </FetchContext.Provider>
-            </PlaylistContext.Provider>
+            <MultiModalContext.Provider
+              value={{multiModalContext, setMultiModalContext}}>
+              <PlaylistContext.Provider
+                value={{playlistPlayed, setPlaylistPlayed}}>
+                <FetchContext.Provider value={{mustFetch, setMustFetch}}>
+                  <Tab.Navigator
+                    tabBar={props => <TabBar {...props} />}
+                    tabBarPosition="bottom">
+                    <Tab.Screen name={'Home'} component={Home} />
+                    <Tab.Screen
+                      name={'Playlist'}
+                      component={PlaylistStackNavigator}
+                    />
+                    <Tab.Screen
+                      name={'Search'}
+                      component={SearchStackNavigator}
+                    />
+                    <Tab.Screen name={'Event'} component={Event} />
+                    <Tab.Screen name={'Chat'} component={Chat} />
+                  </Tab.Navigator>
+                </FetchContext.Provider>
+              </PlaylistContext.Provider>
+            </MultiModalContext.Provider>
           </SongIndexContext.Provider>
         </ShowPlayerContext.Provider>
       </UserContext.Provider>

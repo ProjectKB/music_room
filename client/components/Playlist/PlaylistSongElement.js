@@ -6,11 +6,15 @@ import {faMusic} from '@fortawesome/free-solid-svg-icons';
 import ShowPlayerContext from '../../contexts/ShowPlayerContext';
 import SongIndexContext from '../../contexts/SongIndexContext';
 import PlaylistContext from '../../contexts/PlaylistContext';
+import MultiModalContext from '../../contexts/MultiModalContext';
+import UserContext from '../../contexts/UserContext';
 
 const PlaylistSongElement = props => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
   const {setSongIndex} = useContext(SongIndexContext);
   const {setPlaylistPlayed} = useContext(PlaylistContext);
+  const {setMultiModalContext} = useContext(MultiModalContext);
+  const {user} = useContext(UserContext);
 
   return (
     <>
@@ -26,8 +30,23 @@ const PlaylistSongElement = props => {
         }}
         onLongPress={() => {
           if (props.screen === 'Playlist') {
-            props.setSongToDeleteIndex(props.index);
-            props.setDeletionPlaylistModal(true);
+            let canEdit = false;
+
+            if (props.playlist.owner_id === user.id) {
+              canEdit = true;
+            } else if (props.playlist.guests !== undefined) {
+              props.playlist.guests.map(guest => {
+                if (guest.id === user.id && guest.contributor) {
+                  canEdit = true;
+                }
+              });
+            }
+
+            if (canEdit) {
+              props.setSongToDeleteIndex(props.index);
+              props.setDeletionPlaylistModal(true);
+              setMultiModalContext('delete song');
+            }
           }
         }}>
         <View style={styles.playlistPictureContainer}>

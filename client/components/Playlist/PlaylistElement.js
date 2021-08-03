@@ -10,21 +10,19 @@ import {
   faTrash,
   faPlus,
   faTimes,
+  faCrown,
 } from '@fortawesome/free-solid-svg-icons';
 import UserContext from '../../contexts/UserContext';
+import MultiModalContext from '../../contexts/MultiModalContext';
 import {FlashMessage} from '../FlashMessage';
-import {
-  AddGuestToPlaylist,
-  RemoveGuestFromPlaylist,
-} from '../../api/PlaylistEndpoint';
-import FetchContext from '../../contexts/FetchContext';
 
 const PlaylistElement = props => {
   const {user} = useContext(UserContext);
-  const {setMustFetch} = useContext(FetchContext);
+  const {setMultiModalContext} = useContext(MultiModalContext);
 
   const [canEdit, setCanEdit] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
+  const [canDelegate, setCanDelegate] = useState(false);
   const [showActionButton, setShowActionButton] = useState(false);
   const [canAddToPlaylist, setCanAddToPlaylist] = useState(false);
   const [canRemoveFromPlaylist, setCanRemoveFromPlaylist] = useState(false);
@@ -34,6 +32,7 @@ const PlaylistElement = props => {
       if (props.playlist.owner_id === user.id) {
         setCanEdit(true);
         setCanDelete(true);
+        setCanDelegate(true);
       } else if (props.playlist.guests !== undefined) {
         setCanRemoveFromPlaylist(true);
 
@@ -76,8 +75,9 @@ const PlaylistElement = props => {
       const deleteButton = canDelete ? (
         <TouchableOpacity
           onPress={() => {
-            props.setPlaylistToDeleteIndex(props.index);
-            props.setDeletionPlaylistModal(true);
+            setMultiModalContext('delete');
+            props.setPlaylistIndex(props.index);
+            props.setMultiPlaylistModal(true);
           }}>
           <FontAwesomeIcon
             style={{marginLeft: 20}}
@@ -90,38 +90,22 @@ const PlaylistElement = props => {
 
       const addToPlaylistButton = canAddToPlaylist ? (
         <TouchableOpacity
-          onPress={() =>
-            AddGuestToPlaylist(props.playlist.id, user.id).then(res => {
-              FlashMessage(
-                res,
-                `${props.playlist.name} has been added to your playlists!`,
-                'An error has occurred, please retry later!',
-              );
-
-              if (res) {
-                setMustFetch(true);
-              }
-            })
-          }>
+          onPress={() => {
+            setMultiModalContext('add');
+            props.setPlaylistIndex(props.index);
+            props.setMultiPlaylistModal(true);
+          }}>
           <FontAwesomeIcon size={20} icon={faPlus} color="white" />
         </TouchableOpacity>
       ) : null;
 
       const removeFromPlaylistButton = canRemoveFromPlaylist ? (
         <TouchableOpacity
-          onPress={() =>
-            RemoveGuestFromPlaylist(props.playlist.id, user.id).then(res => {
-              FlashMessage(
-                res,
-                `${props.playlist.name} has been removed from your playlists!`,
-                'An error has occurred, please retry later!',
-              );
-
-              if (res) {
-                setMustFetch(true);
-              }
-            })
-          }>
+          onPress={() => {
+            setMultiModalContext('remove');
+            props.setPlaylistIndex(props.index);
+            props.setMultiPlaylistModal(true);
+          }}>
           <FontAwesomeIcon
             size={23}
             style={{marginLeft: 17}}
@@ -131,8 +115,23 @@ const PlaylistElement = props => {
         </TouchableOpacity>
       ) : null;
 
+      const delegateButton = canDelegate ? (
+        <TouchableOpacity
+          onPress={() => {
+            console.log('coucou');
+          }}>
+          <FontAwesomeIcon
+            style={{marginRight: 20}}
+            size={23}
+            icon={faCrown}
+            color="white"
+          />
+        </TouchableOpacity>
+      ) : null;
+
       return (
         <View style={{flexDirection: 'row'}}>
+          {delegateButton}
           {editButton}
           {deleteButton}
           {addToPlaylistButton}

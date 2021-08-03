@@ -8,7 +8,7 @@ import FetchContext from '../contexts/FetchContext';
 
 const Playlist = props => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [playlistToDeleteIndex, setPlaylistToDeleteIndex] = useState(undefined);
+  const [playlistIndex, setPlaylistIndex] = useState(undefined);
 
   const {mustFetch, setMustFetch} = useContext(FetchContext);
 
@@ -33,10 +33,10 @@ const Playlist = props => {
         setPlaylistCollection={props.setPlaylistCollection}
         creationPlaylistModal={props.creationPlaylistModal}
         setCreationPlaylistModal={props.setCreationPlaylistModal}
-        deletionPlaylistModal={props.deletionPlaylistModal}
-        setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-        playlistToDeleteIndex={playlistToDeleteIndex}
-        setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
+        multiPlaylistModal={props.multiPlaylistModal}
+        setMultiPlaylistModal={props.setMultiPlaylistModal}
+        playlistIndex={playlistIndex}
+        setPlaylistIndex={setPlaylistIndex}
       />
     </View>
   );

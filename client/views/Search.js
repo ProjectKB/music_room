@@ -13,7 +13,7 @@ const Search = props => {
   const [searchQuery, setSearchQuery] = useState('');
   const [chipSelected, setChipSelected] = useState('Playlist');
   const [maxResults, setMaxResults] = useState(10);
-  const [deletionPlaylistModal, setDeletionPlaylistModal] = useState(false);
+  const [multiPlaylistModal, setMultiPlaylistModal] = useState(false);
   const [playlistCollection, setPlaylistCollection] = useState(undefined);
 
   const {mustFetch, setMustFetch} = useContext(FetchContext);
@@ -63,8 +63,8 @@ const Search = props => {
         setCollection={props.setCollection}
         playlistCollection={playlistCollection}
         setMaxResults={setMaxResults}
-        deletionPlaylistModal={deletionPlaylistModal}
-        setDeletionPlaylistModal={setDeletionPlaylistModal}
+        multiPlaylistModal={multiPlaylistModal}
+        setMultiPlaylistModal={setMultiPlaylistModal}
       />
     </View>
   );

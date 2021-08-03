@@ -15,8 +15,8 @@ const PlaylistList = props => {
             key={elem.id}
             playlist={elem}
             navigation={props.navigation}
-            setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-            setPlaylistToDeleteIndex={props.setPlaylistToDeleteIndex}
+            setMultiPlaylistModal={props.setMultiPlaylistModal}
+            setPlaylistIndex={props.setPlaylistIndex}
             index={index}
             screen={props.screen}
           />

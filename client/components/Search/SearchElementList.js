@@ -4,7 +4,7 @@ import SearchSong from './SearchSong';
 import PlaylistContent from '../Playlist/PlaylistContent';
 
 const SearchElementList = props => {
-  const [playlistToDeleteIndex, setPlaylistToDeleteIndex] = useState(undefined);
+  const [playlistIndex, setPlaylistIndex] = useState(undefined);
 
   const SearchElementListCallback = useCallback(() => {
     if (props.chipSelected === 'Song') {
@@ -22,10 +22,10 @@ const SearchElementList = props => {
           navigation={props.navigation}
           playlistCollection={props.collection}
           setPlaylistCollection={props.setCollection}
-          deletionPlaylistModal={props.deletionPlaylistModal}
-          setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-          playlistToDeleteIndex={playlistToDeleteIndex}
-          setPlaylistToDeleteIndex={setPlaylistToDeleteIndex}
+          multiPlaylistModal={props.multiPlaylistModal}
+          setMultiPlaylistModal={props.setMultiPlaylistModal}
+          playlistIndex={playlistIndex}
+          setPlaylistIndex={setPlaylistIndex}
           screen="Search"
           searchQuery={props.searchQuery}
         />
@@ -35,8 +35,8 @@ const SearchElementList = props => {
     }
   }, [
     props.collection,
-    props.deletionPlaylistModal,
-    playlistToDeleteIndex,
+    props.multiPlaylistModal,
+    playlistIndex,
     props.searchQuery,
   ]);
 
