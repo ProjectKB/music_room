@@ -268,3 +268,23 @@ func ReadPlaylistGuests(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(users)
 }
+
+func Delegate(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	params := mux.Vars(r)
+	var new_owner_id string
+
+	if err := json.NewDecoder(r.Body).Decode(&new_owner_id); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := playlistController.Delegate(params["id"], new_owner_id); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Delegate))
+}

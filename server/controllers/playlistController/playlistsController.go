@@ -407,3 +407,49 @@ func ReadGuests(param string, users *[]model.User) int {
 
 	return response.Ok
 }
+
+func Delegate(playlist_id string, new_owner_id string) int {
+	var playlist model.Playlist
+	var new_owner model.Playlist
+	var new_owner_is_authorized bool
+
+	pid, _ := primitive.ObjectIDFromHex(playlist_id)
+	uid, _ := primitive.ObjectIDFromHex(new_owner_id)
+	playlist_filter := bson.D{{"_id", pid}}
+	new_owner_filter := bson.D{{"_id", uid}}
+
+	if new_owner_id == "" {
+		return response.FieldIsMissing
+	} else if err := db.PlaylistCollection.FindOne(context.TODO(), playlist_filter).Decode(&playlist); err != nil {
+		return response.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), new_owner_filter).Decode(&new_owner); err != nil {
+		return response.BddError
+	}
+
+	for i := 0; i < len(playlist.Guests); i++ {
+		if playlist.Guests[i].Id == new_owner_id {
+			new_owner_is_authorized = true
+
+			playlist.Guests = append(playlist.Guests[:i], playlist.Guests[i+1:]...)
+		}
+	}
+
+	if (!new_owner_is_authorized) {
+		return response.Unauthorized
+	}
+
+	playlist.Guests = append(playlist.Guests, model.Guest{playlist.Owner_id, true})
+
+	fields_to_update := bson.M{
+		"$set": bson.D{
+			{"owner_id", new_owner_id},
+			{"guests", playlist.Guests},
+		},
+	}
+
+	if _, err := db.PlaylistCollection.UpdateOne(context.TODO(), playlist_filter, fields_to_update); err != nil {
+		return response.BddError
+	}
+
+	return response.Ok
+}
