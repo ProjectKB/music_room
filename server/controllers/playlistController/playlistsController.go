@@ -387,7 +387,7 @@ func ReadGuests(param string, users *[]model.User) int {
 	cur, err := db.UserCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": guestIds}})
 
 	if err != nil {
-		return response.BddError
+		return response.Nonexistence
 	}
 
 	// Finding multiple documents returns a cursor
