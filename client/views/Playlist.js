@@ -2,13 +2,16 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 import SearchBar from '../components/SearchBar';
-import {FetchPlaylistList} from '../api/PlaylistEndpoint';
+import {FetchPlaylistList, FetchPlaylistGuest} from '../api/PlaylistEndpoint';
 import PlaylistContent from '../components/Playlist/PlaylistContent';
 import FetchContext from '../contexts/FetchContext';
+import {FlashMessage} from '../components/FlashMessage';
 
 const Playlist = props => {
   const [searchQuery, setSearchQuery] = useState('');
   const [playlistIndex, setPlaylistIndex] = useState(undefined);
+  const [guestPickerModal, setGuestPickerModal] = useState(false);
+  const [guestCollection, setGuestCollection] = useState([{id: '', login: ''}]);
 
   const {mustFetch, setMustFetch} = useContext(FetchContext);
 
@@ -20,9 +23,32 @@ const Playlist = props => {
     }
   }, [searchQuery, mustFetch]);
 
+  const fetchGuest = useCallback(() => {
+    if (guestPickerModal) {
+      FetchPlaylistGuest(props.playlistCollection[playlistIndex].id).then(
+        res => {
+          if (res) {
+            setGuestCollection(res);
+          } else {
+            setGuestPickerModal(false);
+            FlashMessage(
+              false,
+              '',
+              'An error has occurred, please retry later!',
+            );
+          }
+        },
+      );
+    }
+  }, [guestPickerModal]);
+
   useEffect(() => {
     fetchPlaylist();
   }, [fetchPlaylist]);
+
+  useEffect(() => {
+    fetchGuest();
+  }, [fetchGuest]);
 
   return (
     <View style={styles.mainContainer}>
@@ -37,6 +63,9 @@ const Playlist = props => {
         setMultiPlaylistModal={props.setMultiPlaylistModal}
         playlistIndex={playlistIndex}
         setPlaylistIndex={setPlaylistIndex}
+        guestPickerModal={guestPickerModal}
+        setGuestPickerModal={setGuestPickerModal}
+        guestCollection={guestCollection}
       />
     </View>
   );

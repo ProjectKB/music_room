@@ -35,6 +35,18 @@ export const FetchPlaylistSong = async (setter, query, playlistId) => {
   }
 };
 
+export const FetchPlaylistGuest = async playlistId => {
+  try {
+    const response = await axios.get(
+      global.URL + '/playlists/guests/' + playlistId,
+    );
+
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
+
 export const CreatePlaylist = async (
   setter,
   playlistName,
@@ -107,6 +119,19 @@ export const RemoveGuestFromPlaylist = async (playlistId, userId) => {
     const response = await axios.put(
       global.URL + '/playlists/removeGuest/' + playlistId,
       JSON.stringify({id: userId}),
+    );
+
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const DelegatePlaylist = async (playlistId, newOwnerId) => {
+  try {
+    const response = await axios.put(
+      global.URL + '/playlists/delegate/' + playlistId,
+      JSON.stringify(newOwnerId),
     );
 
     return response.data;

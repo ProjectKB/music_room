@@ -15,6 +15,7 @@ const PlaylistList = props => {
             key={elem.id}
             playlist={elem}
             navigation={props.navigation}
+            setGuestPickerModal={props.setGuestPickerModal}
             setMultiPlaylistModal={props.setMultiPlaylistModal}
             setPlaylistIndex={props.setPlaylistIndex}
             index={index}

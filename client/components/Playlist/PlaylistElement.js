@@ -115,19 +115,21 @@ const PlaylistElement = props => {
         </TouchableOpacity>
       ) : null;
 
-      const delegateButton = canDelegate ? (
-        <TouchableOpacity
-          onPress={() => {
-            console.log('coucou');
-          }}>
-          <FontAwesomeIcon
-            style={{marginRight: 20}}
-            size={23}
-            icon={faCrown}
-            color="white"
-          />
-        </TouchableOpacity>
-      ) : null;
+      const delegateButton =
+        canDelegate && props.playlist.guests ? (
+          <TouchableOpacity
+            onPress={() => {
+              props.setPlaylistIndex(props.index);
+              props.setGuestPickerModal(true);
+            }}>
+            <FontAwesomeIcon
+              style={{marginRight: 20}}
+              size={23}
+              icon={faCrown}
+              color="white"
+            />
+          </TouchableOpacity>
+        ) : null;
 
       return (
         <View style={{flexDirection: 'row'}}>
