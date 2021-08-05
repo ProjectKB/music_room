@@ -309,48 +309,6 @@ func RemoveEvent(userId string, idToAdd *string) int {
 	return response.Ok
 }
 
-func ReadFriends(param string, users *[]model.User) int {
-	id, _ := primitive.ObjectIDFromHex(param)
-	filter := bson.D{{"_id", id}}
-	var user model.User
-
-	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return response.BddError
-	}
-
-	var friendsIds []primitive.ObjectID
-
-	for _, friend := range user.Friends {
-		objID, err := primitive.ObjectIDFromHex(friend)
-		if err == nil {
-			friendsIds = append(friendsIds, objID)
-		}
-	}
-
-	cur, err := db.UserCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": friendsIds}})
-
-	if err != nil {
-		return response.BddError
-	}
-
-	// Finding multiple documents returns a cursor
-	// Iterating through the cursor allows us to decode documents one at a time
-	for cur.Next(context.TODO()) {
-		var elem model.User
-
-		if err := cur.Decode(&elem); err != nil {
-			return response.BddError
-		}
-
-		*users = append(*users, elem)
-	}
-
-	// Close the cursor once finished
-	cur.Close(context.TODO())
-
-	return response.Ok
-}
-
 func ReadEvents(param string, event *[]model.Event) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
@@ -385,6 +343,48 @@ func ReadEvents(param string, event *[]model.Event) int {
 		}
 
 		*event = append(*event, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	return response.Ok
+}
+
+func ReadFriends(param string, users *[]model.User) int {
+	id, _ := primitive.ObjectIDFromHex(param)
+	filter := bson.D{{"_id", id}}
+	var user model.User
+	var friendsIds []primitive.ObjectID
+
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
+	for _, friend := range user.Friends {
+		objID, err := primitive.ObjectIDFromHex(friend)
+
+		if err == nil {
+			friendsIds = append(friendsIds, objID)
+		}
+	}
+
+	cur, err := db.UserCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": friendsIds}})
+
+	if err != nil {
+		return response.Nonexistence
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.User
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*users = append(*users, elem)
 	}
 
 	// Close the cursor once finished

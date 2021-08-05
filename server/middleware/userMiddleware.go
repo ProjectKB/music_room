@@ -235,21 +235,6 @@ func RemoveEventFromUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Event", response.Delete))
 }
 
-func ReadUserFriends(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	params := mux.Vars(r)
-	var friends []model.User
-
-	if err := userController.ReadFriends(params["id"], &friends); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
-	}
-
-	json.NewEncoder(w).Encode(friends)
-}
-
 func ReadUserEvents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -263,4 +248,19 @@ func ReadUserEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(events)
+}
+
+func ReadUserFriends(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	var users []model.User
+
+	if err := userController.ReadFriends(params["id"], &users); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(users)
 }
