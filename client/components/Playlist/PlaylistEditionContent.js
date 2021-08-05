@@ -11,14 +11,23 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {RadioButton} from 'react-native-paper';
 import UserContext from '../../contexts/UserContext';
+import FetchContext from '../../contexts/FetchContext';
 import {FlashMessage} from '../FlashMessage';
+import {UpdatePlaylist} from '../../api/PlaylistEndpoint';
 
 const PlaylistEditionContent = props => {
   const [playlistStatus, setPlaylistStatus] = useState('public');
   const [name, setName] = useState(props.playlist.name);
   const [nameError, setNameError] = useState(false);
 
+  const [initialGuests, setInitialGuests] = useState(
+    props.playlist.guests !== undefined
+      ? [...props.playlist.guests]
+      : undefined,
+  );
+
   const {user} = useContext(UserContext);
+  const {setMustFetch} = useContext(FetchContext);
 
   const onChangeText = (input, setInput, inputError, setInputError) => {
     setInput(input);
@@ -95,6 +104,11 @@ const PlaylistEditionContent = props => {
 
               guestPayloadCopy.splice(chipProps.index, 1);
               props.setGuestPayload(guestPayloadCopy);
+            } else {
+              let guestPayloadCopy = [...initialGuests];
+
+              guestPayloadCopy.splice(chipProps.index, 1);
+              setInitialGuests(guestPayloadCopy);
             }
 
             FlashMessage(
@@ -208,7 +222,35 @@ const PlaylistEditionContent = props => {
       <AddGuestButton />
       <GuestChips />
       <View style={styles.editContainer}>
-        <TouchableOpacity style={styles.edit}>
+        <TouchableOpacity
+          style={styles.edit}
+          onPress={() => {
+            let payload = {};
+
+            if (props.playlist.name !== name) {
+              payload.name = name;
+            }
+
+            if (props.playlist.status !== playlistStatus) {
+              payload.status = playlistStatus;
+            }
+
+            if (props.guestPayload.length !== 0) {
+              if (props.playlist.guests !== undefined) {
+                payload.guests = [...initialGuests, ...props.guestPayload];
+              } else {
+                payload.guests = [...props.guestPayload];
+              }
+            } else if (props.playlist.guests !== undefined) {
+              payload.guests = [...initialGuests];
+            }
+
+            UpdatePlaylist(props.playlist.id, payload).then(res =>
+              res ? setMustFetch(true) : console.log(res),
+            );
+
+            props.navigation.navigate('Playlist');
+          }}>
           <Text style={{fontSize: 18}}>EDIT</Text>
         </TouchableOpacity>
       </View>

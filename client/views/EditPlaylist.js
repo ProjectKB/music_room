@@ -70,6 +70,7 @@ const EditPlaylist = props => {
         setNewGuestCollection={setNewGuestCollection}
         guestPayload={guestPayload}
         setGuestPayload={setGuestPayload}
+        navigation={props.navigation}
       />
       <CustomModal
         modalVisibility={friendPickerModal}

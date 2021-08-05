@@ -139,3 +139,16 @@ export const DelegatePlaylist = async (playlistId, newOwnerId) => {
     return false;
   }
 };
+
+export const UpdatePlaylist = async (playlistId, payload) => {
+  try {
+    const response = await axios.put(
+      global.URL + '/playlists/' + playlistId,
+      JSON.stringify(payload),
+    );
+
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
