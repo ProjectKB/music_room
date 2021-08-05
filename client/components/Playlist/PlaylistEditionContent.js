@@ -62,14 +62,20 @@ const PlaylistEditionContent = props => {
     let chipColor = {backgroundColor: '#899ed6'};
 
     if (props.playlist.status === 'private') {
-      const guest = props.playlist.guests.find(
-        elem => elem.id === chipProps.elem.id,
-      );
+      if (chipProps.newChips === undefined) {
+        const guest = props.playlist.guests.find(
+          elem => elem.id === chipProps.elem.id,
+        );
 
-      if (guest !== undefined) {
+        if (guest !== undefined) {
+          chipColor = {
+            backgroundColor:
+              guest.contributor !== undefined ? '#899ed6' : '#b89ad6',
+          };
+        }
+      } else {
         chipColor = {
-          backgroundColor:
-            guest.contributor !== undefined ? '#899ed6' : '#b89ad6',
+          backgroundColor: chipProps.elem.contributor ? '#899ed6' : '#b89ad6',
         };
       }
     }
@@ -79,10 +85,23 @@ const PlaylistEditionContent = props => {
         <Text>{chipProps.elem.login}</Text>
         <TouchableOpacity
           onPress={() => {
-            let guestCollectionCopy = [...props.guestCollection];
+            let guestCollectionCopy = [...chipProps.collection];
 
             guestCollectionCopy.splice(chipProps.index, 1);
-            props.setGuestCollection(guestCollectionCopy);
+            chipProps.setter(guestCollectionCopy);
+
+            if (chipProps.newChips !== undefined) {
+              let guestPayloadCopy = [...props.guestPayload];
+
+              guestPayloadCopy.splice(chipProps.index, 1);
+              props.setGuestPayload(guestPayloadCopy);
+            }
+
+            FlashMessage(
+              true,
+              `${chipProps.elem.login} has been removed from ${props.playlist.name}'s guest`,
+              '',
+            );
           }}>
           <FontAwesomeIcon style={{marginLeft: 5}} size={12} icon={faTimes} />
         </TouchableOpacity>
@@ -90,34 +109,79 @@ const PlaylistEditionContent = props => {
     );
   };
 
-  const GuestChips = () =>
-    props.playlist.guests !== undefined ? (
-      <View style={styles.guestContainer}>
-        <ScrollView horizontal={true}>
-          {props.guestCollection.map((elem, index) =>
-            elem.id !== user.id ? (
-              <Chip elem={elem} key={elem.id} index={index} />
-            ) : null,
-          )}
-        </ScrollView>
-      </View>
-    ) : null;
+  const ActualChips = actualChipsProps => {
+    if (props.playlist.guests !== undefined) {
+      return props.guestCollection.map((elem, index) =>
+        elem.id !== user.id ? (
+          <Chip
+            elem={elem}
+            key={elem.id}
+            index={index}
+            collection={props.guestCollection}
+            setter={actualChipsProps.setter}
+          />
+        ) : null,
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const NewChips = newChipsProps => {
+    if (props.newGuestCollection.length !== 0) {
+      return props.newGuestCollection.map((elem, index) =>
+        elem.id !== user.id ? (
+          <Chip
+            elem={elem}
+            key={elem.id}
+            index={index}
+            collection={props.newGuestCollection}
+            setter={newChipsProps.setter}
+            newChips={true}
+          />
+        ) : null,
+      );
+    } else {
+      return null;
+    }
+  };
+
+  const GuestChips = () => (
+    <View style={styles.guestContainer}>
+      <ScrollView horizontal={true}>
+        <ActualChips setter={props.setGuestCollection} />
+        <NewChips setter={props.setNewGuestCollection} />
+      </ScrollView>
+    </View>
+  );
 
   const AddGuestButton = () => (
     <View style={styles.addGuestContainer}>
       {props.playlist.status === 'private' ? (
         <>
           <TouchableOpacity
+            onPress={() => {
+              props.setGuestContext('contributor');
+              props.setModalVisibility(true);
+            }}
             style={[styles.addGuest, {backgroundColor: '#899ed6'}]}>
             <Text>ADD CONTRIBUTOR</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => {
+              props.setGuestContext('guest');
+              props.setModalVisibility(true);
+            }}
             style={[styles.addGuest, {backgroundColor: '#b89ad6'}]}>
             <Text>ADD GUEST</Text>
           </TouchableOpacity>
         </>
       ) : (
         <TouchableOpacity
+          onPress={() => {
+            props.setGuestContext('contributor');
+            props.setModalVisibility(true);
+          }}
           style={[styles.addGuest, {width: '95%', backgroundColor: '#899ed6'}]}>
           <Text>ADD CONTRIBUTOR</Text>
         </TouchableOpacity>
