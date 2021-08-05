@@ -1,16 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {StyleSheet} from 'react-native';
+import {FetchPlaylistGuest} from '../api/PlaylistEndpoint';
+import {FlashMessage} from '../components/FlashMessage';
+import PlaylistEditionContent from '../components/Playlist/PlaylistEditionContent';
 
 const EditPlaylist = props => {
+  const [guestCollection, setGuestCollection] = useState([{id: '', login: ''}]);
+
   useEffect(() => {
     props.navigation.setOptions({title: `Edit ${props.playlist.name}`});
+
+    if (props.playlist.guests !== undefined) {
+      FetchPlaylistGuest(props.playlist.id).then(res => {
+        if (res) {
+          setGuestCollection(res);
+        } else {
+          FlashMessage(false, '', 'An error has occurred, please retry later!');
+        }
+      });
+    }
   }, []);
 
   return (
-    <View>
-      <Text>Edit Playlist</Text>
-    </View>
+    <PlaylistEditionContent
+      guestCollection={guestCollection}
+      setGuestCollection={setGuestCollection}
+      playlist={props.playlist}
+    />
   );
 };
 
