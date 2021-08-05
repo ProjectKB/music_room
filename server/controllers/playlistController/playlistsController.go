@@ -164,13 +164,20 @@ func Update(fields bson.M, param string) int {
 	update := bson.M{
 		"$set": fields,
 	}
-	updateResult, err := db.PlaylistCollection.UpdateOne(context.TODO(), filter, update)
+
+	var playlist model.Playlist
+
+	if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&playlist); err != nil {
+		return response.BddError
+	}	
+
+	_, err := db.PlaylistCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
 		return response.BddError
 	}
 
-	fmt.Printf("Matched %v documents and updated %v documents\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+	fmt.Println("Playlist has been updated!")
 
 	return response.Ok
 }

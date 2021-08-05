@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"reflect"
 	playlistController "server/controllers/playlistController"
+	"server/helpers"
 	"server/model"
 	"server/response"
 	"strings"
@@ -125,17 +126,12 @@ func CreateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 
 func updatePlaylistFilter(doc *model.Playlist) bson.M {
 	filter := bson.M{}
-	default_picture := "path_to_default_picture"
-
-	if doc.Picture == "" {
-		doc.Picture = default_picture
-	}
 
 	v := reflect.ValueOf(*doc)
 	typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
-		if (typeOfS.Field(i).Name == "Name" || typeOfS.Field(i).Name == "Avatar") && v.Field(i).Interface() != "" {
+		if ((typeOfS.Field(i).Name == "Name" || typeOfS.Field(i).Name == "Status") && v.Field(i).Interface() != "") || (typeOfS.Field(i).Name == "Guests") && v.Field(i).Interface() != nil {
 			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
 		}
 	}
@@ -155,11 +151,10 @@ func UpdateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&playlist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	} else if err := helpers.CheckPlaylistBlacklistedFields(&playlist, "update"); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
 	}
-	// } else if err := helpers.CheckPlaylistBlacklistedFields(&playlist); err != response.Ok {
-	// 	http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-	// 	return
-	// }
 
 	filter := updatePlaylistFilter(&playlist)
 
