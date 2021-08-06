@@ -10,7 +10,7 @@ import PlaylistUserFriendPickerModal from '../components/Playlist/PlaylistUserFr
 import CustomModal from '../components/CustomModal';
 
 const EditPlaylist = props => {
-  const [guestCollection, setGuestCollection] = useState([{id: '', login: ''}]);
+  const [guestCollection, setGuestCollection] = useState([]);
   const [newGuestCollection, setNewGuestCollection] = useState([]);
 
   const [friendCollection, setFriendCollection] = useState(['']);
@@ -25,7 +25,18 @@ const EditPlaylist = props => {
     if (props.playlist.guests !== undefined) {
       FetchPlaylistGuest(props.playlist.id).then(res => {
         if (res) {
-          setGuestCollection(res);
+          if (props.playlist.owner_id !== user.id) {
+            let guestCollectionTmp = [...res];
+
+            guestCollectionTmp.splice(
+              res.findIndex(elem => elem.id === user.id),
+              1,
+            );
+
+            setGuestCollection(guestCollectionTmp);
+          } else {
+            setGuestCollection(res);
+          }
         } else {
           FlashMessage(false, '', 'An error has occurred, please retry later!');
         }
@@ -79,6 +90,7 @@ const EditPlaylist = props => {
         Component={() => (
           <PlaylistUserFriendPickerModal
             friendCollection={friendCollection}
+            guestCollection={guestCollection}
             newGuestCollection={newGuestCollection}
             setNewGuestCollection={setNewGuestCollection}
             setModalVisibility={setFriendPickerModal}

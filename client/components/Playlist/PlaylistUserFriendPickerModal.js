@@ -8,7 +8,6 @@ import {Button, Divider, Title} from 'react-native-paper';
 const PlaylistUserFriendPickerModal = props => {
   const [friendPicked, setFriendPicked] = useState(props.friendCollection[0]);
 
-  const flashMessageSuccess = `${friendPicked.login} is is a new guest of ${props.playlist.name}!`;
   const flashMessageError = `${friendPicked.login} is already a guest... Pick another one!`;
 
   return (
@@ -43,11 +42,15 @@ const PlaylistUserFriendPickerModal = props => {
           <Button
             color="#899ed6"
             onPress={() => {
-              const check = props.newGuestCollection.find(
+              const checkNewGuest = props.newGuestCollection.find(
                 elem => elem.id === friendPicked.id,
               );
 
-              if (!check) {
+              const checkInitialGuest = props.guestCollection.find(
+                elem => elem.id === friendPicked.id,
+              );
+
+              if (!checkNewGuest && !checkInitialGuest) {
                 let newGuestCollection = [...props.newGuestCollection];
                 let newGuest = {...friendPicked};
 
@@ -65,9 +68,9 @@ const PlaylistUserFriendPickerModal = props => {
 
                 props.setNewGuestCollection(newGuestCollection);
                 props.setGuestPayload(newGuestPayload);
+              } else {
+                FlashMessage(false, '', flashMessageError);
               }
-
-              FlashMessage(!check, flashMessageSuccess, flashMessageError);
 
               props.setModalVisibility(false);
             }}>

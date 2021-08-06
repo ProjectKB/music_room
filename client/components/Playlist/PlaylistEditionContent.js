@@ -16,18 +16,31 @@ import {FlashMessage} from '../FlashMessage';
 import {UpdatePlaylist} from '../../api/PlaylistEndpoint';
 
 const PlaylistEditionContent = props => {
-  const [playlistStatus, setPlaylistStatus] = useState('public');
+  const [playlistStatus, setPlaylistStatus] = useState(props.playlist.status);
   const [name, setName] = useState(props.playlist.name);
   const [nameError, setNameError] = useState(false);
 
-  const [initialGuests, setInitialGuests] = useState(
-    props.playlist.guests !== undefined
-      ? [...props.playlist.guests]
-      : undefined,
-  );
-
   const {user} = useContext(UserContext);
+
+  let initialGuestsTmp;
+
+  if (props.playlist.guests !== undefined) {
+    initialGuestsTmp = [...props.playlist.guests];
+
+    if (props.playlist.owner_id !== user.id) {
+      initialGuestsTmp.splice(
+        props.playlist.guests.findIndex(elem => elem.id === user.id),
+        1,
+      );
+    }
+  }
+
+  const [initialGuests, setInitialGuests] = useState(initialGuestsTmp);
+
   const {setMustFetch} = useContext(FetchContext);
+
+  const flashMessageSuccess = `${props.playlist.name} has been successfully updated!`;
+  const flashMessageFailure = 'An error has occurred, please retry later!';
 
   const onChangeText = (input, setInput, inputError, setInputError) => {
     setInput(input);
@@ -70,7 +83,7 @@ const PlaylistEditionContent = props => {
   const Chip = chipProps => {
     let chipColor = {backgroundColor: '#899ed6'};
 
-    if (props.playlist.status === 'private') {
+    if (playlistStatus === 'private') {
       if (chipProps.newChips === undefined) {
         const guest = props.playlist.guests.find(
           elem => elem.id === chipProps.elem.id,
@@ -110,12 +123,6 @@ const PlaylistEditionContent = props => {
               guestPayloadCopy.splice(chipProps.index, 1);
               setInitialGuests(guestPayloadCopy);
             }
-
-            FlashMessage(
-              true,
-              `${chipProps.elem.login} has been removed from ${props.playlist.name}'s guest`,
-              '',
-            );
           }}>
           <FontAwesomeIcon style={{marginLeft: 5}} size={12} icon={faTimes} />
         </TouchableOpacity>
@@ -125,17 +132,15 @@ const PlaylistEditionContent = props => {
 
   const ActualChips = actualChipsProps => {
     if (props.playlist.guests !== undefined) {
-      return props.guestCollection.map((elem, index) =>
-        elem.id !== user.id ? (
-          <Chip
-            elem={elem}
-            key={elem.id}
-            index={index}
-            collection={props.guestCollection}
-            setter={actualChipsProps.setter}
-          />
-        ) : null,
-      );
+      return props.guestCollection.map((elem, index) => (
+        <Chip
+          elem={elem}
+          key={elem.id}
+          index={index}
+          collection={props.guestCollection}
+          setter={actualChipsProps.setter}
+        />
+      ));
     } else {
       return null;
     }
@@ -143,18 +148,16 @@ const PlaylistEditionContent = props => {
 
   const NewChips = newChipsProps => {
     if (props.newGuestCollection.length !== 0) {
-      return props.newGuestCollection.map((elem, index) =>
-        elem.id !== user.id ? (
-          <Chip
-            elem={elem}
-            key={elem.id}
-            index={index}
-            collection={props.newGuestCollection}
-            setter={newChipsProps.setter}
-            newChips={true}
-          />
-        ) : null,
-      );
+      return props.newGuestCollection.map((elem, index) => (
+        <Chip
+          elem={elem}
+          key={elem.id}
+          index={index}
+          collection={props.newGuestCollection}
+          setter={newChipsProps.setter}
+          newChips={true}
+        />
+      ));
     } else {
       return null;
     }
@@ -171,7 +174,7 @@ const PlaylistEditionContent = props => {
 
   const AddGuestButton = () => (
     <View style={styles.addGuestContainer}>
-      {props.playlist.status === 'private' ? (
+      {playlistStatus === 'private' ? (
         <>
           <TouchableOpacity
             onPress={() => {
@@ -202,6 +205,15 @@ const PlaylistEditionContent = props => {
       )}
     </View>
   );
+
+  if (props.playlist.guests !== undefined) {
+    console.log('playlist: ', props.playlist.guests.length);
+  }
+
+  console.log('initial: ', props.guestCollection.length);
+  console.log('new: ', props.newGuestCollection.length);
+
+  console.log('\n');
 
   return (
     <View style={styles.mainContainer}>
@@ -245,9 +257,17 @@ const PlaylistEditionContent = props => {
               payload.guests = [...initialGuests];
             }
 
-            UpdatePlaylist(props.playlist.id, payload).then(res =>
-              res ? setMustFetch(true) : console.log(res),
-            );
+            if (props.playlist.owner_id !== user.id) {
+              payload.guests.push({id: user.id, contributor: true});
+            }
+
+            UpdatePlaylist(props.playlist.id, payload).then(res => {
+              FlashMessage(res, flashMessageSuccess, flashMessageFailure);
+
+              if (res) {
+                setMustFetch(true);
+              }
+            });
 
             props.navigation.navigate('Playlist');
           }}>
