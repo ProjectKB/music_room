@@ -13,7 +13,7 @@ const EditPlaylist = props => {
   const [guestCollection, setGuestCollection] = useState([]);
   const [newGuestCollection, setNewGuestCollection] = useState([]);
 
-  const [friendCollection, setFriendCollection] = useState(['']);
+  const [friendCollection, setFriendCollection] = useState([]);
   const [friendPickerModal, setFriendPickerModal] = useState(false);
   const [guestContext, setGuestContext] = useState('');
   const [guestPayload, setGuestPayload] = useState([]);

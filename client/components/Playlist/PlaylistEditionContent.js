@@ -178,16 +178,24 @@ const PlaylistEditionContent = props => {
         <>
           <TouchableOpacity
             onPress={() => {
-              props.setGuestContext('contributor');
-              props.setModalVisibility(true);
+              if (user.friends !== undefined) {
+                props.setGuestContext('contributor');
+                props.setModalVisibility(true);
+              } else {
+                FlashMessage(false, '', "Sorry, you don't have any friends...");
+              }
             }}
             style={[styles.addGuest, {backgroundColor: '#899ed6'}]}>
             <Text>ADD CONTRIBUTOR</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              props.setGuestContext('guest');
-              props.setModalVisibility(true);
+              if (user.friends !== undefined) {
+                props.setGuestContext('guest');
+                props.setModalVisibility(true);
+              } else {
+                FlashMessage(false, '', "Sorry, you don't have any friends...");
+              }
             }}
             style={[styles.addGuest, {backgroundColor: '#b89ad6'}]}>
             <Text>ADD GUEST</Text>
@@ -196,8 +204,12 @@ const PlaylistEditionContent = props => {
       ) : (
         <TouchableOpacity
           onPress={() => {
-            props.setGuestContext('contributor');
-            props.setModalVisibility(true);
+            if (user.friends !== undefined) {
+              props.setGuestContext('contributor');
+              props.setModalVisibility(true);
+            } else {
+              FlashMessage(false, '', "Sorry, you don't have any friends...");
+            }
           }}
           style={[styles.addGuest, {width: '95%', backgroundColor: '#899ed6'}]}>
           <Text>ADD CONTRIBUTOR</Text>
