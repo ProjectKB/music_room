@@ -214,7 +214,7 @@ func AddSong(playlistId string, song *model.Song) int {
 	filter := bson.D{{"_id", id}}
 	var playlist model.Playlist
 
-	if song.Id == "" || song.Name == "" {
+	if song.Id == "" || song.Name == "" || song.Picture == "" {
 		return response.FieldIsMissing
 	} else if err := db.PlaylistCollection.FindOne(context.TODO(), filter).Decode(&playlist); err != nil {
 		return response.BddError
@@ -222,7 +222,6 @@ func AddSong(playlistId string, song *model.Song) int {
 		return response.Unauthorized
 	}
 
-	// TODO check how to secure when song id doesn't exist
 	for i := 0; i < len(playlist.Songs); i++ {
 		if playlist.Songs[i].Id == song.Id {
 			return response.AlreadyExist
