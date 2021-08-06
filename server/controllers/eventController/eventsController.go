@@ -14,12 +14,7 @@ import (
 )
 
 func Create(elem *model.Event) int {
-	default_picture := "path_to_default_picture"
 	var playlist model.Playlist
-
-	if elem.Picture == "" {
-		elem.Picture = default_picture
-	}
 
 	
 	if elem.Status != "public" && elem.Status != "private" {
@@ -38,7 +33,7 @@ func Create(elem *model.Event) int {
 		}
 	}
 
-	playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, elem.Status, playlist.Songs, playlist.Guests, elem.Picture, true}
+	playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, elem.Status, playlist.Songs, playlist.Guests, true}
 
 	if err := playlistController.Create(&playlist, "event"); err != response.Ok {
 		return err

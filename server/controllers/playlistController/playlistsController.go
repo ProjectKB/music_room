@@ -18,13 +18,8 @@ import (
 func Create(elem *model.Playlist, origin string) int {
 	var owner_tmp model.User
 
-	default_picture := "path_to_default_picture"
 	id, _ := primitive.ObjectIDFromHex(elem.Owner_id)
 	filter := bson.D{{"_id", id}}
-
-	if elem.Picture == "" {
-		elem.Picture = default_picture
-	}
 
 	if elem.Name == "" || (elem.Status != "public" && elem.Status != "private") {
 		return response.FieldIsMissing
