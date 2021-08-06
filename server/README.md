@@ -51,9 +51,7 @@ Name | Type
 **Owner_id*** | `string`
 **Status** | `string`
 **Songs** | `Song[]`
-**Guest** | `Guest[]`
 **Guests** | `Guest[]`
-**Picture** | `string`
 **Has_event** | `bool`
 
 
@@ -62,6 +60,7 @@ Name | Type
  --- | ---
 **Id*** | `string`
 **Name*** | `string`
+**Picture*** | `string`
 **Score** | `uint`
 
 #### Guest
@@ -87,6 +86,7 @@ Route | Method | Utility
 `/playlists/addGuest/{id}` | **PUT** | add a guest to `guests` field
 `/playlists/removeGuest/{id}` | **PUT** | remove a guest from `guests` field
 `/playlists/guests/{id}` | **GET** | read every guests from one playlist
+`/playlists/delegate/{id}` | **PUT** | delegate playlist to another user
 </details>
 
 <details>
