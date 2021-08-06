@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {StyleSheet} from 'react-native';
 import {FetchPlaylistGuest} from '../api/PlaylistEndpoint';
 import {FetchUserFriends} from '../api/UserEndpoint';
 import {FlashMessage} from '../components/FlashMessage';
@@ -105,5 +104,3 @@ const EditPlaylist = props => {
 };
 
 export default EditPlaylist;
-
-const styles = StyleSheet.create({});
