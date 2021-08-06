@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useContext, useEffect} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import {Subheading, Text} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
@@ -145,6 +145,59 @@ const PlaylistElement = props => {
     }
   };
 
+  const PlaylistPicture = () => {
+    if (props.playlist.songs !== undefined) {
+      if (props.playlist.songs.length < 4) {
+        return (
+          <Image
+            style={styles.playlistPictureContainer}
+            source={{uri: props.playlist.songs[0].picture}}
+          />
+        );
+      } else {
+        return (
+          <View style={{flexDirection: 'row'}}>
+            <View>
+              <Image
+                style={[styles.smallPictureDimension, {borderTopLeftRadius: 5}]}
+                source={{uri: props.playlist.songs[0].picture}}
+              />
+              <Image
+                style={[
+                  styles.smallPictureDimension,
+                  {borderBottomLeftRadius: 5},
+                ]}
+                source={{uri: props.playlist.songs[2].picture}}
+              />
+            </View>
+            <View>
+              <Image
+                style={[
+                  styles.smallPictureDimension,
+                  {borderTopRightRadius: 5},
+                ]}
+                source={{uri: props.playlist.songs[1].picture}}
+              />
+              <Image
+                style={[
+                  styles.smallPictureDimension,
+                  {borderBottomRightRadius: 5},
+                ]}
+                source={{uri: props.playlist.songs[3].picture}}
+              />
+            </View>
+          </View>
+        );
+      }
+    } else {
+      return (
+        <View style={styles.playlistPictureContainer}>
+          <FontAwesomeIcon size={50} icon={faMusic} color="white" />
+        </View>
+      );
+    }
+  };
+
   return (
     <>
       <TouchableOpacity
@@ -161,9 +214,7 @@ const PlaylistElement = props => {
                 "You don't have any rights to bring modififications to this playlist.",
               );
         }}>
-        <View style={styles.playlistPictureContainer}>
-          <FontAwesomeIcon size={50} icon={faMusic} color="white" />
-        </View>
+        <PlaylistPicture />
         <View style={styles.playlistElementContent}>
           <View style={{marginLeft: 10}}>
             <Subheading style={{color: 'white'}}>
@@ -199,5 +250,9 @@ const styles = StyleSheet.create({
     height: 75,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  smallPictureDimension: {
+    width: 37.5,
+    height: 37.5,
   },
 });
