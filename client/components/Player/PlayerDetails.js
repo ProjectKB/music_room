@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useContext} from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faChevronDown,
@@ -61,7 +68,7 @@ const PlayerDetails = props => {
         </TouchableOpacity>
       </View>
       <View style={styles.pictureContainer}>
-        <View style={styles.pictureSize} />
+        <Image style={styles.pictureSize} source={{uri: props.songPicture}} />
       </View>
       <View style={styles.playerActionContainer}>
         <View style={styles.playerDetailsText}>

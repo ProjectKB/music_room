@@ -6,8 +6,11 @@ import {FlashMessage} from '../FlashMessage';
 import {Button, Divider, Title} from 'react-native-paper';
 import {AddSong} from '../../api/PlaylistEndpoint';
 import FetchContext from '../../contexts/FetchContext';
+import PlaylistContext from '../../contexts/PlaylistContext';
 
 const SearchAddSongModal = props => {
+  const {playlistPlayed, setPlaylistPlayed} = useContext(PlaylistContext);
+
   const [playlistPicked, setPlaylistPicked] = useState(
     props.playlistCollection[0],
   );
@@ -57,12 +60,28 @@ const SearchAddSongModal = props => {
               const responseStatus = AddSong(playlistPicked.id, {
                 id: props.songToAdd.id,
                 name: props.songToAdd.name,
+                picture: props.songToAdd.picture,
               });
 
               responseStatus.then(status => {
                 FlashMessage(status, flashMessageSuccess, flashMessageFailure);
 
                 if (status) {
+                  if (
+                    playlistPlayed.name !== undefined &&
+                    playlistPlayed.name === playlistPicked.name
+                  ) {
+                    let playlistPlayedCopy = {...playlistPlayed};
+
+                    playlistPlayedCopy.songs.push({
+                      id: props.songToAdd.id,
+                      name: props.songToAdd.name,
+                      picture: props.songToAdd.picture,
+                    });
+
+                    setPlaylistPlayed(playlistPlayedCopy);
+                  }
+
                   setMustFetch(true);
                 }
               });

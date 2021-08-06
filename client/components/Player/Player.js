@@ -7,11 +7,10 @@ import React, {
   useContext,
 } from 'react';
 
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faPlay, faPause, faMusic} from '@fortawesome/free-solid-svg-icons';
+import {faPlay, faPause} from '@fortawesome/free-solid-svg-icons';
 import TextTicker from 'react-native-text-ticker';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import SongIndexContext from '../../contexts/SongIndexContext';
@@ -98,6 +97,7 @@ const Player = () => {
         index={songIndex}
         setIndex={setSongIndex}
         songName={playlistPlayed.songs[songIndex].name}
+        songPicture={playlistPlayed.songs[songIndex].picture}
         setCurrentSong={setCurrentSong}
       />
       <View style={{opacity: 1}}>
@@ -115,9 +115,10 @@ const Player = () => {
       <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
         <ProgressBar progress={progressionBarValue} color="#383839" />
         <View style={styles.songPlayerContainer}>
-          <View style={styles.songPlayerPicture}>
-            <FontAwesomeIcon color="white" size={20} icon={faMusic} />
-          </View>
+          <Image
+            style={styles.songPlayerPicture}
+            source={{uri: playlistPlayed.songs[songIndex].picture}}
+          />
           <View style={styles.songPLayerTitle}>
             <TextTicker
               style={styles.songPlayerTitleFont}
@@ -159,10 +160,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     paddingRight: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#474749',
-    flex: 1,
+    opacity: 0.8,
   },
   songPLayerTitle: {
     paddingHorizontal: 10,

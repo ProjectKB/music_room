@@ -40,7 +40,11 @@ const SearchSongElement = props => {
         }}
         onLongPress={() => {
           if (props.playlistCollection.length > 0) {
-            props.setSongToAdd({id: props.id, name: props.title});
+            props.setSongToAdd({
+              id: props.id,
+              name: props.title,
+              picture: props.picture,
+            });
             props.setModalVisibility(true);
           }
         }}>

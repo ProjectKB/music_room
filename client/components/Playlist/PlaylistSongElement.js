@@ -1,8 +1,12 @@
 import React, {useContext} from 'react';
-import {StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from 'react-native';
 import {Subheading} from 'react-native-paper';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMusic} from '@fortawesome/free-solid-svg-icons';
 import ShowPlayerContext from '../../contexts/ShowPlayerContext';
 import SongIndexContext from '../../contexts/SongIndexContext';
 import PlaylistContext from '../../contexts/PlaylistContext';
@@ -49,9 +53,10 @@ const PlaylistSongElement = props => {
             }
           }
         }}>
-        <View style={styles.playlistPictureContainer}>
-          <FontAwesomeIcon size={50} icon={faMusic} color="white" />
-        </View>
+        <Image
+          style={styles.playlistPictureContainer}
+          source={{uri: props.song.picture}}
+        />
         <View style={styles.playlistElementContent}>
           <ScrollView horizontal={true} style={{marginHorizontal: 15}}>
             <Subheading style={{color: 'white'}}>{props.song.name}</Subheading>
@@ -76,11 +81,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   playlistPictureContainer: {
-    backgroundColor: '#434243',
     borderRadius: 5,
     width: 75,
     height: 75,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
