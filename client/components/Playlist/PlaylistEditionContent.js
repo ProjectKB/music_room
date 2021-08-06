@@ -206,15 +206,6 @@ const PlaylistEditionContent = props => {
     </View>
   );
 
-  if (props.playlist.guests !== undefined) {
-    console.log('playlist: ', props.playlist.guests.length);
-  }
-
-  console.log('initial: ', props.guestCollection.length);
-  console.log('new: ', props.newGuestCollection.length);
-
-  console.log('\n');
-
   return (
     <View style={styles.mainContainer}>
       <VisibilityPicker />

@@ -14,7 +14,6 @@ const EditPlaylist = props => {
   const [newGuestCollection, setNewGuestCollection] = useState([]);
 
   const [friendCollection, setFriendCollection] = useState(['']);
-  const [fetchGuest, setFetchGuest] = useState(false);
   const [friendPickerModal, setFriendPickerModal] = useState(false);
   const [guestContext, setGuestContext] = useState('');
   const [guestPayload, setGuestPayload] = useState([]);
@@ -42,7 +41,7 @@ const EditPlaylist = props => {
         }
       });
     }
-  }, [fetchGuest]);
+  }, []);
 
   useEffect(() => {
     fetchPlaylistGuest();
