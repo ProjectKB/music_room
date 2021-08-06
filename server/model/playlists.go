@@ -11,9 +11,10 @@ type Search struct {
 }
 
 type Song struct {
-	Id    string `bson:"id,omitempty" json:"id,omitempty"`
-	Name  string `bson:"name,omitempty" json:"name,omitempty"`
-	Score uint   `bson:"score,omitempty" json:"score,omitempty"` // TODO sort algo
+	Id      string `bson:"id,omitempty" json:"id,omitempty"`
+	Name    string `bson:"name,omitempty" json:"name,omitempty"`
+	Picture string `bson:"picture,omitempty" json:"picture,omitempty"`
+	Score   uint   `bson:"score,omitempty" json:"score,omitempty"` // TODO sort algo
 }
 
 type Guest struct {
