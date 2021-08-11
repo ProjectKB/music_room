@@ -8,7 +8,7 @@ const Finished = props => {
     <View>
         {
             props.EventList.finished.length != 0?
-            <Text style={{fontFamily: 'Cochin'}}>Finished</Text>
+            <Text style={{fontFamily: 'Cochin', color: 'white'}}>Finished</Text>
             :
             null
         }
@@ -38,7 +38,12 @@ const Finished = props => {
                                             source={{uri: defaultImg}}
                                         />
                                     }
-                                    <Text style={{marginLeft: 10}}>{event.name}</Text>
+                                    {
+                                        event.name.length >= 12?
+                                        <Text style={{marginLeft: 10, color: 'white'}}>{event.name.slice(0,12)}..</Text>
+                                        :
+                                        <Text style={{marginLeft: 10, color: 'white'}}>{event.name}</Text>
+                                    }
                                 </TouchableOpacity>
                                 :
                                 null

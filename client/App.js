@@ -4,7 +4,7 @@ import {NETWORK} from '@env';
 import ProtectedRoutes from './components/ProtectedRoutes';
 
 const App = () => {
-  global.URL = "http://10.64.1.210:8080";//NETWORK;
+  global.URL = "http://10.18.168.38:8080";//NETWORK;
   global.api_key = "AIzaSyC2Kt0YzhTIXATbXvq77Y-MM2w7q6bmwb4";
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, ScrollView, View, TouchableOpacity, Modal, Button, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import EventSearchContext from '../contexts/EventSearchContext';
 import { faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +9,9 @@ import { Headline } from 'react-native-paper';
 import OngoingView from '../components/Event/Ongoing.js';
 import FinishedView from '../components/Event/Finished.js';
 import PendingView from '../components/Event/Pending.js';
-
+import {Button} from 'react-native-paper';
+import LinearGradient from 'react-native-linear-gradient'
+import CreateEventModal from '../components/Event/CreateEventModal.js';
 
 const Event = () => {
 
@@ -62,123 +64,135 @@ const Event = () => {
 
 	return(
 		<View style={{flex: 1}}>
-			<View style={styles.playlistStackHeaderContainer}>
-				<Headline style={styles.playlistStackHeaderTitle}>
-					Event
-				</Headline>
-				<TouchableOpacity
-					onPress={() => {
-						setModalVisible(true);
-					}}
-				>
-					<FontAwesomeIcon size={25} icon={faPlus} />
-				</TouchableOpacity>
-			</View>
-
-			<EventSearchContext.Provider value={searchQuery}>
-			<Searchbar
-				style={styles.searchBar}
-				selectionColor="gray"
-				placeholder="Search"
-				icon={() => <FontAwesomeIcon size={20} color={'gray'} icon={faSearch} />}
-				onChangeText={(text) => {
-					fetchEventList(text);
-				}}
-			/>
-			{
-				EventList?
-				<ScrollView>
-
-					{EventList.ongoing && EventList.ongoing.length != 0?
-						<OngoingView
-							EventList={EventList}
-						/>
-						:
-						null}
-
-					{EventList.finished && EventList.finished.length != 0?
-						<FinishedView
-							EventList={EventList}
-						/>
-						:
-						null}
-
-					{EventList.pending && EventList.pending.length != 0?
-						<PendingView
-							EventList={EventList}
-						/>
-						:
-						null}
-
-				</ScrollView>
-				:
-				null
-			}
-
-			</EventSearchContext.Provider>
-
-			<Modal
-				animationType="slide"
-				visible={modalVisible}
-				style={styles.modal}
+			<LinearGradient
+				colors={['purple', 'black']}
+				style={{flex: 1}}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 1 }}
 			>
-					<View style={{flexDirection: 'row'}}>
-						<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-							<Headline style={styles.playlistStackHeaderTitle}>Create Event</Headline>
-						</View>
-						<View style={{justifyContent: 'center', alignItems: 'center', margin: 10}}>
-							<Button
-								title=" X "
-								color="red"
-								onPress={() => {	
-									setModalVisible(false);
-								}}
-								/>
-						</View>
-					</View>
-					<View style={{flex: 3, justifyContent: 'center', alignItems: 'center'}}>
+				<View style={styles.playlistStackHeaderContainer}>
+					<Headline style={styles.playlistStackHeaderTitle}>
+						Event
+					</Headline>
+					<TouchableOpacity
+						onPress={() => {
+							setModalVisible(true);
+						}}
+					>
+						<FontAwesomeIcon size={25} icon={faPlus} color="white" />
+					</TouchableOpacity>
+				</View>
 
-						<TextInput
-							style={styles.input}
-							value={createEventName}
-							placeholderTextColor="grey"
-							placeholder="Name"
-							onChangeText={text => setCreateEventName(text)}
-						/>
+				<EventSearchContext.Provider value={searchQuery}>
+				<Searchbar
+					style={styles.searchBar}
+					selectionColor="gray"
+					placeholder="Search"
+					icon={() => <FontAwesomeIcon size={20} color={'gray'} icon={faSearch} />}
+					onChangeText={(text) => {
+						fetchEventList(text);
+					}}
+				/>
+				{
+					EventList?
+					<ScrollView>
+
+						{EventList.ongoing && EventList.ongoing.length != 0?
+							<OngoingView
+								EventList={EventList}
+							/>
+							:
+							null}
+
+						{EventList.finished && EventList.finished.length != 0?
+							<FinishedView
+								EventList={EventList}
+							/>
+							:
+							null}
+
+						{EventList.pending && EventList.pending.length != 0?
+							<PendingView
+								EventList={EventList}
+							/>
+							:
+							null}
+
+					</ScrollView>
+					:
+					null
+				}
+
+				</EventSearchContext.Provider>
+
+	{/**************************** MODAL *********************************/}
+				<Modal
+					animationType="slide"
+					transparent={true}
+					visible={modalVisible}
+				>
+					<View style={styles.modal}>
 
 						<View style={{flexDirection: 'row'}}>
-							<TextInput
-								style={styles.input}
-								value={createEventStart}
-								placeholderTextColor="grey"
-								placeholder="Start"
-								onChangeText={text => setCreateEventStart(text)}
-							/>
-
-							<TextInput
-								style={styles.input}
-								value={createEventEnd}
-								placeholderTextColor="grey"
-								placeholder="End"
-								onChangeText={text => setCreateEventEnd(text)}
-							/>
+							<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
+								<Headline style={styles.playlistStackHeaderTitle}>Create Event</Headline>
+							</View>
 						</View>
+							<ScrollView>
+								<View style={{flex: 5, justifyContent: 'center', alignItems: 'center'}}>
+									<TextInput
+										style={styles.input}
+										value={createEventName}
+										placeholderTextColor="grey"
+										placeholder="Name"
+										onChangeText={text => setCreateEventName(text)}
+									/>
+									<TextInput
+										style={styles.input}
+										value={createEventStart}
+										placeholderTextColor="grey"
+										placeholder="Start"
+										onChangeText={text => setCreateEventStart(text)}
+									/>
 
-						<TouchableOpacity style={styles.inputBlue}>
-							<Text style={{color: 'blue'}}>Choose a picture</Text>
-						</TouchableOpacity>
+									<TextInput
+										style={styles.input}
+										value={createEventEnd}
+										placeholderTextColor="grey"
+										placeholder="End"
+										onChangeText={text => setCreateEventEnd(text)}
+									/>
+
+									<TouchableOpacity style={styles.inputBlue}>
+										<Text style={{color: 'blue'}}>Choose a picture</Text>
+									</TouchableOpacity>
+								</View>
+								<View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end', flexDirection: 'row'}}>
+									<Button
+									mode="contained"
+									style={{margin: 10}}
+									onPress={() => {
+										setModalVisible(false);
+										setCreateEventStart('');
+										setCreateEventEnd('');
+										setCreateEventName('');
+									}}>
+										Cancel
+									</Button>
+									<Button
+									mode="contained"
+									style={{margin: 10}}
+									onPress={() => {
+										createEvent();
+									}}>
+										Valider
+									</Button>
+								</View>
+							</ScrollView>
 					</View>
-					<View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-						<TouchableOpacity style={styles.validButton}
-						onPress={() => {
-							createEvent();
-						}}
-						>
-							<Text style={{color: 'white'}}>Valider</Text>
-						</TouchableOpacity>
-					</View>
-					
-			</Modal>
+				</Modal>
+	{/*************************************************************/}
+			</LinearGradient>
 
 		</View>
 	);
@@ -189,9 +203,10 @@ const styles = StyleSheet.create ({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 2,
 		borderRadius: 10,
-		margin: 10
+		marginVertical: 200,
+		marginHorizontal: 50,
+		backgroundColor: 'white'
 	},
 
 	picture: {
@@ -202,14 +217,13 @@ const styles = StyleSheet.create ({
 
 	searchBar: {
 		marginHorizontal: 10,
-		marginTop: 10,
+		marginVertical: 10,
 	},
 
 	playlistStackHeaderContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		backgroundColor: 'white',
 		padding: 10
 	},
 
@@ -217,14 +231,19 @@ const styles = StyleSheet.create ({
 	  fontWeight: 'bold',
 	  fontSize: 20,
 	  flex: 6,
+	  color: 'white'
 	},
 
 	input: {
-		borderWidth: 2,
+		borderTopColor: 'black',
+		borderBottomColor: 'black',
+		borderBottomWidth: 1,
+		borderTopWidth: 1,
 		borderRadius: 5,
 		borderColor: 'black',
-		padding: 20,
-		margin: 20,
+		paddingVertical: 10,
+		paddingHorizontal: 50,
+		margin: 10,
 		color: 'black'
 	},
 
@@ -233,19 +252,8 @@ const styles = StyleSheet.create ({
 		borderRadius: 5,
 		borderColor: 'blue',
 		padding: 20,
-		margin: 20,
-		color: 'blue'
-	},
-
-	nameInput: {
-		paddingHorizontal: 20
-	},
-
-	validButton: {
-		padding: 20,
 		margin: 10,
-		borderRadius: 10,
-		backgroundColor: 'blue'
+		color: 'blue'
 	}
 })
 
