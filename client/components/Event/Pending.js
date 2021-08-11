@@ -8,7 +8,7 @@ const Pending = props => {
     <View>
         {
             props.EventList.pending.length != 0?
-            <Text style={{fontFamily: 'Cochin'}}>Pending</Text>
+            <Text style={{fontFamily: 'Cochin', color: 'white'}}>Pending</Text>
             :
             null
         }
@@ -38,7 +38,12 @@ const Pending = props => {
                                             source={{uri: defaultImg}}
                                         />
                                     }
-                                    <Text style={{marginLeft: 10}}>{event.name}</Text>
+                                    {
+                                        event.name.length >= 12?
+                                        <Text style={{marginLeft: 10, color: 'white'}}>{event.name.substring(0,12)}..</Text>
+                                        :
+                                        <Text style={{marginLeft: 10, color: 'white'}}>{event.name}</Text>
+                                    }
                                 </TouchableOpacity>
                                 :
                                 null

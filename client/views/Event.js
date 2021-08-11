@@ -63,7 +63,51 @@ const Event = () => {
 	}, [fetchEventList])
 
 	return(
-		<View style={{flex: 1}}>
+		<View style={{flex: 1, backgroundColor: '#1a1a1a'}}>
+
+{/******************************** MODAL *******************************************/}
+{/* <RNModal
+  isVisible={modalVisible}
+  onSwipeComplete={() => setModalVisible(false)}
+  swipeDirection="left">
+  <View style={{flex: 1}}>
+    <Text>I am the modal content!</Text>
+  </View>
+</RNModal> */}
+
+			{/* <RNModal
+				// animationType="slide"
+				isVisible={modalVisible}
+				// transparent={true}
+				swipeDirection="Down"
+				onSwipeComplete={() => setModalVisible(false)}
+			>
+				<View style={{flex: 1, backgroundColor: 'white', marginHorizontal: 50, marginVertical: 100, borderRadius: 10, borderWidth: 1}}>
+
+					<View>
+						<TouchableOpacity
+						style={{margin: 10, borderWidth: 2, padding: 20}}
+						onPress={() => {
+							setModalVisible(false);
+						}}
+						>
+							<Text>Fermer</Text>
+						</TouchableOpacity>
+					</View>
+						
+					<View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
+						<TouchableOpacity style={styles.validButton}
+						onPress={() => {
+							createEvent();
+						}}
+						>
+							<Text style={{color: 'white'}}>Valider</Text>
+						</TouchableOpacity>
+					</View>
+					
+				</View>
+			</RNModal> */}
+{/***************************************************************************/}
 			<View style={styles.playlistStackHeaderContainer}>
 				<Headline style={styles.playlistStackHeaderTitle}>
 					Event
@@ -73,7 +117,7 @@ const Event = () => {
 						setModalVisible(true);
 					}}
 				>
-					<FontAwesomeIcon size={25} icon={faPlus} />
+					<FontAwesomeIcon size={25} icon={faPlus} color="white" />
 				</TouchableOpacity>
 			</View>
 
@@ -118,82 +162,20 @@ const Event = () => {
 			}
 
 			</EventSearchContext.Provider>
-
-			<Modal
-				animationType="slide"
-				visible={modalVisible}
-				style={styles.modal}
-			>
-					<View style={{flexDirection: 'row'}}>
-						<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10}}>
-							<Headline style={styles.playlistStackHeaderTitle}>Create Event</Headline>
-						</View>
-						<View style={{justifyContent: 'center', alignItems: 'center', margin: 10}}>
-							<Button
-								title=" X "
-								color="red"
-								onPress={() => {	
-									setModalVisible(false);
-								}}
-								/>
-						</View>
-					</View>
-					<View style={{flex: 3, justifyContent: 'center', alignItems: 'center'}}>
-
-						<TextInput
-							style={styles.input}
-							value={createEventName}
-							placeholderTextColor="grey"
-							placeholder="Name"
-							onChangeText={text => setCreateEventName(text)}
-						/>
-
-						<View style={{flexDirection: 'row'}}>
-							<TextInput
-								style={styles.input}
-								value={createEventStart}
-								placeholderTextColor="grey"
-								placeholder="Start"
-								onChangeText={text => setCreateEventStart(text)}
-							/>
-
-							<TextInput
-								style={styles.input}
-								value={createEventEnd}
-								placeholderTextColor="grey"
-								placeholder="End"
-								onChangeText={text => setCreateEventEnd(text)}
-							/>
-						</View>
-
-						<TouchableOpacity style={styles.inputBlue}>
-							<Text style={{color: 'blue'}}>Choose a picture</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-						<TouchableOpacity style={styles.validButton}
-						onPress={() => {
-							createEvent();
-						}}
-						>
-							<Text style={{color: 'white'}}>Valider</Text>
-						</TouchableOpacity>
-					</View>
-					
-			</Modal>
-
 		</View>
 	);
 }
 
 const styles = StyleSheet.create ({
+
 	modal: {
-		flex: 1,
+		// flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderWidth: 2,
 		borderRadius: 10,
-		margin: 10
+		margin: 10,
+		shadowOpacity: 0.50
 	},
 
 	picture: {
@@ -205,20 +187,23 @@ const styles = StyleSheet.create ({
 	searchBar: {
 		marginHorizontal: 10,
 		marginTop: 10,
+		marginBottom: 5
 	},
 
 	playlistStackHeaderContainer: {
+		backgroundColor: '#1a1a1a',
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		backgroundColor: 'white',
 		padding: 10
 	},
 
 	playlistStackHeaderTitle: {
-	  fontWeight: 'bold',
-	  fontSize: 20,
-	  flex: 6,
+		backgroundColor: '#1a1a1a',
+		fontWeight: 'bold',
+		fontSize: 20,
+		color: 'white',
+		flex: 6,
 	},
 
 	input: {

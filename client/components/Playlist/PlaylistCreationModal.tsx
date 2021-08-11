@@ -34,6 +34,7 @@ const PlaylistCreationModal = (props: PlaylistCreationModalProps) => {
           style={{fontSize: 25}}
           selectionColor="#8c8c8c"
           placeholder="Pick a Name"
+				  placeholderTextColor='#a1a1a1'
           onChangeText={text => {
             setPlaylistName(text);
             if (text === '') {

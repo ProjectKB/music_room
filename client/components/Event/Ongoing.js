@@ -8,7 +8,7 @@ const Ongoing = props => {
     <View>
         {
             props.EventList.ongoing.length != 0?
-            <Text style={{fontFamily: 'Cochin'}}>On Going</Text>
+            <Text style={{fontFamily: 'Cochin', color: 'white'}}>On Going</Text>
             :
             null
         }
@@ -38,7 +38,12 @@ const Ongoing = props => {
                                             source={{uri: defaultImg}}
                                         />
                                     }
-                                    <Text style={{marginLeft: 10}}>{event.name}</Text>
+                                    {
+                                        event.name.length >= 12?
+                                        <Text style={{marginLeft: 10, color: 'white'}}>{event.name.substring(0,12)}..</Text>
+                                        :
+                                        <Text style={{marginLeft: 10, color: 'white'}}>{event.name}</Text>
+                                    }
                                 </TouchableOpacity>
                                 :
                                 null
