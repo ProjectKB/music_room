@@ -11,7 +11,6 @@ import FinishedView from '../components/Event/Finished.js';
 import PendingView from '../components/Event/Pending.js';
 import {Button} from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient'
-import CreateEventModal from '../components/Event/CreateEventModal.js';
 
 const Event = () => {
 
@@ -31,10 +30,16 @@ const Event = () => {
 	const createEvent = () => {
 		if (createEventName != '' && createEventStart != '' && createEventEnd != '')
 		{
-			console.log(createEventName);
-			console.log(createEventStart);
-			console.log(createEventEnd);
-			console.log("envoie au back");
+			axios.post(
+				global.URL + '/events',
+				JSON.stringify({name: createEventName, start: createEventStart, end: createEventEnd}),
+			)
+			.then(result => {
+				console.log(result);
+			})
+			.catch(err => {
+				console.log(err);
+			})
 			setModalVisible(false);
 			resetValues();
 		}

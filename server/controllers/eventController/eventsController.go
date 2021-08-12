@@ -14,40 +14,47 @@ import (
 )
 
 func Create(elem *model.Event) int {
-	var playlist model.Playlist
 
-	
-	if elem.Status != "public" && elem.Status != "private" {
-		return response.Unauthorized
-	} else if elem.Name == "" || elem.Start == "" || elem.End == "" {
-		return response.FieldIsMissing
-	}
-
-
-	if elem.Playlist_id != "" {
-		playlistId, _ := primitive.ObjectIDFromHex(elem.Playlist_id)
-		playlistFilter := bson.D{{"_id", playlistId}}
-
-		if err := db.PlaylistCollection.FindOne(context.TODO(), playlistFilter).Decode(&playlist); err != nil {
-			return response.BddError
-		}
-	}
-
-	playlist = model.Playlist{primitive.NewObjectID(), elem.Name, elem.Owner_id, elem.Status, playlist.Songs, playlist.Guests, true}
-
-	if err := playlistController.Create(&playlist, "event"); err != response.Ok {
-		return err
-	}
-
-	elem.Playlist_id = playlist.Id.Hex()
+	var owner_tmp model.Event
 	elem.Status = "pending"
 
-	if _, err := db.EventCollection.InsertOne(context.TODO(), elem); err != nil {
+	id, _ := primitive.ObjectIDFromHex(elem.Owner_id)
+	filter := bson.D{{"_id", id}}
+
+	if elem.Name == "" || (elem.Start == "" && elem.End == "") {
+		return response.FieldIsMissing
+	} else if err := db.EventCollection.FindOne(context.TODO(), filter).Decode(&owner_tmp); err != nil {
+		return response.BddError
+	} else if _, err := db.EventCollection.InsertOne(context.TODO(), elem); err != nil {
 		return response.BddError
 	}
 
-	fmt.Println("Inserted a single document")
+	// fmt.Println("Event Created")
+
 	return response.Ok
+
+
+	// var event model.Event
+
+	// if elem.Name == "" || elem.Start == "" || elem.End == "" {
+	// 	return response.FieldIsMissing
+	// }
+
+	// event = model.Event{primitive.NewObjectID(), elem.Name, elem.Status, true}
+
+	// if err := eventController.Create(&event, "event"); err != response.Ok {
+	// 	return err
+	// }
+
+	// elem.id = event.Id.Hex()
+	// elem.Status = "pending"
+
+	// if _, err := db.EventCollection.InsertOne(context.TODO(), elem); err != nil {
+	// 	return response.BddError
+	// }
+
+	// fmt.Println("Event created !")
+	// return response.Ok
 }
 
 func Read(param string, result *model.Event) int {
