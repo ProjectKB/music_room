@@ -25,7 +25,7 @@ const AppContent = () => {
   const [songIndex, setSongIndex] = useState(-1);
   const [mustFetch, setMustFetch] = useState(false);
   const [multiModalContext, setMultiModalContext] =
-    useState<MultiModalStatus>('');
+    useState<MultiModalStatus>('hidden');
 
   const [user, setUser] = useState(userTemplate);
 

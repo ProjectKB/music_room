@@ -95,7 +95,7 @@ const PlaylistMultiModal = props => {
                   );
 
                   setMustFetch(true);
-                  setMultiModalContext('');
+                  setMultiModalContext('hidden');
                 });
 
                 props.setMultiPlaylistModal(false);

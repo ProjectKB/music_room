@@ -1,6 +1,11 @@
 import {createContext} from 'react';
 
-export type MultiModalStatus = '' | 'add' | 'remove' | 'delete' | 'delete song';
+export type MultiModalStatus =
+  | 'hidden'
+  | 'add'
+  | 'remove'
+  | 'delete'
+  | 'delete song';
 
 type MultiModal = {
   multiModalContext: MultiModalStatus;
@@ -8,7 +13,7 @@ type MultiModal = {
 };
 
 export const MultiModalContext = createContext<MultiModal>({
-  multiModalContext: '',
+  multiModalContext: 'hidden',
   setMultiModalContext: () => {},
 });
 
