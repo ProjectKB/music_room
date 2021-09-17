@@ -28,7 +28,7 @@ const PlaylistElement = props => {
   const [canRemoveFromPlaylist, setCanRemoveFromPlaylist] = useState(false);
 
   useEffect(() => {
-    if (props.screen !== 'Search') {
+    if (props.screen === 'Playlist') {
       if (props.playlist.owner_id === user.id) {
         setCanEdit(true);
         setCanDelete(true);

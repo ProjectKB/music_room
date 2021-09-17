@@ -45,7 +45,7 @@ const PlaylistStackNavigator = () => {
       />
       <Stack.Screen
         name="SongDetails"
-        children={props => (
+        children={(props: any) => (
           <SongsList
             navigation={props.navigation}
             playlist={props.route.params.playlist}
@@ -65,7 +65,7 @@ const PlaylistStackNavigator = () => {
       />
       <Stack.Screen
         name="EditPlaylist"
-        children={props => (
+        children={(props: any) => (
           <EditPlaylist
             navigation={props.navigation}
             playlist={props.route.params.playlist}

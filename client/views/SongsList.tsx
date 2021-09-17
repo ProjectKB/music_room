@@ -6,8 +6,20 @@ import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
 import PlaylistMultiModal from '../components/Playlist/PlaylistMultiModal';
 import CustomModal from '../components/CustomModal';
+import {Playlist} from '../types/Types';
 
-const SongsList = props => {
+type SongsListProps = {
+  playlist: Playlist;
+  playlistCollection: Playlist[];
+  setPlaylistCollection: React.Dispatch<React.SetStateAction<Playlist[]>>;
+  navigation: {setOptions: (arg0: {title: any}) => void};
+  screen: 'Playlist' | 'Search';
+
+  deletionPlaylistModal?: boolean;
+  setDeletionPlaylistModal?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const SongsList = (props: SongsListProps) => {
   const [playlistSongCollection, setPlaylistSongCollection] =
     useState(undefined);
   const [searchQuery, setSearchQuery] = useState('');

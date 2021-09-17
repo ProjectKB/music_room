@@ -9,7 +9,7 @@ import PlaylistGuestPickerModal from './PlaylistGuestPickerModal';
 
 const PlaylistContent = props => {
   const PlaylistScreenModals = () => {
-    if (props.screen !== 'Search') {
+    if (props.screen === 'Playlist') {
       return (
         <>
           <CustomModal

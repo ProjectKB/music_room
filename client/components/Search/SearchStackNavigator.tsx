@@ -31,12 +31,13 @@ const SearchStackNavigator = () => {
       />
       <Stack.Screen
         name="SongDetails"
-        children={props => (
+        children={(props: any) => (
           <SongsList
             navigation={props.navigation}
             playlist={props.route.params.playlist}
             deletionPlaylistModal={deletionPlaylistModal}
             setDeletionPlaylistModal={setDeletionPlaylistModal}
+            screen="Search"
             playlistCollection={collection}
             setPlaylistCollection={setCollection}
           />
