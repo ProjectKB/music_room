@@ -17,7 +17,19 @@ export type Playlist = {
   name: string;
   owner_id: string;
   status: string;
-  songs: string[];
-  guests: string[];
+  songs: Song[];
+  guests: Guest[];
   has_event: boolean;
+};
+
+export type Song = {
+  id: string;
+  picture: string;
+  name: string;
+  score?: number;
+};
+
+export type Guest = {
+  id: string;
+  contributor: boolean;
 };

@@ -4,14 +4,19 @@ import {Searchbar} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
-const SearchBar = props => {
-  const onChangeSearch = query => props.setSearchQuery(query);
+type SearchBarProps = {
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const SearchBar = (props: SearchBarProps) => {
+  const onChangeSearch = (query: string) => props.setSearchQuery(query);
 
   return (
     <Searchbar
-      style={[styles.searchBar, {opacity: props.opacity}]}
+      style={styles.searchBar}
       selectionColor="black"
       placeholder="Search"
+      value=""
       onChangeText={onChangeSearch}
       icon={() => <FontAwesomeIcon size={20} icon={faSearch} />}
     />

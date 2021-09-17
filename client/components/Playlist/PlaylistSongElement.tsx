@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useContext} from 'react';
 import {
   StyleSheet,
@@ -12,8 +13,21 @@ import SongIndexContext from '../../contexts/SongIndexContext';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import MultiModalContext from '../../contexts/MultiModalContext';
 import UserContext from '../../contexts/UserContext';
+import {Playlist, Song} from '../../types/Types';
 
-const PlaylistSongElement = props => {
+type PlaylistSongElementProps = {
+  playlist: Playlist;
+  index: number;
+  screen: 'Playlist' | 'Search';
+  song: Song;
+
+  setDeletionPlaylistModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setSongToDeleteIndex: React.Dispatch<undefined | number>;
+
+  deletionPlaylistModal?: boolean;
+};
+
+const PlaylistSongElement = (props: PlaylistSongElementProps) => {
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
   const {setSongIndex} = useContext(SongIndexContext);
   const {setPlaylistPlayed} = useContext(PlaylistContext);
