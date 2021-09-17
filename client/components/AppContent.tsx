@@ -3,33 +3,29 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Home from '../views/Home';
 import Event from '../views/Event';
 import Chat from '../views/Chat';
-import TabBar from '../components/TabBar';
+import TabBar from './TabBar';
 import ShowPlayerContext from '../contexts/ShowPlayerContext';
-import PlaylistContext from '../contexts/PlaylistContext';
+import PlaylistContext, {playlistTemplate} from '../contexts/PlaylistContext';
 import SongIndexContext from '../contexts/SongIndexContext';
 import FetchContext from '../contexts/FetchContext';
-import UserContext from '../contexts/UserContext';
-import MultiModalContext from '../contexts/MultiModalContext';
-import PlaylistStackNavigator from '../components/Playlist/PlaylistStackNavigator';
+import UserContext, {userTemplate} from '../contexts/UserContext';
+import MultiModalContext, {
+  MultiModalStatus,
+} from '../contexts/MultiModalContext';
+import PlaylistStackNavigator from './Playlist/PlaylistStackNavigator';
 import FlashMessage from 'react-native-flash-message';
-import SearchStackNavigator from '../components/Search/SearchStackNavigator';
+import SearchStackNavigator from './Search/SearchStackNavigator';
 import {DefineUser} from '../api/AuthEndpoint';
 
 const AppContent = () => {
   const Tab = createMaterialTopTabNavigator();
 
   const [showPlayer, setShowPlayer] = useState(false);
-  const [playlistPlayed, setPlaylistPlayed] = useState([]);
+  const [playlistPlayed, setPlaylistPlayed] = useState(playlistTemplate);
   const [songIndex, setSongIndex] = useState(-1);
   const [mustFetch, setMustFetch] = useState(false);
-  const [multiModalContext, setMultiModalContext] = useState('');
-
-  const userTemplate = {
-    avatar: '',
-    id: '',
-    login: '',
-    mail: '',
-  };
+  const [multiModalContext, setMultiModalContext] =
+    useState<MultiModalStatus>('');
 
   const [user, setUser] = useState(userTemplate);
 
