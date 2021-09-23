@@ -12,11 +12,11 @@ export type User = {
   token: string;
 };
 
-export type Playlist = {
+export type PlaylistType = {
   id: string;
   name: string;
   owner_id: string;
-  status: string;
+  status: PlaylistStatus;
   songs: Song[];
   guests: Guest[];
   has_event: boolean;
@@ -31,5 +31,14 @@ export type Song = {
 
 export type Guest = {
   id: string;
-  contributor: boolean;
+  login?: string;
+  contributor?: boolean;
 };
+
+export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
+
+export type Screen = 'Playlist' | 'Search';
+
+export type GuestStatus = 'none' | 'guest' | 'contributor';
+
+export type PlaylistStatus = 'private' | 'public';

@@ -6,17 +6,18 @@ import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
 import PlaylistMultiModal from '../components/Playlist/PlaylistMultiModal';
 import CustomModal from '../components/CustomModal';
-import {Playlist} from '../types/Types';
+import {PlaylistType, Screen, Setter} from '../types/Types';
 
 type SongsListProps = {
-  playlist: Playlist;
-  playlistCollection: Playlist[];
-  setPlaylistCollection: React.Dispatch<React.SetStateAction<Playlist[]>>;
-  navigation: {setOptions: (arg0: {title: any}) => void};
-  screen: 'Playlist' | 'Search';
+  playlist: PlaylistType;
+  playlistCollection: PlaylistType[];
+  navigation: any;
+  screen: Screen;
 
   deletionPlaylistModal?: boolean;
-  setDeletionPlaylistModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletionPlaylistModal?: Setter<boolean>;
+
+  setPlaylistCollection: Setter<PlaylistType[]>;
 };
 
 const SongsList = (props: SongsListProps) => {

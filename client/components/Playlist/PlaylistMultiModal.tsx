@@ -12,8 +12,18 @@ import {
   RemoveGuestFromPlaylist,
   DeleteSong,
 } from '../../api/PlaylistEndpoint';
+import {PlaylistType, Setter, Song} from '../../types/Types';
 
-const PlaylistMultiModal = props => {
+type PlaylistMultiModalProps = {
+  playlist: PlaylistType;
+
+  song?: Song;
+  multiPlaylistModal?: boolean;
+
+  setMultiPlaylistModal: Setter<boolean>;
+};
+
+const PlaylistMultiModal = (props: PlaylistMultiModalProps) => {
   const [inputIsEmpty, setInputIsEmpty] = useState(false);
 
   const {setMustFetch} = useContext(FetchContext);
@@ -50,10 +60,7 @@ const PlaylistMultiModal = props => {
 
     return (
       <View style={styles.mainContainer}>
-        <View
-          visible={props.multiPlaylistModal}
-          onDismiss={() => props.setMultiPlaylistModal(false)}
-          style={styles.dialogContainer}>
+        <View style={styles.dialogContainer}>
           <Title style={{padding: 20}}>{getModalText()}</Title>
           <View style={styles.dialogActionContainer}>
             <Button
@@ -69,7 +76,7 @@ const PlaylistMultiModal = props => {
             <Button
               color="#899ed6"
               onPress={() => {
-                let responseStatus;
+                let responseStatus: Promise<boolean>;
 
                 if (multiModalContext === 'delete') {
                   responseStatus = DeletePlaylist(props.playlist.id);
@@ -87,7 +94,7 @@ const PlaylistMultiModal = props => {
                   responseStatus = DeleteSong(props.playlist.id, props.song.id);
                 }
 
-                responseStatus.then(status => {
+                responseStatus.then((status: boolean) => {
                   FlashMessage(
                     status,
                     flashMessageSuccess(),

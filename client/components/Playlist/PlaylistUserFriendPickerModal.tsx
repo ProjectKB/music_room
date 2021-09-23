@@ -4,8 +4,23 @@ import {StyleSheet, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {FlashMessage} from '../FlashMessage';
 import {Button, Divider, Title} from 'react-native-paper';
+import {Guest, GuestStatus, Setter} from '../../Types/Types';
 
-const PlaylistUserFriendPickerModal = props => {
+type PlaylistUserFriendPickerModalProps = {
+  friendCollection: Guest[];
+  newGuestCollection: Guest[];
+  guestCollection: Guest[];
+  guestContext: GuestStatus;
+  guestPayload: Guest[];
+
+  setModalVisibility: Setter<boolean>;
+  setNewGuestCollection: Setter<Guest[]>;
+  setGuestPayload: Setter<Guest[]>;
+};
+
+const PlaylistUserFriendPickerModal = (
+  props: PlaylistUserFriendPickerModalProps,
+) => {
   const [friendPicked, setFriendPicked] = useState(props.friendCollection[0]);
 
   const flashMessageError = `${friendPicked.login} is already a guest... Pick another one!`;
@@ -26,7 +41,7 @@ const PlaylistUserFriendPickerModal = props => {
               <Picker.Item
                 style={{fontSize: 20}}
                 label={item.login}
-                value={item}
+                value={item as any}
                 key={item.id}
                 color="black"
               />

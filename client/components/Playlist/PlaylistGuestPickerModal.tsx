@@ -6,8 +6,16 @@ import {FlashMessage} from '../FlashMessage';
 import {Button, Divider, Title} from 'react-native-paper';
 import FetchContext from '../../contexts/FetchContext';
 import {DelegatePlaylist} from '../../api/PlaylistEndpoint';
+import {PlaylistType, Guest, Setter} from '../../types/Types';
 
-const PlaylistGuestPickerModal = props => {
+type PlaylistGuestPickerModalProps = {
+  guestCollection: Guest[];
+  playlist: PlaylistType;
+
+  setModalVisibility: Setter<boolean>;
+};
+
+const PlaylistGuestPickerModal = (props: PlaylistGuestPickerModalProps) => {
   const [guestPicked, setGuestPicked] = useState(props.guestCollection[0]);
 
   const {setMustFetch} = useContext(FetchContext);
@@ -31,7 +39,7 @@ const PlaylistGuestPickerModal = props => {
               <Picker.Item
                 style={{fontSize: 20}}
                 label={item.login}
-                value={item}
+                value={item as any}
                 key={item.id}
                 color="black"
               />

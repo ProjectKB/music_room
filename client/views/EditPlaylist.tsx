@@ -7,14 +7,20 @@ import PlaylistEditionContent from '../components/Playlist/PlaylistEditionConten
 import UserContext from '../contexts/UserContext';
 import PlaylistUserFriendPickerModal from '../components/Playlist/PlaylistUserFriendPickerModal';
 import CustomModal from '../components/CustomModal';
+import {PlaylistType, Guest, GuestStatus} from '../Types/Types';
 
-const EditPlaylist = props => {
-  const [guestCollection, setGuestCollection] = useState([]);
-  const [newGuestCollection, setNewGuestCollection] = useState([]);
+type EditPlaylistProps = {
+  playlist: PlaylistType;
+  navigation: any;
+};
+
+const EditPlaylist = (props: EditPlaylistProps) => {
+  const [guestCollection, setGuestCollection] = useState<Guest[]>([]);
+  const [newGuestCollection, setNewGuestCollection] = useState<Guest[]>([]);
 
   const [friendCollection, setFriendCollection] = useState([]);
   const [friendPickerModal, setFriendPickerModal] = useState(false);
-  const [guestContext, setGuestContext] = useState('');
+  const [guestContext, setGuestContext] = useState<GuestStatus>('none');
   const [guestPayload, setGuestPayload] = useState([]);
 
   const {user} = useContext(UserContext);
@@ -92,7 +98,6 @@ const EditPlaylist = props => {
             newGuestCollection={newGuestCollection}
             setNewGuestCollection={setNewGuestCollection}
             setModalVisibility={setFriendPickerModal}
-            playlist={props.playlist}
             guestContext={guestContext}
             guestPayload={guestPayload}
             setGuestPayload={setGuestPayload}

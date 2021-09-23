@@ -1,7 +1,15 @@
 import React from 'react';
 import {StyleSheet, Modal, TouchableOpacity, View} from 'react-native';
 
-const CustomModal = props => {
+type CustomModalProps = {
+  secu: any;
+  modalVisibility: undefined | boolean;
+  Component: () => JSX.Element;
+
+  setModalVisibility: (arg0: boolean) => void;
+};
+
+const CustomModal = (props: CustomModalProps) => {
   if (props.secu !== undefined) {
     return (
       <Modal

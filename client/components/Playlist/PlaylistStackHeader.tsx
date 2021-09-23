@@ -1,10 +1,18 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Headline} from 'react-native-paper';
 
-const PlaylistStackHeader = props => (
+type PlaylistStackHeaderProps = {
+  navigation: any;
+  displayAddButton: boolean;
+
+  addAction?: () => void;
+};
+
+const PlaylistStackHeader = (props: PlaylistStackHeaderProps) => (
   <View style={styles.playlistStackHeaderContainer}>
     <Headline style={styles.playlistStackHeaderTitle}>
       {props.navigation.children}

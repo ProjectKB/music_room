@@ -1,9 +1,9 @@
 import {createContext} from 'react';
-import {Playlist} from '../Types/Types';
+import {PlaylistType} from '../Types/Types';
 
-type PlaylistType = {
-  playlistPlayed: Playlist;
-  setPlaylistPlayed: (playlist: Playlist) => void;
+type PlaylistContextType = {
+  playlistPlayed: PlaylistType;
+  setPlaylistPlayed: (playlist: PlaylistType) => void;
 };
 
 export const playlistTemplate = {
@@ -16,7 +16,7 @@ export const playlistTemplate = {
   has_event: false,
 };
 
-const PlaylistContext = createContext<PlaylistType>({
+const PlaylistContext = createContext<PlaylistContextType>({
   playlistPlayed: playlistTemplate,
   setPlaylistPlayed: () => {},
 });

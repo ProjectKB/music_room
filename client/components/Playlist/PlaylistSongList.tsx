@@ -2,15 +2,15 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
 import PlaylistSongElement from './PlaylistSongElement';
-import {Playlist, Song} from '../../types/Types';
+import {PlaylistType, Screen, Setter, Song} from '../../types/Types';
 
 type PlaylistSongListProps = {
   playlistSongCollection: undefined | Song[];
-  playlist: Playlist;
-  screen: 'Playlist' | 'Search';
+  playlist: PlaylistType;
+  screen: Screen;
 
-  setSongToDeleteIndex: React.Dispatch<undefined | number>;
-  setDeletionPlaylistModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setSongToDeleteIndex: Setter<undefined | number>;
+  setDeletionPlaylistModal: Setter<boolean>;
 
   deletionPlaylistModal?: boolean;
 };

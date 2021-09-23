@@ -3,9 +3,10 @@ import {StyleSheet} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
+import {Setter} from '../Types/Types';
 
 type SearchBarProps = {
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  setSearchQuery: Setter<string>;
 };
 
 const SearchBar = (props: SearchBarProps) => {

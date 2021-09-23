@@ -6,8 +6,14 @@ import {CreatePlaylist} from '../../api/PlaylistEndpoint';
 import {FlashMessage} from '../FlashMessage';
 import UserContext from '../../contexts/UserContext';
 import {RadioButton} from 'react-native-paper';
+import {PlaylistType, Setter} from '../../Types/Types';
 
-const PlaylistCreationModal = props => {
+type PlaylistCreationModalProps = {
+  setModalVisibility: Setter<boolean>;
+  setPlaylistCollection: Setter<PlaylistType[]>;
+};
+
+const PlaylistCreationModal = (props: PlaylistCreationModalProps) => {
   const [playlistName, setPlaylistName] = useState('');
   const [playlistStatus, setPlaylistStatus] = useState('public');
   const [inputIsEmpty, setInputIsEmpty] = useState(false);
@@ -27,7 +33,6 @@ const PlaylistCreationModal = props => {
         <TextInput
           style={{fontSize: 25}}
           selectionColor="#8c8c8c"
-          mode="flat"
           placeholder="Pick a Name"
           onChangeText={text => {
             setPlaylistName(text);

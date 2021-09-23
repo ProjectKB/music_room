@@ -6,8 +6,28 @@ import PlaylistCreationModal from './PlaylistCreationModal';
 import PlaylistMultiModal from './PlaylistMultiModal';
 import CustomModal from '../CustomModal';
 import PlaylistGuestPickerModal from './PlaylistGuestPickerModal';
+import {PlaylistType, Guest, Screen, Setter} from '../../types/Types';
 
-const PlaylistContent = props => {
+type PlaylistContentProps = {
+  screen: Screen;
+  creationPlaylistModal: boolean;
+  guestPickerModal: boolean;
+  playlistCollection: PlaylistType[];
+  playlistIndex: number;
+  guestCollection: Guest[];
+  navigation: any;
+  multiPlaylistModal: boolean;
+
+  searchQuery?: string;
+
+  setPlaylistIndex: Setter<number>;
+  setMultiPlaylistModal: Setter<boolean>;
+  setGuestPickerModal: Setter<boolean>;
+  setCreationPlaylistModal: Setter<boolean>;
+  setPlaylistCollection: Setter<PlaylistType[]>;
+};
+
+const PlaylistContent = (props: PlaylistContentProps) => {
   const PlaylistScreenModals = () => {
     if (props.screen === 'Playlist') {
       return (

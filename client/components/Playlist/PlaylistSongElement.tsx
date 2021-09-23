@@ -13,16 +13,16 @@ import SongIndexContext from '../../contexts/SongIndexContext';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import MultiModalContext from '../../contexts/MultiModalContext';
 import UserContext from '../../contexts/UserContext';
-import {Playlist, Song} from '../../types/Types';
+import {PlaylistType, Screen, Setter, Song} from '../../types/Types';
 
 type PlaylistSongElementProps = {
-  playlist: Playlist;
+  playlist: PlaylistType;
   index: number;
-  screen: 'Playlist' | 'Search';
+  screen: Screen;
   song: Song;
 
-  setDeletionPlaylistModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setSongToDeleteIndex: React.Dispatch<undefined | number>;
+  setDeletionPlaylistModal: Setter<boolean>;
+  setSongToDeleteIndex: Setter<undefined | number>;
 
   deletionPlaylistModal?: boolean;
 };

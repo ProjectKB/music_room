@@ -4,7 +4,7 @@ import {StyleSheet, StatusBar, View} from 'react-native';
 import ProtectedRoutes from './components/ProtectedRoutes';
 
 const App = () => {
-  global.URL = 'http://192.168.43.227:8080'; //NETWORK;
+  global.URL = 'http://192.168.0.12:8080'; //NETWORK;
   global.api_key = 'AIzaSyC2Kt0YzhTIXATbXvq77Y-MM2w7q6bmwb4';
 
   return (

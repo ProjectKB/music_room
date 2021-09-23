@@ -6,8 +6,20 @@ import {FetchPlaylistList, FetchPlaylistGuest} from '../api/PlaylistEndpoint';
 import PlaylistContent from '../components/Playlist/PlaylistContent';
 import FetchContext from '../contexts/FetchContext';
 import {FlashMessage} from '../components/FlashMessage';
+import {PlaylistType, Setter} from '../types/Types';
 
-const Playlist = props => {
+type PlaylistProps = {
+  playlistCollection: PlaylistType[];
+  navigation: any;
+  creationPlaylistModal: boolean;
+  multiPlaylistModal: boolean;
+
+  setCreationPlaylistModal: Setter<boolean>;
+  setMultiPlaylistModal: Setter<boolean>;
+  setPlaylistCollection: Setter<PlaylistType[]>;
+};
+
+const Playlist = (props: PlaylistProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [playlistIndex, setPlaylistIndex] = useState(undefined);
   const [guestPickerModal, setGuestPickerModal] = useState(false);
@@ -66,6 +78,7 @@ const Playlist = props => {
         guestPickerModal={guestPickerModal}
         setGuestPickerModal={setGuestPickerModal}
         guestCollection={guestCollection}
+        screen="Playlist"
       />
     </View>
   );
