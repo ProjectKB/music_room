@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -9,6 +10,7 @@ import {
 } from 'react-native';
 import {CreateUser} from '../api/AuthEndpoint';
 import {FlashMessage} from '../components/FlashMessage';
+import {Setter} from '../types/Types';
 
 const SignUp = ({navigation}) => {
   const [login, setLogin] = useState('');
@@ -19,7 +21,12 @@ const SignUp = ({navigation}) => {
   const [mailError, setMailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
-  const onChangeText = (input, setInput, inputError, setInputError) => {
+  const onChangeText = (
+    input: string,
+    setInput: Setter<string>,
+    inputError: boolean,
+    setInputError: Setter<boolean>,
+  ) => {
     setInput(input);
 
     input.length === 0 && !inputError
@@ -27,9 +34,9 @@ const SignUp = ({navigation}) => {
       : setInputError(false);
   };
 
-  const validateEmail = email => {
+  const validateEmail = (email: string) => {
     const mailRegex =
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     return mailRegex.test(email);
   };
@@ -58,19 +65,9 @@ const SignUp = ({navigation}) => {
         }
       });
     } else {
-      if (login.length === 0) {
-        setLoginError(true);
-      }
-
-      if (password.length === 0) {
-        setPasswordError(true);
-      }
-
-      if (mail.length === 0) {
-        setMailError(true);
-      } else if (!validateEmail(mail)) {
-        setMailError('format');
-      }
+      login.length === 0 && setLoginError(true);
+      password.length === 0 && setPasswordError(true);
+      (mail.length === 0 || !validateEmail(mail)) && setMailError(true);
     }
   };
 
@@ -120,11 +117,7 @@ const SignUp = ({navigation}) => {
             placeholder="email"
           />
           <Text style={styles.inputError}>
-            {mailError
-              ? mailError === 'format'
-                ? '* invalid format'
-                : "* email can't be empty"
-              : ''}
+            {mailError ? "* email can't be empty/invalid format" : ''}
           </Text>
         </View>
         <TouchableOpacity style={styles.submit} onPress={() => handleSubmit()}>

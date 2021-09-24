@@ -2,12 +2,12 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
 import PlaylistSongElement from './PlaylistSongElement';
-import {PlaylistType, Screen, Setter, Song} from '../../types/Types';
+import {PlaylistType, ScreenType, Setter, Song} from '../../types/Types';
 
 type PlaylistSongListProps = {
   playlistSongCollection: undefined | Song[];
   playlist: PlaylistType;
-  screen: Screen;
+  screen: ScreenType;
 
   setSongToDeleteIndex: Setter<undefined | number>;
   setDeletionPlaylistModal: Setter<boolean>;
@@ -15,34 +15,25 @@ type PlaylistSongListProps = {
   deletionPlaylistModal?: boolean;
 };
 
-const PlaylistSongList = (props: PlaylistSongListProps) => {
-  const PlaylistSongCollection = () => {
-    if (
-      props.playlistSongCollection !== undefined &&
-      props.playlistSongCollection.length !== 0
-    ) {
-      return (
-        <>
-          {props.playlistSongCollection.map((elem, index) => (
-            <PlaylistSongElement
-              key={elem.id}
-              song={elem}
-              setDeletionPlaylistModal={props.setDeletionPlaylistModal}
-              deletionPlaylistModal={props.deletionPlaylistModal}
-              setSongToDeleteIndex={props.setSongToDeleteIndex}
-              index={index}
-              playlist={props.playlist}
-              screen={props.screen}
-            />
-          ))}
-        </>
-      );
-    } else {
-      return <Text style={{color: 'white'}}>There is no song here.</Text>;
-    }
-  };
-
-  return <PlaylistSongCollection />;
-};
+const PlaylistSongList = (props: PlaylistSongListProps) =>
+  props.playlistSongCollection !== undefined &&
+  props.playlistSongCollection.length !== 0 ? (
+    <>
+      {props.playlistSongCollection.map((elem, index) => (
+        <PlaylistSongElement
+          key={elem.id}
+          song={elem}
+          setDeletionPlaylistModal={props.setDeletionPlaylistModal}
+          deletionPlaylistModal={props.deletionPlaylistModal}
+          setSongToDeleteIndex={props.setSongToDeleteIndex}
+          index={index}
+          playlist={props.playlist}
+          screen={props.screen}
+        />
+      ))}
+    </>
+  ) : (
+    <Text style={{color: 'white'}}>There is no song here.</Text>
+  );
 
 export default PlaylistSongList;

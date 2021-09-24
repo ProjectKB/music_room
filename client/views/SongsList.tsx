@@ -6,13 +6,13 @@ import SearchBar from '../components/SearchBar';
 import PlaylistSongList from '../components/Playlist/PlaylistSongList';
 import PlaylistMultiModal from '../components/Playlist/PlaylistMultiModal';
 import CustomModal from '../components/CustomModal';
-import {PlaylistType, Screen, Setter} from '../types/Types';
+import {PlaylistType, ScreenType, Setter} from '../types/Types';
 
 type SongsListProps = {
   playlist: PlaylistType;
   playlistCollection: PlaylistType[];
   navigation: any;
-  screen: Screen;
+  screen: ScreenType;
 
   deletionPlaylistModal?: boolean;
   setDeletionPlaylistModal?: Setter<boolean>;
@@ -46,7 +46,7 @@ const SongsList = (props: SongsListProps) => {
 
   return (
     <View style={styles.mainContainer}>
-      <SearchBar setSearchQuery={setSearchQuery} />
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <ScrollView style={styles.playlistList}>
         <PlaylistSongList
           playlistSongCollection={

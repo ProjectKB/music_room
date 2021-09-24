@@ -6,6 +6,7 @@ import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {Setter} from '../Types/Types';
 
 type SearchBarProps = {
+  searchQuery: string;
   setSearchQuery: Setter<string>;
 };
 
@@ -17,7 +18,7 @@ const SearchBar = (props: SearchBarProps) => {
       style={styles.searchBar}
       selectionColor="black"
       placeholder="Search"
-      value=""
+      value={props.searchQuery}
       onChangeText={onChangeSearch}
       icon={() => <FontAwesomeIcon size={20} icon={faSearch} />}
     />

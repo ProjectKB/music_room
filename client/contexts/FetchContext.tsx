@@ -1,8 +1,9 @@
 import {createContext} from 'react';
+import {Setter} from '../Types/Types';
 
 type Fetch = {
   mustFetch: boolean;
-  setMustFetch: (mustFetch: boolean) => void;
+  setMustFetch: Setter<boolean>;
 };
 
 const FetchContext = createContext<Fetch>({

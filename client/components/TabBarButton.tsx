@@ -1,8 +1,17 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {IconDefinition} from '@fortawesome/fontawesome-common-types';
 
-const TabBarButton = props => {
+type TabBarButtonProps = {
+  state: any;
+  title: string;
+  navigation: any;
+  size: number;
+  icon: IconDefinition;
+};
+
+const TabBarButton = (props: TabBarButtonProps) => {
   let color =
     props.state.routeNames[props.state.index] === props.title
       ? 'white'

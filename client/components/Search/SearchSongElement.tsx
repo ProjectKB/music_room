@@ -11,8 +11,20 @@ import {Subheading, Divider, Text} from 'react-native-paper';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import SongIndexContext from '../../contexts/SongIndexContext';
 import ShowPlayerContext from '../../contexts/ShowPlayerContext';
+import {PlaylistType, Setter, Song} from '../../Types/Types';
 
-const SearchSongElement = props => {
+type SearchSongElementProps = {
+  id: string;
+  title: string;
+  playlistCollection: PlaylistType[];
+  picture: string;
+  channelTitle: string;
+
+  setModalVisibility: Setter<boolean>;
+  setSongToAdd: Setter<Song>;
+};
+
+const SearchSongElement = (props: SearchSongElementProps) => {
   const {setPlaylistPlayed} = useContext(PlaylistContext);
   const {setSongIndex} = useContext(SongIndexContext);
   const {showPlayer, setShowPlayer} = useContext(ShowPlayerContext);
@@ -35,7 +47,7 @@ const SearchSongElement = props => {
             setShowPlayer(true);
           }
 
-          setPlaylistPlayed(fakePlaylistTemplate);
+          setPlaylistPlayed(fakePlaylistTemplate as PlaylistType);
           setSongIndex(0);
         }}
         onLongPress={() => {

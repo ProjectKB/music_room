@@ -13,12 +13,12 @@ import SongIndexContext from '../../contexts/SongIndexContext';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import MultiModalContext from '../../contexts/MultiModalContext';
 import UserContext from '../../contexts/UserContext';
-import {PlaylistType, Screen, Setter, Song} from '../../types/Types';
+import {PlaylistType, ScreenType, Setter, Song} from '../../types/Types';
 
 type PlaylistSongElementProps = {
   playlist: PlaylistType;
   index: number;
-  screen: Screen;
+  screen: ScreenType;
   song: Song;
 
   setDeletionPlaylistModal: Setter<boolean>;

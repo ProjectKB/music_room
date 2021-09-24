@@ -1,11 +1,17 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {PlaylistType, Setter, Song} from '../types/Types';
+import {NETWORK} from '@env';
 
-export const FetchPlaylistList = async (setter, query, scope) => {
+export const FetchPlaylistList = async (
+  setter: Setter<PlaylistType[]>,
+  query: string,
+  scope: string,
+) => {
   try {
     const userId = await AsyncStorage.getItem('userId');
     const response = await axios.post(
-      global.URL + '/playlists/searchPlaylist',
+      NETWORK + '/playlists/searchPlaylist',
       JSON.stringify({
         query: query,
         scope: scope,
@@ -22,10 +28,14 @@ export const FetchPlaylistList = async (setter, query, scope) => {
   }
 };
 
-export const FetchPlaylistSong = async (setter, query, playlistId) => {
+export const FetchPlaylistSong = async (
+  setter: Setter<Song[]>,
+  query: string,
+  playlistId: string,
+) => {
   try {
     const response = await axios.post(
-      global.URL + '/playlists/searchSong/' + playlistId,
+      NETWORK + '/playlists/searchSong/' + playlistId,
       JSON.stringify(query),
     );
 
@@ -35,10 +45,10 @@ export const FetchPlaylistSong = async (setter, query, playlistId) => {
   }
 };
 
-export const FetchPlaylistGuest = async playlistId => {
+export const FetchPlaylistGuest = async (playlistId: string) => {
   try {
     const response = await axios.get(
-      global.URL + '/playlists/guests/' + playlistId,
+      NETWORK + '/playlists/guests/' + playlistId,
     );
 
     return response.data;
@@ -48,14 +58,14 @@ export const FetchPlaylistGuest = async playlistId => {
 };
 
 export const CreatePlaylist = async (
-  setter,
-  playlistName,
-  status,
-  owner_id,
+  setter: Setter<PlaylistType[]>,
+  playlistName: string,
+  status: string,
+  owner_id: string,
 ) => {
   try {
     await axios.post(
-      global.URL + '/playlists',
+      NETWORK + '/playlists',
       JSON.stringify({name: playlistName, status: status, owner_id: owner_id}),
     );
 
@@ -65,9 +75,9 @@ export const CreatePlaylist = async (
   }
 };
 
-export const DeletePlaylist = async playlistId => {
+export const DeletePlaylist = async (playlistId: string) => {
   try {
-    await axios.delete(global.URL + '/playlists/' + playlistId);
+    await axios.delete(NETWORK + '/playlists/' + playlistId);
 
     return true;
   } catch (error) {
@@ -75,10 +85,10 @@ export const DeletePlaylist = async playlistId => {
   }
 };
 
-export const DeleteSong = async (playlistId, songId) => {
+export const DeleteSong = async (playlistId: string, songId: string) => {
   try {
     await axios.put(
-      global.URL + '/playlists/removeSong/' + playlistId,
+      NETWORK + '/playlists/removeSong/' + playlistId,
       JSON.stringify({id: songId}),
     );
 
@@ -88,10 +98,10 @@ export const DeleteSong = async (playlistId, songId) => {
   }
 };
 
-export const AddSong = async (playlistId, song) => {
+export const AddSong = async (playlistId: string, song: Song) => {
   try {
     const response = await axios.put(
-      global.URL + '/playlists/addSong/' + playlistId,
+      NETWORK + '/playlists/addSong/' + playlistId,
       JSON.stringify(song),
     );
 
@@ -101,10 +111,13 @@ export const AddSong = async (playlistId, song) => {
   }
 };
 
-export const AddGuestToPlaylist = async (playlistId, userId) => {
+export const AddGuestToPlaylist = async (
+  playlistId: string,
+  userId: string,
+) => {
   try {
     const response = await axios.put(
-      global.URL + '/playlists/addGuest/' + playlistId,
+      NETWORK + '/playlists/addGuest/' + playlistId,
       JSON.stringify({id: userId, contributor: true}),
     );
 
@@ -114,10 +127,13 @@ export const AddGuestToPlaylist = async (playlistId, userId) => {
   }
 };
 
-export const RemoveGuestFromPlaylist = async (playlistId, userId) => {
+export const RemoveGuestFromPlaylist = async (
+  playlistId: string,
+  userId: string,
+) => {
   try {
     const response = await axios.put(
-      global.URL + '/playlists/removeGuest/' + playlistId,
+      NETWORK + '/playlists/removeGuest/' + playlistId,
       JSON.stringify({id: userId}),
     );
 
@@ -127,10 +143,13 @@ export const RemoveGuestFromPlaylist = async (playlistId, userId) => {
   }
 };
 
-export const DelegatePlaylist = async (playlistId, newOwnerId) => {
+export const DelegatePlaylist = async (
+  playlistId: string,
+  newOwnerId: string,
+) => {
   try {
     const response = await axios.put(
-      global.URL + '/playlists/delegate/' + playlistId,
+      NETWORK + '/playlists/delegate/' + playlistId,
       JSON.stringify(newOwnerId),
     );
 
@@ -140,10 +159,10 @@ export const DelegatePlaylist = async (playlistId, newOwnerId) => {
   }
 };
 
-export const UpdatePlaylist = async (playlistId, payload) => {
+export const UpdatePlaylist = async (playlistId: string, payload: string) => {
   try {
     const response = await axios.put(
-      global.URL + '/playlists/' + playlistId,
+      NETWORK + '/playlists/' + playlistId,
       JSON.stringify(payload),
     );
 

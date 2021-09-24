@@ -1,4 +1,5 @@
 import {createContext} from 'react';
+import {Setter} from '../Types/Types';
 
 export type MultiModalStatus =
   | 'hidden'
@@ -9,7 +10,7 @@ export type MultiModalStatus =
 
 type MultiModal = {
   multiModalContext: MultiModalStatus;
-  setMultiModalContext: (multiModalContext: MultiModalStatus) => void;
+  setMultiModalContext: Setter<MultiModalStatus>;
 };
 
 export const MultiModalContext = createContext<MultiModal>({

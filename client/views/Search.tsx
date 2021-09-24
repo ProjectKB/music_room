@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useCallback, useEffect, useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import SearchBar from '../components/SearchBar';
@@ -8,10 +7,18 @@ import {ReadSong} from '../api/SearchEndpoint';
 import {FetchPlaylistList} from '../api/PlaylistEndpoint';
 import SearchElementList from '../components/Search/SearchElementList';
 import FetchContext from '../contexts/FetchContext';
+import {ChipValue, PlaylistType, Setter, Song} from '../types/Types';
 
-const Search = props => {
+type SearchProps = {
+  navigation: any;
+  collection: PlaylistType[] | Song[];
+
+  setCollection: Setter<PlaylistType[] | Song[]>;
+};
+
+const Search = (props: SearchProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [chipSelected, setChipSelected] = useState('Playlist');
+  const [chipSelected, setChipSelected] = useState<ChipValue>('Playlist');
   const [maxResults, setMaxResults] = useState(10);
   const [multiPlaylistModal, setMultiPlaylistModal] = useState(false);
   const [playlistCollection, setPlaylistCollection] = useState(undefined);
@@ -20,11 +27,15 @@ const Search = props => {
 
   const fetchGlobal = useCallback(() => {
     if (chipSelected === 'Song') {
-      ReadSong(props.setCollection, searchQuery);
+      ReadSong(props.setCollection as Setter<Song[]>, searchQuery);
       FetchPlaylistList(setPlaylistCollection, '', 'picker');
       setMaxResults(10);
     } else if (chipSelected === 'Playlist') {
-      FetchPlaylistList(props.setCollection, searchQuery, 'search');
+      FetchPlaylistList(
+        props.setCollection as Setter<PlaylistType[]>,
+        searchQuery,
+        'search',
+      );
 
       if (setMustFetch) {
         setMustFetch(false);
@@ -34,7 +45,7 @@ const Search = props => {
 
   const riseMaxResults = useCallback(() => {
     if (searchQuery !== '') {
-      ReadSong(props.setCollection, searchQuery, maxResults);
+      ReadSong(props.setCollection as Setter<Song[]>, searchQuery, maxResults);
     }
   }, [maxResults]);
 
@@ -48,13 +59,13 @@ const Search = props => {
 
   return (
     <View style={styles.mainContainer}>
-      <SearchBar setSearchQuery={setSearchQuery} />
-      {searchQuery !== '' ? (
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      {searchQuery !== '' && (
         <SearchChips
           chipSelected={chipSelected}
           setChipSelected={setChipSelected}
         />
-      ) : null}
+      )}
       <SearchElementList
         navigation={props.navigation}
         searchQuery={searchQuery}

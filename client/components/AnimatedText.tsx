@@ -2,7 +2,9 @@
 import React, {useCallback} from 'react';
 import TextTicker from 'react-native-text-ticker';
 
-const AnimatedText = props => {
+type AnimatedTextProps = {text: JSX.Element; callback: string};
+
+const AnimatedText = (props: AnimatedTextProps) => {
   const AnimatedTextCallback = useCallback(() => {
     return (
       <TextTicker

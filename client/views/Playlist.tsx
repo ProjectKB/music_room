@@ -64,7 +64,7 @@ const Playlist = (props: PlaylistProps) => {
 
   return (
     <View style={styles.mainContainer}>
-      <SearchBar setSearchQuery={setSearchQuery} />
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <PlaylistContent
         navigation={props.navigation}
         playlistCollection={props.playlistCollection}

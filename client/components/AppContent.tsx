@@ -16,12 +16,15 @@ import PlaylistStackNavigator from './Playlist/PlaylistStackNavigator';
 import FlashMessage from 'react-native-flash-message';
 import SearchStackNavigator from './Search/SearchStackNavigator';
 import {DefineUser} from '../api/AuthEndpoint';
+import {PlaylistType} from '../types/Types';
 
 const AppContent = () => {
   const Tab = createMaterialTopTabNavigator();
 
   const [showPlayer, setShowPlayer] = useState(false);
-  const [playlistPlayed, setPlaylistPlayed] = useState(playlistTemplate);
+  const [playlistPlayed, setPlaylistPlayed] = useState(
+    playlistTemplate as PlaylistType,
+  );
   const [songIndex, setSongIndex] = useState(-1);
   const [mustFetch, setMustFetch] = useState(false);
   const [multiModalContext, setMultiModalContext] =

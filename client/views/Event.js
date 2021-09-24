@@ -9,6 +9,8 @@ import { Headline } from 'react-native-paper';
 import OngoingView from '../components/Event/Ongoing.js';
 import FinishedView from '../components/Event/Finished.js';
 import PendingView from '../components/Event/Pending.js';
+import {NETWORK} from '@env';
+
 
 
 const Event = () => {
@@ -45,7 +47,7 @@ const Event = () => {
 	const fetchEventList = useCallback( async (search) =>
 	{
 		await axios.post(
-			global.URL + '/events/searchEvent',
+			NETWORK + '/events/searchEvent',
 			JSON.stringify(search),
 		)
 		.then (result => {

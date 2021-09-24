@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-
 import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 import YoutubePlayer from 'react-native-youtube-iframe';
@@ -58,12 +57,13 @@ const Player = () => {
   useEffect(() => {
     if (songState === 'playing') {
       const interval = setInterval(() => {
-        playerRef.current
+        (playerRef.current as any)
           ?.getCurrentTime()
-          .then(getSongTime => setCurrentTime(getSongTime));
-        playerRef.current
+          .then((getSongTime: number) => setCurrentTime(getSongTime));
+
+        (playerRef.current as any)
           ?.getDuration()
-          .then(getDuration => setDuration(getDuration));
+          .then((getDuration: number) => setDuration(getDuration));
 
         const songProgression = currentTime / duration;
         !isNaN(songProgression) && isFinite(songProgression)

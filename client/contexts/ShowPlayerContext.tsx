@@ -1,8 +1,9 @@
 import {createContext} from 'react';
+import {Setter} from '../Types/Types';
 
 type ShowPlayerType = {
   showPlayer: boolean;
-  setShowPlayer: (showPlayer: boolean) => void;
+  setShowPlayer: Setter<boolean>;
 };
 
 const ShowPlayerContext = createContext<ShowPlayerType>({

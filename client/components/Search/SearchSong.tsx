@@ -1,10 +1,19 @@
 import React, {useState} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
+import {PlaylistType, Setter, Song} from '../../Types/Types';
 import CustomModal from '../CustomModal';
 import SearchAddSongModal from './SearchAddSongModal';
 import SearchSongList from './SearchSongList';
 
-const SearchSong = props => {
+type SearchSongProps = {
+  playlistCollection: PlaylistType[];
+  collection: PlaylistType[] | Song[];
+
+  setMaxResults: Setter<number>;
+  setCollection: Setter<PlaylistType[] | Song[]>;
+};
+
+const SearchSong = (props: SearchSongProps) => {
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     return layoutMeasurement.height + contentOffset.y >= contentSize.height;
   };

@@ -2,8 +2,20 @@
 import React, {useState, useCallback} from 'react';
 import SearchSong from './SearchSong';
 import PlaylistContent from '../Playlist/PlaylistContent';
+import {PlaylistType, Song, Setter} from '../../Types/Types';
 
-const SearchElementList = props => {
+const SearchElementList = (props: {
+  chipSelected: string;
+  collection: PlaylistType[] | Song[];
+  playlistCollection: PlaylistType[];
+  navigation: any;
+  multiPlaylistModal: boolean;
+  searchQuery: string;
+
+  setCollection: Setter<PlaylistType[] | Song[]>;
+  setMultiPlaylistModal: Setter<boolean>;
+  setMaxResults: Setter<number>;
+}) => {
   const [playlistIndex, setPlaylistIndex] = useState(undefined);
 
   const SearchElementListCallback = useCallback(() => {
@@ -20,8 +32,8 @@ const SearchElementList = props => {
       return (
         <PlaylistContent
           navigation={props.navigation}
-          playlistCollection={props.collection}
-          setPlaylistCollection={props.setCollection}
+          playlistCollection={props.collection as PlaylistType[]}
+          setPlaylistCollection={props.setCollection as Setter<PlaylistType[]>}
           multiPlaylistModal={props.multiPlaylistModal}
           setMultiPlaylistModal={props.setMultiPlaylistModal}
           playlistIndex={playlistIndex}

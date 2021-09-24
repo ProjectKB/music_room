@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useContext} from 'react';
 import {
   StyleSheet,
@@ -10,8 +11,9 @@ import {
 import {Login} from '../api/AuthEndpoint';
 import {AuthContext} from '../contexts/AuthContext';
 import {FlashMessage} from '../components/FlashMessage';
+import {Setter} from '../types/Types';
 
-const SignIn = ({navigation}) => {
+const SignIn = ({navigation}: any) => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
@@ -19,7 +21,12 @@ const SignIn = ({navigation}) => {
 
   const {signIn} = useContext(AuthContext);
 
-  const onChangeText = (input, setInput, inputError, setInputError) => {
+  const onChangeText = (
+    input: string,
+    setInput: Setter<string>,
+    inputError: boolean,
+    setInputError: Setter<boolean>,
+  ) => {
     setInput(input);
 
     input.length === 0 && !inputError
@@ -33,7 +40,7 @@ const SignIn = ({navigation}) => {
         Login(login, password).then(res =>
           res
             ? signIn(res.data)
-            : FlashMessage(res, '', 'Wrong Login/Password'),
+            : FlashMessage(res as boolean, '', 'Wrong Login/Password'),
         );
       } else if (login.length === 0 || password.length === 0) {
         if (login.length === 0) {

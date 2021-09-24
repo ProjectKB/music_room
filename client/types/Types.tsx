@@ -37,8 +37,10 @@ export type Guest = {
 
 export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
-export type Screen = 'Playlist' | 'Search';
+export type ScreenType = 'Playlist' | 'Search';
 
 export type GuestStatus = 'none' | 'guest' | 'contributor';
 
 export type PlaylistStatus = 'private' | 'public';
+
+export type ChipValue = 'Global' | 'Song' | 'Playlist' | 'Event' | 'User';

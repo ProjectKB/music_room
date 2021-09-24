@@ -20,8 +20,26 @@ import {Headline, ProgressBar, Subheading} from 'react-native-paper';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import AnimatedText from '../AnimatedText';
 import PlayPauseButton from './PlayPauseButton';
+import {Setter} from '../../Types/Types';
 
-const PlayerDetails = props => {
+type PlayerDetailsProps = {
+  modalVisible: boolean;
+  playing: boolean;
+  index: number;
+  songPicture: string;
+  songName: string;
+  progressionBarValue: number;
+  currentTime: number;
+  duration: number;
+  songState: string;
+
+  setIndex: Setter<number>;
+  setPlaying: Setter<boolean>;
+  setModalVisible: Setter<boolean>;
+  setCurrentSong: Setter<string>;
+};
+
+const PlayerDetails = (props: PlayerDetailsProps) => {
   const [modalVisible, setModalVisible] = [
     props.modalVisible,
     props.setModalVisible,
@@ -32,16 +50,12 @@ const PlayerDetails = props => {
 
   const {playlistPlayed} = useContext(PlaylistContext);
 
-  const displayTime = toConvert => {
+  const displayTime = (toConvert: number) => {
     let h = Math.trunc(toConvert / 3600);
     let m = Math.trunc(toConvert / 60);
     let s = Math.trunc(toConvert % 60);
 
-    if (s < 10) {
-      s = `0${s}`;
-    }
-
-    return h ? `${h}:${m}:${s}` : `${m}:${s}`;
+    return h ? `${h}:${m}:${s}` : `${m}:${s < 10 ? '0' + s : s}`;
   };
 
   const nextSong = () => {

@@ -1,9 +1,9 @@
 import {createContext} from 'react';
-import {User} from '../Types/Types';
+import {Setter, User} from '../Types/Types';
 
 type UserType = {
   user: User;
-  setUser: (user: User) => void;
+  setUser: Setter<User>;
 };
 
 export const userTemplate = {
