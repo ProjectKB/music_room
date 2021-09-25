@@ -18,7 +18,11 @@ type PlaylistListProps = {
 const PlaylistList = (props: PlaylistListProps) =>
   props.playlistCollection.length === 0 ||
   (props.screen === 'Search' && props.searchQuery === '') ? (
-    <Text style={{color: 'white'}}>There is no playlist here.</Text>
+    <Text style={{color: 'white'}}>
+      {props.screen === 'Search' && props.searchQuery === ''
+        ? 'Please type something.'
+        : 'There is no playlist here.'}
+    </Text>
   ) : (
     <>
       {props.playlistCollection.map((elem, index) => (
