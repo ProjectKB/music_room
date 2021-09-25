@@ -2,7 +2,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {RadioButton} from 'react-native-paper';
-import {PlaylistStatus, PlaylistType, Setter, User} from '../../Types/Types';
+import {PlaylistStatus, PlaylistType, Setter, User} from '../../types/Types';
 
 type PlaylistEditionVisibilityPickerProps = {
   user: User;

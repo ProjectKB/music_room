@@ -20,7 +20,7 @@ import {Headline, ProgressBar, Subheading} from 'react-native-paper';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import AnimatedText from '../AnimatedText';
 import PlayPauseButton from './PlayPauseButton';
-import {Setter} from '../../Types/Types';
+import {Setter} from '../../types/Types';
 
 type PlayerDetailsProps = {
   modalVisible: boolean;

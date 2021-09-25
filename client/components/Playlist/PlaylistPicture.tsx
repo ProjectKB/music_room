@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleSheet, View, Image} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faMusic} from '@fortawesome/free-solid-svg-icons';
-import {PlaylistType} from '../../Types/Types';
+import {PlaylistType} from '../../types/Types';
 
 const PlaylistPicture = (playlist: PlaylistType) => {
   if (playlist.songs !== undefined) {

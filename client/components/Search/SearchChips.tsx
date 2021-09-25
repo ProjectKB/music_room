@@ -2,7 +2,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Chip} from 'react-native-paper';
-import {ChipValue, Setter} from '../../Types/Types';
+import {ChipValue, Setter} from '../../types/Types';
 
 type SearchChipsProps = {
   chipSelected: ChipValue;

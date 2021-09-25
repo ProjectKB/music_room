@@ -7,7 +7,7 @@ import PlaylistEditionContent from '../components/Playlist/PlaylistEditionConten
 import UserContext from '../contexts/UserContext';
 import PlaylistUserFriendPickerModal from '../components/Playlist/PlaylistUserFriendPickerModal';
 import CustomModal from '../components/CustomModal';
-import {PlaylistType, Guest, GuestStatus} from '../Types/Types';
+import {PlaylistType, Guest, GuestStatus} from '../types/Types';
 
 type EditPlaylistProps = {
   playlist: PlaylistType;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Setter, PlaylistType, Guest, ScreenType} from '../../Types/Types';
+import {Setter, PlaylistType, Guest, ScreenType} from '../../types/Types';
 import CustomModal from '../CustomModal';
 import PlaylistCreationModal from './PlaylistCreationModal';
 import PlaylistGuestPickerModal from './PlaylistGuestPickerModal';

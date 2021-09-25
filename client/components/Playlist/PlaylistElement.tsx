@@ -5,7 +5,7 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Subheading} from 'react-native-paper';
 import UserContext from '../../contexts/UserContext';
 import {FlashMessage} from '../FlashMessage';
-import {PlaylistType, ScreenType, Setter} from '../../Types/Types';
+import {PlaylistType, ScreenType, Setter} from '../../types/Types';
 import SongNumber from './SongNumber';
 import PlaylistActionButton from './PlaylistActionButton';
 import PlaylistPicture from './PlaylistPicture';

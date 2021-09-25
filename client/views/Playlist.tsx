@@ -28,7 +28,9 @@ const Playlist = (props: PlaylistProps) => {
   const {mustFetch, setMustFetch} = useContext(FetchContext);
 
   const fetchPlaylist = useCallback(() => {
-    FetchPlaylistList(props.setPlaylistCollection, searchQuery, 'playlist');
+    FetchPlaylistList(searchQuery, 'playlist').then(res =>
+      props.setPlaylistCollection(res ? res : []),
+    );
 
     if (mustFetch) {
       setMustFetch(false);

@@ -35,6 +35,12 @@ export type Guest = {
   contributor?: boolean;
 };
 
+export type PlaylistPayload = {
+  name?: string;
+  status?: string;
+  guests?: Guest[];
+};
+
 export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export type ScreenType = 'Playlist' | 'Search';

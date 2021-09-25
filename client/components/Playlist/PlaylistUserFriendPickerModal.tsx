@@ -4,7 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {FlashMessage} from '../FlashMessage';
 import {Button, Divider, Title} from 'react-native-paper';
-import {Guest, GuestStatus, Setter} from '../../Types/Types';
+import {Guest, GuestStatus, Setter} from '../../types/Types';
 
 type PlaylistUserFriendPickerModalProps = {
   friendCollection: Guest[];

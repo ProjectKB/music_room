@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {PlaylistType, Setter, Song} from '../../Types/Types';
+import {PlaylistType, Setter, Song} from '../../types/Types';
 import SearchSongElement from './SearchSongElement';
 
 type SearchSongListProps = {

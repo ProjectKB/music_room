@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
-import {PlaylistType, Setter, Song} from '../../Types/Types';
+import {PlaylistType, Setter, Song} from '../../types/Types';
 import CustomModal from '../CustomModal';
 import SearchAddSongModal from './SearchAddSongModal';
 import SearchSongList from './SearchSongList';

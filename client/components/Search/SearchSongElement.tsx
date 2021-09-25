@@ -11,7 +11,7 @@ import {Subheading, Divider, Text} from 'react-native-paper';
 import PlaylistContext from '../../contexts/PlaylistContext';
 import SongIndexContext from '../../contexts/SongIndexContext';
 import ShowPlayerContext from '../../contexts/ShowPlayerContext';
-import {PlaylistType, Setter, Song} from '../../Types/Types';
+import {PlaylistType, Setter, Song} from '../../types/Types';
 
 type SearchSongElementProps = {
   id: string;

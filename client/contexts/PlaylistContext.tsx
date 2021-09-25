@@ -1,5 +1,5 @@
 import {createContext} from 'react';
-import {PlaylistType, Setter} from '../Types/Types';
+import {PlaylistType, Setter} from '../types/Types';
 
 type PlaylistContextType = {
   playlistPlayed: PlaylistType;

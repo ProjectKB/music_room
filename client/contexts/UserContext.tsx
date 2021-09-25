@@ -1,5 +1,5 @@
 import {createContext} from 'react';
-import {Setter, User} from '../Types/Types';
+import {Setter, User} from '../types/Types';
 
 type UserType = {
   user: User;

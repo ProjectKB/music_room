@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {Text} from 'react-native-paper';
-import {PlaylistType, ScreenType, Setter} from '../../Types/Types';
+import {PlaylistType, ScreenType, Setter} from '../../types/Types';
 import PlaylistElement from './PlaylistElement';
 
 type PlaylistListProps = {

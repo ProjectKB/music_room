@@ -10,7 +10,7 @@ import {
   faCrown,
 } from '@fortawesome/free-solid-svg-icons';
 import MultiModalContext from '../../contexts/MultiModalContext';
-import {PlaylistType, Setter} from '../../Types/Types';
+import {PlaylistType, Setter} from '../../types/Types';
 
 type ShowActionButtonProps = {
   showActionButton: boolean;

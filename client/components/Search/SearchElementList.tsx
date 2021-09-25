@@ -2,7 +2,8 @@
 import React, {useState, useCallback} from 'react';
 import SearchSong from './SearchSong';
 import PlaylistContent from '../Playlist/PlaylistContent';
-import {PlaylistType, Song, Setter} from '../../Types/Types';
+import {PlaylistType, Song, Setter} from '../../types/Types';
+import {Text} from 'react-native';
 
 const SearchElementList = (props: {
   chipSelected: string;
@@ -20,13 +21,17 @@ const SearchElementList = (props: {
 
   const SearchElementListCallback = useCallback(() => {
     if (props.chipSelected === 'Song') {
-      return (
+      return props.collection.length !== 0 ? (
         <SearchSong
           collection={props.collection}
           setCollection={props.setCollection}
           setMaxResults={props.setMaxResults}
           playlistCollection={props.playlistCollection}
         />
+      ) : (
+        <Text style={{color: 'white', margin: 10}}>
+          An Error has occured with YouTube API, please retry later.
+        </Text>
       );
     } else if (props.chipSelected === 'Playlist') {
       return (

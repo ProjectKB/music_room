@@ -1,5 +1,5 @@
 import {createContext} from 'react';
-import {Setter} from '../Types/Types';
+import {Setter} from '../types/Types';
 
 type Fetch = {
   mustFetch: boolean;

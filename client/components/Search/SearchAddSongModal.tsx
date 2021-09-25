@@ -7,7 +7,7 @@ import {Button, Divider, Title} from 'react-native-paper';
 import {AddSong} from '../../api/PlaylistEndpoint';
 import FetchContext from '../../contexts/FetchContext';
 import PlaylistContext from '../../contexts/PlaylistContext';
-import {PlaylistType, Setter, Song} from '../../Types/Types';
+import {PlaylistType, Setter, Song} from '../../types/Types';
 
 type SearchAddSongModalProps = {
   playlistCollection: PlaylistType[];

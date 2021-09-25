@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {Text} from 'react-native';
-import {PlaylistType} from '../../Types/Types';
+import {PlaylistType} from '../../types/Types';
 
 const SongNumber = (playlist: PlaylistType) => {
   const songNumber = playlist.songs !== undefined ? playlist.songs.length : 0;

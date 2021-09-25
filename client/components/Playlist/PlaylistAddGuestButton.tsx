@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {GuestStatus, PlaylistStatus, Setter, User} from '../../Types/Types';
+import {GuestStatus, PlaylistStatus, Setter, User} from '../../types/Types';
 import {FlashMessage} from '../FlashMessage';
 
 type PlaylistAddGuestButtonProps = {

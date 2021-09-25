@@ -11,7 +11,13 @@ import UserContext from '../../contexts/UserContext';
 import FetchContext from '../../contexts/FetchContext';
 import {FlashMessage} from '../FlashMessage';
 import {UpdatePlaylist} from '../../api/PlaylistEndpoint';
-import {Guest, GuestStatus, PlaylistType, Setter} from '../../Types/Types';
+import {
+  Guest,
+  GuestStatus,
+  PlaylistPayload,
+  PlaylistType,
+  Setter,
+} from '../../types/Types';
 import PlaylistEditionVisibilityPicker from './PlaylistEditionVisibilityPicker';
 import PlaylistEditionChips from './PlaylistEditionChips';
 import PlaylistAddGuestButton from './PlaylistAddGuestButton';
@@ -72,7 +78,7 @@ const PlaylistEditionContent = (props: PlaylistEditionContentProps) => {
   };
 
   const onPress = () => {
-    let payload: {name?: string; status?: string; guests?: Guest[]} = {};
+    let payload: PlaylistPayload = {};
 
     if (props.playlist.name !== name) {
       payload.name = name;

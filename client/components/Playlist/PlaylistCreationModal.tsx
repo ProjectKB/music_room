@@ -6,7 +6,7 @@ import {CreatePlaylist} from '../../api/PlaylistEndpoint';
 import {FlashMessage} from '../FlashMessage';
 import UserContext from '../../contexts/UserContext';
 import {RadioButton} from 'react-native-paper';
-import {PlaylistType, Setter} from '../../Types/Types';
+import {PlaylistType, Setter} from '../../types/Types';
 
 type PlaylistCreationModalProps = {
   setModalVisibility: Setter<boolean>;
@@ -85,21 +85,17 @@ const PlaylistCreationModal = (props: PlaylistCreationModalProps) => {
         <Button
           color="#899ed6"
           onPress={() => {
-            if (playlistName === '') {
-              if (!inputIsEmpty) {
-                setInputIsEmpty(true);
-              }
+            if (playlistName === '' && !inputIsEmpty) {
+              setInputIsEmpty(true);
             } else {
-              const responseStatus = CreatePlaylist(
-                props.setPlaylistCollection,
-                playlistName,
-                playlistStatus,
-                user.id,
+              CreatePlaylist(playlistName, playlistStatus, user.id).then(
+                res => {
+                  res && props.setPlaylistCollection(res != null ? res : []);
+
+                  FlashMessage(res, flashMessageSuccess, flashMessageFailure);
+                },
               );
 
-              responseStatus.then(status =>
-                FlashMessage(status, flashMessageSuccess, flashMessageFailure),
-              );
               props.setModalVisibility(false);
               setPlaylistName('');
             }

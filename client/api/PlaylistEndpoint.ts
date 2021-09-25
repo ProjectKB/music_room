@@ -1,13 +1,9 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {PlaylistType, Setter, Song} from '../types/Types';
+import {PlaylistPayload, Setter, Song} from '../types/Types';
 import {NETWORK} from '@env';
 
-export const FetchPlaylistList = async (
-  setter: Setter<PlaylistType[]>,
-  query: string,
-  scope: string,
-) => {
+export const FetchPlaylistList = async (query: string, scope: string) => {
   try {
     const userId = await AsyncStorage.getItem('userId');
     const response = await axios.post(
@@ -19,9 +15,7 @@ export const FetchPlaylistList = async (
       }),
     );
 
-    response.data != null ? setter(response.data) : setter([]);
-
-    return true;
+    return response.data;
   } catch (error) {
     console.log(error.response);
     return false;
@@ -58,7 +52,6 @@ export const FetchPlaylistGuest = async (playlistId: string) => {
 };
 
 export const CreatePlaylist = async (
-  setter: Setter<PlaylistType[]>,
   playlistName: string,
   status: string,
   owner_id: string,
@@ -69,7 +62,7 @@ export const CreatePlaylist = async (
       JSON.stringify({name: playlistName, status: status, owner_id: owner_id}),
     );
 
-    return FetchPlaylistList(setter, '', 'playlist');
+    return FetchPlaylistList('', 'playlist');
   } catch (error) {
     return false;
   }
@@ -159,7 +152,10 @@ export const DelegatePlaylist = async (
   }
 };
 
-export const UpdatePlaylist = async (playlistId: string, payload: string) => {
+export const UpdatePlaylist = async (
+  playlistId: string,
+  payload: PlaylistPayload,
+) => {
   try {
     const response = await axios.put(
       NETWORK + '/playlists/' + playlistId,

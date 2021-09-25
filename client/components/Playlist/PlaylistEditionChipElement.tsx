@@ -3,7 +3,7 @@ import React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {Guest, Setter, PlaylistType, PlaylistStatus} from '../../Types/Types';
+import {Guest, Setter, PlaylistType, PlaylistStatus} from '../../types/Types';
 
 type PlaylistEditionChipProps = {
   newChips: boolean;

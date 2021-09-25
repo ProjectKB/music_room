@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {Guest, PlaylistStatus, PlaylistType, Setter} from '../../Types/Types';
+import {Guest, PlaylistStatus, PlaylistType, Setter} from '../../types/Types';
 import PlaylistEditionChipList from './PlaylistEditionChipList';
 
 type PlaylistEditionChipsProps = {
