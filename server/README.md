@@ -37,6 +37,7 @@ Route | Method | Utility
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
 `/users/events/{id}` | **GET** | read every events
 `/users/removeEvent/{id}` | **PUT** | remove an event from `events` field
+`/users/searchUsers/{id}` | **POST** | return every `users` according to `search query` who are not `friends`
 </details>
 
 <details>

@@ -22,6 +22,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/users/addEvent/{id}", middleware.AddEventToUser).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/events/{id}", middleware.ReadUserEvents).Methods("GET", "OPTIONS")
 	router.HandleFunc("/users/removeEvent/{id}", middleware.RemoveEventFromUser).Methods("PUT", "OPTIONS")
+	router.HandleFunc("/users/searchUsers/{id}", middleware.SearchUsers).Methods("POST", "OPTIONS")
 
 	router.HandleFunc("/playlists", middleware.ReadAllPlaylist).Methods("GET", "OPTIONS")
 	router.HandleFunc("/playlists/{id}", middleware.ReadOnePlaylist).Methods("GET", "OPTIONS")

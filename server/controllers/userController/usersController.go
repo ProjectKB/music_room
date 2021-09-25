@@ -12,6 +12,7 @@ import (
 	db "server/system/db"
 
 	"regexp"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -26,8 +27,6 @@ func Create(elem *model.User) int {
 	if elem.Avatar == "" {
 		elem.Avatar = default_avatar
 	}
-
-	// TODO Check preferences
 
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return response.FieldIsMissing
@@ -60,7 +59,7 @@ func Login(elem *model.User) int {
 	if _, err := rand.Read(b); err != nil {
 		return response.InvalidFormat
 	}
-	
+
 	elem.Token = hex.EncodeToString(b)
 
 	Update(bson.M{"token": elem.Token}, elem.Id.Hex())
@@ -114,6 +113,7 @@ func Update(fields bson.M, param string) int {
 		"$set": fields,
 	}
 
+	// music_preferences := [9]string{"Rap FR", "Rap US", "Rock", "Metal", "Classic", "Electro", "Trance", "Low-Fi", "House"}
 	_, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
@@ -385,6 +385,50 @@ func ReadFriends(param string, users *[]model.User) int {
 		}
 
 		*users = append(*users, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	return response.Ok
+}
+
+func SearchUsers(user_id string, query string, users *[]model.User) int {
+	id, _ := primitive.ObjectIDFromHex(user_id)
+	filter := bson.D{{"_id", id}}
+	var user model.User
+	var friendsIds []primitive.ObjectID
+
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
+	for _, friend := range user.Friends {
+		objID, err := primitive.ObjectIDFromHex(friend)
+
+		if err == nil {
+			friendsIds = append(friendsIds, objID)
+		}
+	}
+
+	friendsIds = append(friendsIds, id)
+
+	cur, err := db.UserCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$nin": friendsIds}})
+
+	if err != nil {
+		return response.Nonexistence
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem model.User
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		} else if elem.Login != "" && strings.Contains(elem.Login, query) {
+			*users = append(*users, elem)
+		}
 	}
 
 	// Close the cursor once finished
