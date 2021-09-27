@@ -121,5 +121,3 @@ Route | Method | Utility
 `/events/removePlaylist/{id}` | **PUT** | remove a playlist from `playlists` field
 `/events/removeUpdateStatus/{id}` | **PUT** | update `status` field
 </details>
-
-<details>
