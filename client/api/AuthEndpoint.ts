@@ -1,11 +1,11 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NETWORK} from '@env';
+// import {global.URL} from '@env';
 
 export const Login = async (login: string, password: string) => {
   try {
     return await axios.post(
-      NETWORK + '/users/login',
+      global.URL + '/users/login',
       JSON.stringify({login: login, password: password}),
     );
   } catch (error) {
@@ -20,7 +20,7 @@ export const CreateUser = async (
 ) => {
   try {
     return await axios.post(
-      NETWORK + '/users',
+      global.URL + '/users',
       JSON.stringify({login: login, mail: mail, password: password}),
     );
   } catch (error) {
@@ -32,7 +32,7 @@ export const DefineUser = async () => {
   try {
     let user_id = await AsyncStorage.getItem('userId');
 
-    return await axios.get(NETWORK + '/users/' + user_id);
+    return await axios.get(global.URL + '/users/' + user_id);
   } catch (error) {
     return false;
   }

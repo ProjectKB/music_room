@@ -3,6 +3,8 @@ import {StyleSheet, StatusBar, View} from 'react-native';
 import ProtectedRoutes from './components/ProtectedRoutes';
 
 const App = () => {
+  global.URL = 'http://10.64.1.177:8080';
+
   return (
     <View style={styles.mainContainer}>
       <StatusBar backgroundColor="#1a1a1a" />

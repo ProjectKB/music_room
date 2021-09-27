@@ -1,13 +1,13 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PlaylistPayload, Setter, Song} from '../types/Types';
-import {NETWORK} from '@env';
+// import {global.URL} from '@env';
 
 export const FetchPlaylistList = async (query: string, scope: string) => {
   try {
     const userId = await AsyncStorage.getItem('userId');
     const response = await axios.post(
-      NETWORK + '/playlists/searchPlaylist',
+      global.URL + '/playlists/searchPlaylist',
       JSON.stringify({
         query: query,
         scope: scope,
@@ -29,7 +29,7 @@ export const FetchPlaylistSong = async (
 ) => {
   try {
     const response = await axios.post(
-      NETWORK + '/playlists/searchSong/' + playlistId,
+      global.URL + '/playlists/searchSong/' + playlistId,
       JSON.stringify(query),
     );
 
@@ -42,7 +42,7 @@ export const FetchPlaylistSong = async (
 export const FetchPlaylistGuest = async (playlistId: string) => {
   try {
     const response = await axios.get(
-      NETWORK + '/playlists/guests/' + playlistId,
+      global.URL + '/playlists/guests/' + playlistId,
     );
 
     return response.data;
@@ -58,7 +58,7 @@ export const CreatePlaylist = async (
 ) => {
   try {
     await axios.post(
-      NETWORK + '/playlists',
+      global.URL + '/playlists',
       JSON.stringify({name: playlistName, status: status, owner_id: owner_id}),
     );
 
@@ -70,7 +70,7 @@ export const CreatePlaylist = async (
 
 export const DeletePlaylist = async (playlistId: string) => {
   try {
-    await axios.delete(NETWORK + '/playlists/' + playlistId);
+    await axios.delete(global.URL + '/playlists/' + playlistId);
 
     return true;
   } catch (error) {
@@ -81,7 +81,7 @@ export const DeletePlaylist = async (playlistId: string) => {
 export const DeleteSong = async (playlistId: string, songId: string) => {
   try {
     await axios.put(
-      NETWORK + '/playlists/removeSong/' + playlistId,
+      global.URL + '/playlists/removeSong/' + playlistId,
       JSON.stringify({id: songId}),
     );
 
@@ -94,7 +94,7 @@ export const DeleteSong = async (playlistId: string, songId: string) => {
 export const AddSong = async (playlistId: string, song: Song) => {
   try {
     const response = await axios.put(
-      NETWORK + '/playlists/addSong/' + playlistId,
+      global.URL + '/playlists/addSong/' + playlistId,
       JSON.stringify(song),
     );
 
@@ -110,7 +110,7 @@ export const AddGuestToPlaylist = async (
 ) => {
   try {
     const response = await axios.put(
-      NETWORK + '/playlists/addGuest/' + playlistId,
+      global.URL + '/playlists/addGuest/' + playlistId,
       JSON.stringify({id: userId, contributor: true}),
     );
 
@@ -126,7 +126,7 @@ export const RemoveGuestFromPlaylist = async (
 ) => {
   try {
     const response = await axios.put(
-      NETWORK + '/playlists/removeGuest/' + playlistId,
+      global.URL + '/playlists/removeGuest/' + playlistId,
       JSON.stringify({id: userId}),
     );
 
@@ -142,7 +142,7 @@ export const DelegatePlaylist = async (
 ) => {
   try {
     const response = await axios.put(
-      NETWORK + '/playlists/delegate/' + playlistId,
+      global.URL + '/playlists/delegate/' + playlistId,
       JSON.stringify(newOwnerId),
     );
 
@@ -158,7 +158,7 @@ export const UpdatePlaylist = async (
 ) => {
   try {
     const response = await axios.put(
-      NETWORK + '/playlists/' + playlistId,
+      global.URL + '/playlists/' + playlistId,
       JSON.stringify(payload),
     );
 
