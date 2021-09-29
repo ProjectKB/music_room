@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"reflect"
 	userController "server/controllers/userController"
-
 	"server/helpers"
+
+	// "server/helpers"
 	"server/model"
 	"server/response"
-	"strings"
+
+	// "strings"
 
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func ReadAllUser(w http.ResponseWriter, r *http.Request) {
@@ -124,27 +124,24 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
-func updateUserFilter(doc *model.User) bson.M {
-	filter := bson.M{}
-	default_avatar := "path_to_default_avatar"
+func CheckUserPreferences(preferences []string) int {
+	var check bool
+	music_preferences := [9]string{"Rap FR", "Rap US", "Rock", "Metal", "Classic", "Electro", "Trance", "Low-Fi", "House"}
 
-	if doc.Avatar == "" {
-		doc.Avatar = default_avatar
-	}
+	for _, new_preference := range preferences {
+		check = false
 
-	v := reflect.ValueOf(*doc)
-	typeOfS := v.Type()
-
-	for i := 0; i < v.NumField(); i++ {
-		if (typeOfS.Field(i).Name == "Login" || typeOfS.Field(i).Name == "Password" || typeOfS.Field(i).Name == "Avatar") && v.Field(i).Interface() != "" {
-			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
-		} else if typeOfS.Field(i).Name == "Preference" && v.Field(i).Interface() != nil {
-			// TODO Check preferences
-			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
+		for _, preference := range music_preferences {
+			if new_preference == preference {
+				check = true
+			}
+		}
+		if !check {
+			return response.Unauthorized
 		}
 	}
 
-	return filter
+	return response.Ok
 }
 
 func UpdateOneUser(w http.ResponseWriter, r *http.Request) {
@@ -153,27 +150,23 @@ func UpdateOneUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var user model.User
 	params := mux.Vars(r)
+	var user interface{}
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := helpers.CheckUserBlacklistedFields(&user); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
 	}
 
-	filter := updateUserFilter(&user)
+	filter := helpers.UpdateUserFilter(user)
 
 	if len(filter) == 0 {
-		http.Error(w, response.ErrorMessages[response.UpdateEmpty], http.StatusBadRequest)
+		http.Error(w, response.ErrorMessages[response.Unauthorized], http.StatusBadRequest)
 		return
 	} else if err := userController.Update(filter, params["id"]); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
-
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Update))
 }
 
@@ -183,13 +176,13 @@ func AddFriendToUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var friendId string
+	var new_user_id string
 	params := mux.Vars(r)
 
-	if err := json.NewDecoder(r.Body).Decode(&friendId); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&new_user_id); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.AddFriend(params["id"], &friendId); err != response.Ok {
+	} else if err := userController.AddFriend(params["id"], &model.Friend{new_user_id, false}); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -203,13 +196,13 @@ func RemoveFriendFromUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var friendId string
+	var user_to_remove_id string
 	params := mux.Vars(r)
 
-	if err := json.NewDecoder(r.Body).Decode(&friendId); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&user_to_remove_id); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.RemoveFriend(params["id"], &friendId); err != response.Ok {
+	} else if err := userController.RemoveFriend(params["id"], &user_to_remove_id); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}

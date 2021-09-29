@@ -20,13 +20,10 @@ import (
 
 func Create(elem *model.User) int {
 	mail_regex := "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
-	default_avatar := "path_to_default_avatar"
 	match, _ := regexp.MatchString(mail_regex, elem.Mail)
 	var isDuplicated *model.User
 
-	if elem.Avatar == "" {
-		elem.Avatar = default_avatar
-	}
+	elem.Visibility = model.Visibility{"public", "private", "public", "public", "public"}
 
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return response.FieldIsMissing
@@ -109,11 +106,15 @@ func ReadAll(users *[]model.User) int {
 func Update(fields bson.M, param string) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
+	var user model.User
 	update := bson.M{
 		"$set": fields,
 	}
 
-	// music_preferences := [9]string{"Rap FR", "Rap US", "Rock", "Metal", "Classic", "Electro", "Trance", "Low-Fi", "House"}
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
 	_, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
 
 	if err != nil {
@@ -145,17 +146,17 @@ func DeleteAll() {
 	fmt.Printf("Deleted %v documents in the users collection\n", deleteResult.DeletedCount)
 }
 
-func AddFriend(userId string, idToAdd *string) int {
+func AddFriend(userId string, new_user *model.Friend) int {
 	id, _ := primitive.ObjectIDFromHex(userId)
-	friendId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	friendId, _ := primitive.ObjectIDFromHex(new_user.Id)
 	filter := bson.D{{"_id", id}}
 	friendFilter := bson.D{{"_id", friendId}}
 	var user model.User
 	var friend model.User
 
-	if *idToAdd == "" {
+	if new_user.Id == "" {
 		return response.FieldIsMissing
-	} else if userId == *idToAdd {
+	} else if userId == new_user.Id {
 		return response.Unauthorized
 	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
 		return response.BddError
@@ -164,12 +165,12 @@ func AddFriend(userId string, idToAdd *string) int {
 	}
 
 	for i := 0; i < len(user.Friends); i++ {
-		if user.Friends[i] == *idToAdd {
+		if user.Friends[i].Id == new_user.Id {
 			return response.Unauthorized
 		}
 	}
 
-	user.Friends = append(user.Friends, *idToAdd)
+	user.Friends = append(user.Friends, *new_user)
 
 	update := bson.M{
 		"$set": bson.D{
@@ -184,18 +185,18 @@ func AddFriend(userId string, idToAdd *string) int {
 	return response.Ok
 }
 
-func RemoveFriend(userId string, idToAdd *string) int {
+func RemoveFriend(userId string, new_user *string) int {
 	id, _ := primitive.ObjectIDFromHex(userId)
-	friendId, _ := primitive.ObjectIDFromHex(*idToAdd)
+	friendId, _ := primitive.ObjectIDFromHex(*new_user)
 	filter := bson.D{{"_id", id}}
 	friendFilter := bson.D{{"_id", friendId}}
 	friendExist := false
 	var user model.User
 	var friend model.User
 
-	if *idToAdd == "" {
+	if *new_user == "" {
 		return response.FieldIsMissing
-	} else if userId == *idToAdd {
+	} else if userId == *new_user {
 		return response.Unauthorized
 	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
 		return response.BddError
@@ -204,7 +205,7 @@ func RemoveFriend(userId string, idToAdd *string) int {
 	}
 
 	for i := 0; i < len(user.Friends); i++ {
-		if user.Friends[i] == *idToAdd {
+		if user.Friends[i].Id == *new_user {
 			friendExist = true
 			user.Friends = append(user.Friends[:i], user.Friends[i+1:]...)
 		}
@@ -362,7 +363,7 @@ func ReadFriends(param string, users *[]model.User) int {
 	}
 
 	for _, friend := range user.Friends {
-		objID, err := primitive.ObjectIDFromHex(friend)
+		objID, err := primitive.ObjectIDFromHex(friend.Id)
 
 		if err == nil {
 			friendsIds = append(friendsIds, objID)
@@ -381,6 +382,7 @@ func ReadFriends(param string, users *[]model.User) int {
 		var elem model.User
 
 		if err := cur.Decode(&elem); err != nil {
+			fmt.Println(elem, err)
 			return response.BddError
 		}
 
@@ -404,7 +406,7 @@ func SearchUsers(user_id string, query string, users *[]model.User) int {
 	}
 
 	for _, friend := range user.Friends {
-		objID, err := primitive.ObjectIDFromHex(friend)
+		objID, err := primitive.ObjectIDFromHex(friend.Id)
 
 		if err == nil {
 			friendsIds = append(friendsIds, objID)
