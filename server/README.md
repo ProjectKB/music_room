@@ -10,16 +10,29 @@ You'll find below informations about models and endpoints.
 Name | Type
  --- | ---
 **Id** | `primitive.ObjectID`
-**Login*** | `string`
-**Mail*** | `string`
-**Password*** | `string`
-**Token*** | `string`
-**Preferences** | `string[]`
+**Login** | `string`
+**Mail** | `string`
+**Password** | `string`
+**Token** | `string`
+**Preferences** | `string[]` (Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House)
 **Friends** | `string[]`
 **Events** | `string[]`
 **Avatar** | `string`
 
-(*) mandatory fields
+#### Friend 
+Name | Type
+ --- | ---
+**Id** | `string`
+**Password** | `string`
+
+#### Visibility 
+Name | Type
+ --- | ---
+**Login** | `string` (public | private | friends)
+**Mail** | `string` (public | private | friends)
+**Preferences** | `string` (public | private | friends)
+**Friend** | `string` (public | private | friends)
+**Avatar** | `string` (public | private | friends)
 
 ### ENDPOINTS 
 Route | Method | Utility
@@ -32,6 +45,7 @@ Route | Method | Utility
 `/users/login` | **POST** | check user validity and return token
 `/users/define` | **POST** | read a token a return the corresponding user
 `/users/addFriend/{id}` | **PUT** | add a friend to `friends` field
+`/users/confirmFriend/{id}` | **PUT** | confirm a friend
 `/users/friends/{id}` | **GET** | read every friends
 `/users/removeFriend/{id}` | **PUT** | remove a friend from `friends` field
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
@@ -48,8 +62,8 @@ Route | Method | Utility
 Name | Type
  --- | ---
 **Id** | `primitive.ObjectID`
-**Name*** | `string`
-**Owner_id*** | `string`
+**Name** | `string`
+**Owner_id** | `string`
 **Status** | `string`
 **Songs** | `Song[]`
 **Guests** | `Guest[]`
@@ -59,15 +73,15 @@ Name | Type
 #### Song
 Name | Type
  --- | ---
-**Id*** | `string`
-**Name*** | `string`
-**Picture*** | `string`
+**Id** | `string`
+**Name** | `string`
+**Picture** | `string`
 **Score** | `uint`
 
 #### Guest
 Name | Type
  --- | ---
-**Id*** | `string`
+**Id** | `string`
 **Contributor** | bool
 
 (*) mandatory fields
@@ -98,12 +112,12 @@ Route | Method | Utility
 Name | Type | Value
  --- | --- | ---
 **Id** | `primitive.ObjectID`
-**Name*** | `string`
+**Name** | `string`
 **Owner_id** | `string`
 **Playlist_id** | `string`
 **Picture** | `string`
-**Start*** | `string`
-**End*** | `string`
+**Start** | `string`
+**End** | `string`
 **Status** | `string` | pending/ongoing/finished
 
 (*) mandatory fields

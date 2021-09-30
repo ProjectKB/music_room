@@ -6,6 +6,7 @@ const (
 	Delete
 	Connected
 	Delegate
+	Confirm
 )
 
 var SuccessMessages = []string{
@@ -14,6 +15,7 @@ var SuccessMessages = []string{
 	" has been deleted",
 	" has been connected",
 	" has been delegated",
+	" has been confirmed",
 }
 
 func GetSuccessMessage(fieldName string, sucessIndex int) string {

@@ -170,7 +170,38 @@ func AddFriend(userId string, new_user *model.Friend) int {
 		}
 	}
 
+	new_user.Confirmed = false
 	user.Friends = append(user.Friends, *new_user)
+
+	update := bson.M{
+		"$set": bson.D{
+			{"friends", user.Friends},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	}
+
+	return response.Ok
+}
+
+func ConfirmFriend(userId string, user_to_confirm_id string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	filter := bson.D{{"_id", id}}
+	var user model.User
+
+	if user_to_confirm_id == "" {
+		return response.FieldIsMissing
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
+	for i := 0; i < len(user.Friends); i++ {
+		if user.Friends[i].Id == user_to_confirm_id {
+			user.Friends[i].Confirmed = true
+		}
+	}
 
 	update := bson.M{
 		"$set": bson.D{
