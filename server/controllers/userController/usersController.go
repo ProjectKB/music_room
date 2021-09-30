@@ -111,8 +111,24 @@ func Update(fields bson.M, param string) int {
 		"$set": fields,
 	}
 
+	// check mail validity
+
 	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
 		return response.BddError
+	}
+
+	var friend_to_remove []string
+
+	if err := helpers.CheckFriendsField(fields, &user, &friend_to_remove); err != response.Ok {
+		return err
+	}
+
+	if len(friend_to_remove) != 0 {
+		for _, friend_id := range friend_to_remove {
+			if err := RemoveFriend(friend_id, &user); err != response.Ok {
+				return err
+			}
+		}
 	}
 
 	_, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
@@ -270,33 +286,24 @@ func ReadNotification(userId string, fromId string) int {
 	return response.Ok
 }
 
-func RemoveFriend(userId string, new_user *string) int {
+func RemoveFriend(userId string, user_to_remove *model.User) int {
 	id, _ := primitive.ObjectIDFromHex(userId)
-	friendId, _ := primitive.ObjectIDFromHex(*new_user)
 	filter := bson.D{{"_id", id}}
-	friendFilter := bson.D{{"_id", friendId}}
-	friendExist := false
 	var user model.User
-	var friend model.User
+	var friend_exist bool
 
-	if *new_user == "" {
-		return response.FieldIsMissing
-	} else if userId == *new_user {
-		return response.Unauthorized
-	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
-		return response.BddError
-	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
 		return response.BddError
 	}
 
 	for i := 0; i < len(user.Friends); i++ {
-		if user.Friends[i].Id == *new_user {
-			friendExist = true
+		if user.Friends[i].Id == user_to_remove.Id.Hex() {
+			friend_exist = true
 			user.Friends = append(user.Friends[:i], user.Friends[i+1:]...)
 		}
 	}
 
-	if !friendExist {
+	if !friend_exist {
 		return response.Unauthorized
 	}
 

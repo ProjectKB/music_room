@@ -20,7 +20,6 @@ func Router() *mux.Router {
 	router.HandleFunc("/users/confirmFriend/{id}", middleware.ConfirmFriend).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/readNotification/{id}", middleware.ReadNotification).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/friends/{id}", middleware.ReadUserFriends).Methods("GET", "OPTIONS")
-	router.HandleFunc("/users/removeFriend/{id}", middleware.RemoveFriendFromUser).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/addEvent/{id}", middleware.AddEventToUser).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/events/{id}", middleware.ReadUserEvents).Methods("GET", "OPTIONS")
 	router.HandleFunc("/users/removeEvent/{id}", middleware.RemoveEventFromUser).Methods("PUT", "OPTIONS")

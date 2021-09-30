@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"fmt"
 	"reflect"
 	"server/model"
 	"server/response"
@@ -81,12 +80,10 @@ func UpdateUserFilter(doc interface{}) bson.M {
 			for _, value := range value.Interface().([]interface{}) {
 				v := reflect.ValueOf(value)
 				iter := v.MapRange()
-				count := 0
 
 				for iter.Next() {
 					key := iter.Key()
 					value := iter.Value()
-					count += 1
 
 					if key.String() == "id" {
 						if _, ok := value.Interface().(string); !ok {
@@ -99,10 +96,6 @@ func UpdateUserFilter(doc interface{}) bson.M {
 					} else {
 						return bson.M{}
 					}
-				}
-
-				if count != 2 {
-					return bson.M{}
 				}
 			}
 
@@ -131,7 +124,6 @@ func UpdateUserFilter(doc interface{}) bson.M {
 			filter[key.String()] = value.Interface()
 		} else if key.String() == "visibility" {
 			if _, ok := value.Interface().(interface{}); !ok {
-				fmt.Println("A")
 				return bson.M{}
 			}
 
@@ -149,13 +141,11 @@ func UpdateUserFilter(doc interface{}) bson.M {
 						return bson.M{}
 					}
 				} else {
-					fmt.Println("B")
 					return bson.M{}
 				}
 			}
 
 			if count != 5 {
-				fmt.Println(count)
 				return bson.M{}
 			}
 
@@ -166,4 +156,87 @@ func UpdateUserFilter(doc interface{}) bson.M {
 	}
 
 	return filter
+}
+
+func Get_Old_And_New_friend(fields bson.M, friends []model.Friend, old_friend *[]string, new_friend *[]string) bool {
+	var ok bool
+
+	for _, v := range friends {
+		*old_friend = append(*old_friend, v.Id)
+	}
+
+	for k, v := range fields {
+		if k == "friends" {
+			ok = true
+
+			for _, v := range reflect.ValueOf(v).Interface().([]interface{}) {
+				v := reflect.ValueOf(v)
+				iter := v.MapRange()
+
+				for iter.Next() {
+					key := iter.Key()
+					value := iter.Value()
+
+					if key.String() == "id" {
+						*new_friend = append(*new_friend, value.Interface().(string))
+					}
+				}
+			}
+		}
+	}
+
+	return ok
+}
+
+func CheckNewFriend(old_friend []string, new_friend []string) int {
+	for _, new := range new_friend {
+		check := false
+
+		for _, old := range old_friend {
+			if new == old {
+				check = true
+			}
+		}
+
+		if !check {
+			return response.Unauthorized
+		}
+	}
+
+	return response.Ok
+}
+
+func Get_Friend_To_Remove(old_friend []string, new_friend []string) []string {
+	var friend_to_remove []string
+
+	for _, old := range old_friend {
+		check := false
+
+		for _, new := range new_friend {
+			if old == new {
+				check = true
+			}
+		}
+
+		if !check {
+			friend_to_remove = append(friend_to_remove, old)
+		}
+	}
+
+	return friend_to_remove
+}
+
+func CheckFriendsField(fields bson.M, user *model.User, friend_to_remove *[]string) int {
+	var old_friend []string
+	var new_friend []string
+
+	if ok := Get_Old_And_New_friend(fields, user.Friends, &old_friend, &new_friend); ok {
+		if CheckNewFriend(old_friend, new_friend) != response.Ok {
+			return response.Unauthorized
+		}
+
+		*friend_to_remove = Get_Friend_To_Remove(old_friend, new_friend)
+	}
+
+	return response.Ok
 }
