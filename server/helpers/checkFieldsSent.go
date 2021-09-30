@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"reflect"
+	"regexp"
 	"server/model"
 	"server/response"
 
@@ -66,8 +67,16 @@ func UpdateUserFilter(doc interface{}) bson.M {
 		key := iter.Key()
 		value := iter.Value()
 
-		if key.String() == "login" || key.String() == "mail" || key.String() == "password" || key.String() == "avatar" {
+		if key.String() == "login" || key.String() == "avatar" || key.String() == "password" {
 			if _, ok := value.Interface().(string); !ok {
+				return bson.M{}
+			}
+
+			filter[key.String()] = value.Interface()
+		} else if key.String() == "mail" {
+			if mail, ok := value.Interface().(string); !ok {
+				return bson.M{}
+			} else if match, _ := regexp.MatchString("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", mail); !match {
 				return bson.M{}
 			}
 
