@@ -182,12 +182,12 @@ func AddFriendToUser(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&new_user_id); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.AddFriend(params["id"], &model.Friend{new_user_id, false}); err != response.Ok {
+	} else if err := userController.AddFriend(params["id"], new_user_id); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend", response.Create))
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend Request", response.Sent))
 }
 
 func ConfirmFriend(w http.ResponseWriter, r *http.Request) {
@@ -196,18 +196,42 @@ func ConfirmFriend(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var user_to_confirm_id string
+	var user_to_confirm model.Friend
 	params := mux.Vars(r)
 
-	if err := json.NewDecoder(r.Body).Decode(&user_to_confirm_id); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&user_to_confirm); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := userController.ConfirmFriend(params["id"], user_to_confirm_id); err != response.Ok {
+	} else if err := userController.ConfirmFriend(params["id"], user_to_confirm); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend", response.Confirm))
+	if user_to_confirm.Confirmed {
+		json.NewEncoder(w).Encode(response.GetSuccessMessage("Friendship", response.Confirm))
+	} else {
+		json.NewEncoder(w).Encode(response.GetSuccessMessage("Friendship", response.Deny))
+	}
+}
+
+func ReadNotification(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	var from string
+	params := mux.Vars(r)
+
+	if err := json.NewDecoder(r.Body).Decode(&from); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	} else if err := userController.ReadNotification(params["id"], from); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response.GetSuccessMessage("Notification", response.Readed))
 }
 
 func RemoveFriendFromUser(w http.ResponseWriter, r *http.Request) {

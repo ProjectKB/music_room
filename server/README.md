@@ -15,7 +15,7 @@ Name | Type
 **Password** | `string`
 **Token** | `string`
 **Preferences** | `string[]` (Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House)
-**Friends** | `string[]`
+**Friends** | `friend[]`
 **Events** | `string[]`
 **Avatar** | `string`
 
@@ -34,6 +34,13 @@ Name | Type
 **Friend** | `string` (public | private | friends)
 **Avatar** | `string` (public | private | friends)
 
+#### Notification 
+Name | Type
+ --- | ---
+**From** | `string`
+**Content** | `string`
+**Readed** | `boolean`
+
 ### ENDPOINTS 
 Route | Method | Utility
  --- | --- | ---
@@ -44,8 +51,9 @@ Route | Method | Utility
 `/users/{id}` | **DELETE** | delete one user
 `/users/login` | **POST** | check user validity and return token
 `/users/define` | **POST** | read a token a return the corresponding user
-`/users/addFriend/{id}` | **PUT** | add a friend to `friends` field
+`/users/addFriend/{id}` | **PUT** | add a friend to `friends` field and send a notification to this friend
 `/users/confirmFriend/{id}` | **PUT** | confirm a friend
+`/users/readNotification/{id}` | **PUT** | read a notification
 `/users/friends/{id}` | **GET** | read every friends
 `/users/removeFriend/{id}` | **PUT** | remove a friend from `friends` field
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field

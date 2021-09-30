@@ -146,17 +146,17 @@ func DeleteAll() {
 	fmt.Printf("Deleted %v documents in the users collection\n", deleteResult.DeletedCount)
 }
 
-func AddFriend(userId string, new_user *model.Friend) int {
+func AddFriend(userId string, new_user_id string) int {
 	id, _ := primitive.ObjectIDFromHex(userId)
-	friendId, _ := primitive.ObjectIDFromHex(new_user.Id)
+	friendId, _ := primitive.ObjectIDFromHex(new_user_id)
 	filter := bson.D{{"_id", id}}
 	friendFilter := bson.D{{"_id", friendId}}
 	var user model.User
 	var friend model.User
 
-	if new_user.Id == "" {
+	if new_user_id == "" {
 		return response.FieldIsMissing
-	} else if userId == new_user.Id {
+	} else if userId == new_user_id {
 		return response.Unauthorized
 	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
 		return response.BddError
@@ -165,47 +165,101 @@ func AddFriend(userId string, new_user *model.Friend) int {
 	}
 
 	for i := 0; i < len(user.Friends); i++ {
-		if user.Friends[i].Id == new_user.Id {
+		if user.Friends[i].Id == new_user_id {
 			return response.Unauthorized
 		}
 	}
 
-	new_user.Confirmed = false
-	user.Friends = append(user.Friends, *new_user)
+	friend.Notifications = append(friend.Notifications, model.Notification{userId, fmt.Sprintf("%s wants to be your friend!", user.Login), false})
 
-	update := bson.M{
+	update_friend := bson.M{
 		"$set": bson.D{
-			{"friends", user.Friends},
+			{"notifications", friend.Notifications},
 		},
 	}
 
-	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), friendFilter, update_friend); err != nil {
 		return response.BddError
 	}
 
 	return response.Ok
 }
 
-func ConfirmFriend(userId string, user_to_confirm_id string) int {
+func ConfirmFriend(userId string, user_to_confirm model.Friend) int {
 	id, _ := primitive.ObjectIDFromHex(userId)
+	friend_id, _ := primitive.ObjectIDFromHex(user_to_confirm.Id)
 	filter := bson.D{{"_id", id}}
+	friend_filter := bson.D{{"_id", friend_id}}
 	var user model.User
+	var friend model.User
 
-	if user_to_confirm_id == "" {
+	if user_to_confirm.Id == "" {
 		return response.FieldIsMissing
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
 		return response.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), friend_filter).Decode(&friend); err != nil {
+		return response.BddError
 	}
 
-	for i := 0; i < len(user.Friends); i++ {
-		if user.Friends[i].Id == user_to_confirm_id {
-			user.Friends[i].Confirmed = true
+	if !user_to_confirm.Confirmed {
+		return response.Ok
+	}
+
+	update_content := append(user.Friends, model.Friend{user_to_confirm.Id, true})
+	update := bson.M{
+		"$set": bson.D{
+			{"friends", update_content},
+		},
+	}
+
+	update_friend_content := append(friend.Friends, model.Friend{userId, true})
+	update_friend := bson.M{
+		"$set": bson.D{
+			{"friends", update_friend_content},
+		},
+	}
+
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	} else if _, err := db.UserCollection.UpdateOne(context.TODO(), friend_filter, update_friend); err != nil {
+		return response.BddError
+	}
+
+	return response.Ok
+}
+
+func ReadNotification(userId string, fromId string) int {
+	id, _ := primitive.ObjectIDFromHex(userId)
+	from_id, _ := primitive.ObjectIDFromHex(fromId)
+	filter := bson.D{{"_id", id}}
+	from_filter := bson.D{{"_id", from_id}}
+	var user model.User
+	var from model.User
+
+	if fromId == "" {
+		return response.FieldIsMissing
+	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), from_filter).Decode(&from); err != nil {
+		return response.BddError
+	}
+
+	var check bool
+
+	for i := 0; i < len(user.Notifications); i++ {
+		if user.Notifications[i].From == fromId && !user.Notifications[i].Readed {
+			check = true
+			user.Notifications[i].Readed = true
 		}
+	}
+
+	if !check {
+		return response.Nonexistence
 	}
 
 	update := bson.M{
 		"$set": bson.D{
-			{"friends", user.Friends},
+			{"notifications", user.Notifications},
 		},
 	}
 
@@ -394,10 +448,12 @@ func ReadFriends(param string, users *[]model.User) int {
 	}
 
 	for _, friend := range user.Friends {
-		objID, err := primitive.ObjectIDFromHex(friend.Id)
+		if friend.Confirmed {
+			objID, err := primitive.ObjectIDFromHex(friend.Id)
 
-		if err == nil {
-			friendsIds = append(friendsIds, objID)
+			if err == nil {
+				friendsIds = append(friendsIds, objID)
+			}
 		}
 	}
 
@@ -413,7 +469,6 @@ func ReadFriends(param string, users *[]model.User) int {
 		var elem model.User
 
 		if err := cur.Decode(&elem); err != nil {
-			fmt.Println(elem, err)
 			return response.BddError
 		}
 

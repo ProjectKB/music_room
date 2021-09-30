@@ -14,7 +14,13 @@ type Visibility struct {
 
 type Friend struct {
 	Id        string `bson:"id,omitempty" json:"id,omitempty"`
-	Confirmed bool   `bson:"contributor,omitempty" json:"contributor,omitempty"`
+	Confirmed bool   `bson:"confirmed,omitempty" json:"confirmed,omitempty"`
+}
+
+type Notification struct {
+	From string `bson:"from,omitempty" json:"from,omitempty"`
+	Content string `bson:"content,omitempty" json:"content,omitempty"`
+	Readed  bool   `bson:"readed,omitempty" json:"readed,omitempty"`
 }
 
 type User struct {
@@ -26,7 +32,7 @@ type User struct {
 	Preferences   []string           `bson:"preferences,omitempty" json:"preferences,omitempty"`
 	Friends       []Friend           `bson:"friends,omitempty" json:"friends,omitempty"`
 	Events        []string           `bson:"events,omitempty" json:"events,omitempty"`
-	Notifications []string           `bson:"notifications,omitempty" json:"notifications,omitempty"`
+	Notifications []Notification     `bson:"notifications,omitempty" json:"notifications,omitempty"`
 	Visibility    Visibility         `bson:"visibility,omitempty" json:"visibility,omitempty"`
 	Avatar        string             `bson:"avatar,omitempty" json:"avatar,omitempty"`
 }
