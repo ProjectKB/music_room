@@ -167,6 +167,7 @@ func UpdateOneUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
+
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Update))
 }
 

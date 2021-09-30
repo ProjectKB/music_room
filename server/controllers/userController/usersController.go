@@ -170,11 +170,10 @@ func AddFriend(userId string, new_user_id string) int {
 		}
 	}
 
-	friend.Notifications = append(friend.Notifications, model.Notification{userId, fmt.Sprintf("%s wants to be your friend!", user.Login), false})
-
 	update_friend := bson.M{
 		"$set": bson.D{
-			{"notifications", friend.Notifications},
+			{"notifications", append(friend.Notifications, model.Notification{userId, fmt.Sprintf("%s wants to be your friend!", user.Login), false})},
+			{"notifications_count", friend.Notifications_count + 1},
 		},
 	}
 
@@ -260,6 +259,7 @@ func ReadNotification(userId string, fromId string) int {
 	update := bson.M{
 		"$set": bson.D{
 			{"notifications", user.Notifications},
+			{"notifications_count", user.Notifications_count - 1},
 		},
 	}
 
