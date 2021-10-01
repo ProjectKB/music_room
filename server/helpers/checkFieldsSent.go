@@ -47,10 +47,8 @@ func CheckEventBlacklistedFields(event *model.Event, action string) int {
 	return response.Ok
 }
 
-func CheckPlaylistBlacklistedFields(playlist *model.Playlist, origin string) int {
-	if origin == "playlist" && (playlist.Songs != nil || playlist.Guests != nil || playlist.Has_event) {
-		return response.Unauthorized
-	} else if origin == "update" && (playlist.Songs != nil || playlist.Has_event || playlist.Owner_id != "") {
+func CheckPlaylistBlacklistedFields(playlist *model.Playlist) int {
+	if playlist.Songs != nil || playlist.Guests != nil || playlist.Has_event {
 		return response.Unauthorized
 	}
 
@@ -124,9 +122,7 @@ func UpdateUserFilter(doc interface{}) bson.M {
 				}
 			}
 
-			if len(new_preferences) == 0 {
-				return bson.M{}
-			} else if res := CheckUserPreferences(new_preferences); res != response.Ok {
+			if res := CheckUserPreferences(new_preferences); res != response.Ok {
 				return bson.M{}
 			}
 
@@ -156,6 +152,68 @@ func UpdateUserFilter(doc interface{}) bson.M {
 
 			if count != 5 {
 				return bson.M{}
+			}
+
+			filter[key.String()] = value.Interface()
+		} else {
+			return bson.M{}
+		}
+	}
+
+	return filter
+}
+
+func UpdatePlaylistFilter(doc interface{}) bson.M {
+	filter := bson.M{}
+	v := reflect.ValueOf(doc)
+
+	iter := v.MapRange()
+
+	for iter.Next() {
+		key := iter.Key()
+		value := iter.Value()
+
+		if key.String() == "name" {
+			if name, ok := value.Interface().(string); !ok {
+				return bson.M{}
+			} else if name == "" {
+				return bson.M{}
+			}
+
+			filter[key.String()] = value.Interface()
+		} else if key.String() == "status" {
+			if status, ok := value.Interface().(string); !ok {
+				return bson.M{}
+			} else if status != "public" && status != "private" {
+				return bson.M{}
+			}
+
+			filter[key.String()] = value.Interface()
+		} else if key.String() == "guests" {
+			if _, ok := value.Interface().([]interface{}); !ok {
+				return bson.M{}
+			}
+
+			for _, value := range value.Interface().([]interface{}) {
+				v := reflect.ValueOf(value)
+				iter := v.MapRange()
+
+				for iter.Next() {
+					key := iter.Key()
+					value := iter.Value()
+
+					if key.String() == "id" {
+						if _, ok := value.Interface().(string); !ok {
+							return bson.M{}
+						}
+					} else if key.String() == "contributor" {
+						if _, ok := value.Interface().(bool); !ok {
+							return bson.M{}
+						}
+					} else {
+						return bson.M{}
+					}
+				}
 			}
 
 			filter[key.String()] = value.Interface()

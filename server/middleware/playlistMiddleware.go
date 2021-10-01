@@ -5,15 +5,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"reflect"
 	playlistController "server/controllers/playlistController"
 	"server/helpers"
 	"server/model"
 	"server/response"
-	"strings"
 
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func ReadAllPlaylist(w http.ResponseWriter, r *http.Request) {
@@ -115,7 +112,7 @@ func CreateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&playlist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := playlistController.Create(&playlist, "playlist"); err != response.Ok {
+	} else if err := playlistController.Create(&playlist); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
@@ -124,39 +121,21 @@ func CreateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Playlist", response.Create))
 }
 
-func updatePlaylistFilter(doc *model.Playlist) bson.M {
-	filter := bson.M{}
-
-	v := reflect.ValueOf(*doc)
-	typeOfS := v.Type()
-
-	for i := 0; i < v.NumField(); i++ {
-		if ((typeOfS.Field(i).Name == "Name" || typeOfS.Field(i).Name == "Status") && v.Field(i).Interface() != "") || (typeOfS.Field(i).Name == "Guests") && v.Field(i).Interface() != nil {
-			filter[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
-		}
-	}
-
-	return filter
-}
-
 func UpdateOnePlaylist(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var playlist model.Playlist
 	params := mux.Vars(r)
+	var playlist interface{}
 
 	if err := json.NewDecoder(r.Body).Decode(&playlist); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} else if err := helpers.CheckPlaylistBlacklistedFields(&playlist, "update"); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
 	}
 
-	filter := updatePlaylistFilter(&playlist)
+	filter := helpers.UpdatePlaylistFilter(playlist)
 
 	if len(filter) == 0 {
 		http.Error(w, response.ErrorMessages[response.UpdateEmpty], http.StatusBadRequest)

@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func Create(elem *model.Playlist, origin string) int {
+func Create(elem *model.Playlist) int {
 	var owner_tmp model.User
 
 	id, _ := primitive.ObjectIDFromHex(elem.Owner_id)
@@ -25,7 +25,7 @@ func Create(elem *model.Playlist, origin string) int {
 		return response.FieldIsMissing
 	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&owner_tmp); err != nil {
 		return response.BddError
-	} else if err := helpers.CheckPlaylistBlacklistedFields(elem, origin); err != response.Ok {
+	} else if err := helpers.CheckPlaylistBlacklistedFields(elem); err != response.Ok {
 		return response.Unauthorized
 	} else if _, err := db.PlaylistCollection.InsertOne(context.TODO(), elem); err != nil {
 		return response.BddError
