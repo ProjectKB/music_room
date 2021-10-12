@@ -29,3 +29,8 @@ type Conversation struct {
 	Messages     []Message          `bson:"messages,omitempty" json:"messages,omitempty"`
 	Last_message time.Time          `bson:"last_message,omitempty" json:"last_message,omitempty"`
 }
+
+type MessageFromChat struct {
+	To      string `bson:"to,omitempty" json:"to,omitempty"`
+	Content string `bson:"content,omitempty" json:"content,omitempty"`
+}

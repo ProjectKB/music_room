@@ -1,6 +1,8 @@
 package socket
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -15,6 +17,7 @@ var upgrader = websocket.Upgrader{
 
 func WebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
+	var message MessageFromChat
 
 	if err != nil {
 		_, _ = fmt.Fprint(w, "You must use the web socket protocol to connect to this endpoint.", err)
@@ -28,15 +31,16 @@ func WebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			HandleDisconnection(ws)
 			break
-		}
+		} else if data_type == 1 {
+			user_login := string(p)
 
-		msg := string(p)
-
-		if data_type == 2 {
-			HandleDisconnection(NameToConn[strings.Trim(msg, "\"")])
+			HandleDisconnection(NameToConn[strings.Trim(user_login, "\"")])
 			break
 		}
 
-		HandleIncomingMessage(ws, msg)
+		byteReader := bytes.NewReader(p)
+		json.NewDecoder(byteReader).Decode(&message)
+
+		HandleIncomingMessage(ws, message)
 	}
 }

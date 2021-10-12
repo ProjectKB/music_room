@@ -11,11 +11,11 @@ import (
 var Usernames = make(map[*websocket.Conn]string)
 var NameToConn = make(map[string]*websocket.Conn)
 
-func HandleIncomingMessage(sender *websocket.Conn, msg string) {
-	username := strings.TrimSpace(msg)
-
+func HandleIncomingMessage(sender *websocket.Conn, msg MessageFromChat) {
+	
 	// handle first connection
 	if _, ok := Usernames[sender]; !ok {
+		username := strings.TrimSpace(msg.Content)
 
 		if username == "" || username == "server" {
 			sender.WriteJSON(newError("You have an illegal username."))
@@ -34,7 +34,7 @@ func HandleIncomingMessage(sender *websocket.Conn, msg string) {
 	}
 
 	// classic msg
-	sendChatMessage(sender, msg)
+	sendChatMessage(sender, msg.Content)
 }
 
 func HandleDisconnection(sender *websocket.Conn) {
