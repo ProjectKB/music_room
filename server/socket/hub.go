@@ -94,6 +94,8 @@ func sendUserList(who *websocket.Conn) {
 }
 
 func sendChatMessage(sender *websocket.Conn, msg string) {
-	m := newMessage(MsgChat, Usernames[sender], msg)
-	m.dispatch()
+	if msg != "" {
+		m := newMessage(MsgChat, Usernames[sender], msg)
+		m.dispatch()
+	}
 }
