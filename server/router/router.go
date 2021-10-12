@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"server/middleware"
+	"server/socket"
 )
 
 func Router() *mux.Router {
@@ -49,6 +50,8 @@ func Router() *mux.Router {
 	router.HandleFunc("/events/addPlaylist/{id}", middleware.AddPlaylistToEvent).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/events/removePlaylist/{id}", middleware.RemovePlaylistFromEvent).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/events/updateStatus/{id}", middleware.UpdateStatusOfEvent).Methods("PUT", "OPTIONS")
+
+	router.HandleFunc("/websocket", socket.WebsocketConnection)
 
 	return router
 }
