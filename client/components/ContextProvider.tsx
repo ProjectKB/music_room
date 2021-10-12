@@ -11,7 +11,7 @@ import FlashMessage from 'react-native-flash-message';
 import {DefineUser} from '../api/AuthEndpoint';
 import {PlaylistType} from '../types/Types';
 
-const AppContent = (props: {children: React.ReactNode}) => {
+const ContextProvider = (props: {children: React.ReactNode}) => {
   const [showPlayer, setShowPlayer] = useState(false);
   const [playlistPlayed, setPlaylistPlayed] = useState(
     playlistTemplate as PlaylistType,
@@ -49,4 +49,4 @@ const AppContent = (props: {children: React.ReactNode}) => {
   );
 };
 
-export default AppContent;
+export default ContextProvider;

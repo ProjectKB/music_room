@@ -1,4 +1,5 @@
-import React, {useReducer, useMemo} from 'react';
+/* eslint-disable no-undef */
+import React, {useReducer, useMemo, useRef} from 'react';
 import AppContent from './AppContent';
 import {AuthContext} from '../contexts/AuthContext';
 import AuthStackNavigator from './Auth/AuthStackNavigator';
@@ -12,9 +13,24 @@ type ReducerState = {
   isLoading?: boolean;
   userToken?: null | string;
   userId?: null | string;
+  userLogin?: null | string;
 };
 
 const ProtectedRoutes = () => {
+  const ws = useRef(undefined);
+
+  const initWebSocket = (userLogin: string) => {
+    ws.current = new WebSocket(global.URL + '/websocket');
+
+    ws.current.onopen = function () {
+      ws.current.send(
+        new Blob([JSON.stringify({to: '', content: userLogin})], {
+          type: 'application/json',
+        }),
+      );
+    };
+  };
+
   const authReducer = (prevState: ReducerState, newState: ReducerState) => {
     switch (newState.type) {
       case 'RETRIEVE_TOKEN':
@@ -22,6 +38,7 @@ const ProtectedRoutes = () => {
           ...prevState,
           userToken: newState.userToken,
           userId: newState.userId,
+          userLogin: newState.userLogin,
           isLoading: false,
         };
       case 'LOGIN':
@@ -29,6 +46,7 @@ const ProtectedRoutes = () => {
           ...prevState,
           userToken: newState.userToken,
           userId: newState.userId,
+          userLogin: newState.userLogin,
           isLoading: false,
         };
       case 'LOGOUT':
@@ -36,6 +54,7 @@ const ProtectedRoutes = () => {
           ...prevState,
           userToken: null,
           userId: null,
+          userLogin: null,
           isLoading: false,
         };
     }
@@ -46,6 +65,7 @@ const ProtectedRoutes = () => {
     isLoading: true,
     userToken: null,
     userId: null,
+    userLogin: null,
   });
 
   const authContext = useMemo(
@@ -53,10 +73,16 @@ const ProtectedRoutes = () => {
       retrieveContext: async () => {
         let userToken: null | string;
         let userId: null | string;
+        let userLogin: null | string;
 
         try {
           userToken = await AsyncStorage.getItem('userToken');
           userId = await AsyncStorage.getItem('userId');
+          userLogin = await AsyncStorage.getItem('userLogin');
+
+          if (userLogin) {
+            initWebSocket(userLogin);
+          }
         } catch (e) {
           console.log(e);
         }
@@ -65,6 +91,7 @@ const ProtectedRoutes = () => {
           type: 'RETRIEVE_TOKEN',
           userToken: userToken,
           userId: userId,
+          userLogin: userLogin,
         });
       },
 
@@ -72,15 +99,32 @@ const ProtectedRoutes = () => {
         try {
           await AsyncStorage.setItem('userToken', user.token);
           await AsyncStorage.setItem('userId', user.id);
+          await AsyncStorage.setItem('userLogin', user.login);
+
+          initWebSocket(user.login);
         } catch (e) {
           console.log(e);
         }
-        dispatch({type: 'LOGIN', userToken: user.token, userId: user.id});
+        dispatch({
+          type: 'LOGIN',
+          userToken: user.token,
+          userId: user.id,
+          userLogin: user.login,
+        });
       },
 
       signOut: async () => {
+        let userLogin: null | string;
+
         try {
           await AsyncStorage.removeItem('userToken');
+          await AsyncStorage.removeItem('userId');
+
+          userLogin = await AsyncStorage.getItem('userLogin');
+
+          ws.current.send(userLogin);
+
+          await AsyncStorage.removeItem('userLogin');
         } catch (e) {
           console.log(e);
         }
@@ -98,7 +142,7 @@ const ProtectedRoutes = () => {
     <NavigationContainer>
       <AuthContext.Provider value={authContext}>
         {loginState.userToken !== null ? (
-          <AppContent />
+          <AppContent ws={ws.current} />
         ) : (
           <AuthStackNavigator />
         )}
