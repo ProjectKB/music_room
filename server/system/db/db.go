@@ -15,6 +15,7 @@ var Client *mongo.Client
 var UserCollection *mongo.Collection
 var PlaylistCollection *mongo.Collection
 var EventCollection *mongo.Collection
+var ConversationCollection *mongo.Collection
 
 func loadEnv() {
 	err := godotenv.Load(".env")
@@ -42,6 +43,7 @@ func ConnectToDB() {
 	UserCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_USER"))
 	PlaylistCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_PLAYLIST"))
 	EventCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_EVENT"))
+	ConversationCollection = Client.Database(os.Getenv("DB_NAME")).Collection(os.Getenv("DB_COLLECTION_CONVERSATION"))
 
 	// Check the connection
 	err = Client.Ping(context.TODO(), nil)

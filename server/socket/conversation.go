@@ -25,9 +25,10 @@ type Message struct {
 }
 
 type Conversation struct {
-	Id           primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-	Messages     []Message          `bson:"messages,omitempty" json:"messages,omitempty"`
-	Last_message time.Time          `bson:"last_message,omitempty" json:"last_message,omitempty"`
+	Id        primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	UserNameA string             `bson:"user_a,omitempty" json:"user_a,omitempty"`
+	UserNameB string             `bson:"user_b,omitempty" json:"user_b,omitempty"`
+	Messages  []Message          `bson:"messages,omitempty" json:"messages,omitempty"`
 }
 
 type MessageFromChat struct {

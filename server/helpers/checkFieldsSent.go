@@ -65,7 +65,7 @@ func UpdateUserFilter(doc interface{}) bson.M {
 		key := iter.Key()
 		value := iter.Value()
 
-		if key.String() == "login" || key.String() == "avatar" || key.String() == "password" {
+		if key.String() == "avatar" || key.String() == "password" {
 			if _, ok := value.Interface().(string); !ok {
 				return bson.M{}
 			}

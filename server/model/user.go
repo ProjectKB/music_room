@@ -13,8 +13,9 @@ type Visibility struct {
 }
 
 type Friend struct {
-	Id        string `bson:"id,omitempty" json:"id,omitempty"`
-	Confirmed bool   `bson:"confirmed,omitempty" json:"confirmed,omitempty"`
+	Id           string `bson:"id,omitempty" json:"id,omitempty"`
+	Confirmed    bool   `bson:"confirmed,omitempty" json:"confirmed,omitempty"`
+	Conversation string `bson:"conversations,omitempty" json:"conversations,omitempty"`
 }
 
 type Notification struct {
@@ -23,24 +24,17 @@ type Notification struct {
 	Readed  bool   `bson:"readed,omitempty" json:"readed,omitempty"`
 }
 
-type Conversation_link struct {
-	Id          string `bson:"id,omitempty" json:"id,omitempty"`
-	Receiver    string `bson:"receiver,omitempty" json:"receiver,omitempty"`
-	Receiver_id string `bson:"receiver_id,omitempty" json:"receiver_id,omitempty"`
-}
-
 type User struct {
-	Id                  primitive.ObjectID  `bson:"_id,omitempty" json:"id,omitempty"`
-	Login               string              `bson:"login,omitempty" json:"login,omitempty"`
-	Mail                string              `bson:"mail,omitempty" json:"mail,omitempty"`
-	Password            string              `bson:"password,omitempty" json:"password,omitempty"`
-	Token               string              `bson:"token,omitempty" json:"token,omitempty"`
-	Preferences         []string            `bson:"preferences,omitempty" json:"preferences,omitempty"`
-	Friends             []Friend            `bson:"friends,omitempty" json:"friends,omitempty"`
-	Events              []string            `bson:"events,omitempty" json:"events,omitempty"`
-	Notifications       []Notification      `bson:"notifications,omitempty" json:"notifications,omitempty"`
-	Notifications_count int                 `bson:"notifications_count,omitempty" json:"notifications_count,omitempty"`
-	Visibility          Visibility          `bson:"visibility,omitempty" json:"visibility,omitempty"`
-	Avatar              string              `bson:"avatar,omitempty" json:"avatar,omitempty"`
-	Conversations       []Conversation_link `bson:"conversations,omitempty" json:"conversations,omitempty"`
+	Id                  primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Login               string             `bson:"login,omitempty" json:"login,omitempty"`
+	Mail                string             `bson:"mail,omitempty" json:"mail,omitempty"`
+	Password            string             `bson:"password,omitempty" json:"password,omitempty"`
+	Token               string             `bson:"token,omitempty" json:"token,omitempty"`
+	Preferences         []string           `bson:"preferences,omitempty" json:"preferences,omitempty"`
+	Friends             []Friend           `bson:"friends,omitempty" json:"friends,omitempty"`
+	Events              []string           `bson:"events,omitempty" json:"events,omitempty"`
+	Notifications       []Notification     `bson:"notifications,omitempty" json:"notifications,omitempty"`
+	Notifications_count int                `bson:"notifications_count,omitempty" json:"notifications_count,omitempty"`
+	Visibility          Visibility         `bson:"visibility,omitempty" json:"visibility,omitempty"`
+	Avatar              string             `bson:"avatar,omitempty" json:"avatar,omitempty"`
 }

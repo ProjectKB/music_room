@@ -9,6 +9,7 @@ import (
 	"server/helpers"
 	"server/model"
 	"server/response"
+	"server/socket"
 	db "server/system/db"
 
 	"regexp"
@@ -131,11 +132,11 @@ func Update(fields bson.M, param string) int {
 		}
 	}
 
-	_, err := db.UserCollection.UpdateOne(context.TODO(), filter, update)
-
-	if err != nil {
+	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
 		return response.BddError
 	}
+
+	// send new user with socket
 
 	return response.Ok
 }
@@ -220,14 +221,20 @@ func ConfirmFriend(userId string, user_to_confirm model.Friend) int {
 		return response.Ok
 	}
 
-	update_content := append(user.Friends, model.Friend{user_to_confirm.Id, true})
+	conversation := socket.Conversation{primitive.NewObjectID(), user.Login, friend.Login, nil}
+
+	if _, err := db.ConversationCollection.InsertOne(context.TODO(), conversation); err != nil {
+		return response.BddError
+	}
+
+	update_content := append(user.Friends, model.Friend{user_to_confirm.Id, true, conversation.Id.Hex()})
 	update := bson.M{
 		"$set": bson.D{
 			{"friends", update_content},
 		},
 	}
 
-	update_friend_content := append(friend.Friends, model.Friend{userId, true})
+	update_friend_content := append(friend.Friends, model.Friend{userId, true, conversation.Id.Hex()})
 	update_friend := bson.M{
 		"$set": bson.D{
 			{"friends", update_friend_content},
@@ -235,8 +242,10 @@ func ConfirmFriend(userId string, user_to_confirm model.Friend) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		// send user updated by socket
 		return response.BddError
 	} else if _, err := db.UserCollection.UpdateOne(context.TODO(), friend_filter, update_friend); err != nil {
+		// send new user to friend if connected + notification by socket
 		return response.BddError
 	}
 
@@ -291,6 +300,7 @@ func RemoveFriend(userId string, user_to_remove *model.User) int {
 	filter := bson.D{{"_id", id}}
 	var user model.User
 	var friend_exist bool
+	var conversation_to_remove_filter bson.D
 
 	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
 		return response.BddError
@@ -299,6 +309,8 @@ func RemoveFriend(userId string, user_to_remove *model.User) int {
 	for i := 0; i < len(user.Friends); i++ {
 		if user.Friends[i].Id == user_to_remove.Id.Hex() {
 			friend_exist = true
+			conversation_to_remove_id, _ := primitive.ObjectIDFromHex(user.Friends[i].Conversation)
+			conversation_to_remove_filter = bson.D{{"_id", conversation_to_remove_id}}
 			user.Friends = append(user.Friends[:i], user.Friends[i+1:]...)
 		}
 	}
@@ -314,6 +326,8 @@ func RemoveFriend(userId string, user_to_remove *model.User) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	} else if _, err := db.ConversationCollection.DeleteOne(context.TODO(), conversation_to_remove_filter); err != nil {
 		return response.BddError
 	}
 
