@@ -12,7 +12,7 @@ var Usernames = make(map[*websocket.Conn]string)
 var NameToConn = make(map[string]*websocket.Conn)
 
 func HandleIncomingMessage(sender *websocket.Conn, msg MessageFromChat) {
-	
+
 	// handle first connection
 	if _, ok := Usernames[sender]; !ok {
 		username := strings.TrimSpace(msg.Content)
@@ -28,13 +28,13 @@ func HandleIncomingMessage(sender *websocket.Conn, msg MessageFromChat) {
 
 		Usernames[sender] = username
 		NameToConn[username] = sender
-		m := newMessage(MsgJoin, "server", username)
+		m := newMessage(MsgJoin, "server", "client", username)
 		m.dispatch()
 		return
 	}
 
 	// classic msg
-	sendChatMessage(sender, msg.Content)
+	sendChatMessage(sender, msg.To, msg.Content)
 }
 
 func HandleDisconnection(sender *websocket.Conn) {
@@ -44,7 +44,7 @@ func HandleDisconnection(sender *websocket.Conn) {
 		return
 	}
 
-	m := newMessage(MsgLeave, "server", username)
+	m := newMessage(MsgLeave, "server", "client", username)
 	m.dispatch()
 	delete(Usernames, sender)
 	delete(NameToConn, username)
@@ -53,17 +53,19 @@ func HandleDisconnection(sender *websocket.Conn) {
 func newError(content string) Message {
 	return Message{
 		Type:    MsgErr,
-		Sender:  "server",
+		From:    "server",
+		To:      "client",
 		Content: content,
 		Date:    time.Now().UTC(),
 		Success: false,
 	}
 }
 
-func newMessage(msgType MessageType, sender string, content string) Message {
+func newMessage(msgType MessageType, sender string, receiver string, content string) Message {
 	return Message{
 		Type:    msgType,
-		Sender:  sender,
+		From:    sender,
+		To:      receiver,
 		Content: content,
 		Date:    time.Now().UTC(),
 		Success: true,
@@ -84,7 +86,8 @@ func sendUserList(who *websocket.Conn) {
 
 	m := Message{
 		Type:    MsgUserList,
-		Sender:  "",
+		From:    "server",
+		To:      "client",
 		Content: list,
 		Date:    time.Now().UTC(),
 		Success: true,
@@ -93,9 +96,13 @@ func sendUserList(who *websocket.Conn) {
 	_ = who.WriteJSON(m)
 }
 
-func sendChatMessage(sender *websocket.Conn, msg string) {
+func sendChatMessage(sender *websocket.Conn, receiver string, msg string) {
 	if msg != "" {
-		m := newMessage(MsgChat, Usernames[sender], msg)
+
+		m := newMessage(MsgChat, Usernames[sender], receiver, msg)
 		m.dispatch()
+
+		// if receiver connected send to him to + add msg to conversation
+
 	}
 }

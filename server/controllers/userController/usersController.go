@@ -502,6 +502,50 @@ func ReadFriends(param string, users *[]model.User) int {
 	return response.Ok
 }
 
+func ReadConversations(param string, conversations *[]socket.Conversation) int {
+	id, _ := primitive.ObjectIDFromHex(param)
+	filter := bson.D{{"_id", id}}
+	var user model.User
+	var conversationsIds []primitive.ObjectID
+
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
+	for _, friend := range user.Friends {
+		if friend.Confirmed {
+			objID, err := primitive.ObjectIDFromHex(friend.Conversation)
+
+			if err == nil {
+				conversationsIds = append(conversationsIds, objID)
+			}
+		}
+	}
+
+	cur, err := db.ConversationCollection.Find(context.TODO(), bson.M{"_id": bson.M{"$in": conversationsIds}})
+
+	if err != nil {
+		return response.Nonexistence
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+		var elem socket.Conversation
+
+		if err := cur.Decode(&elem); err != nil {
+			return response.BddError
+		}
+
+		*conversations = append(*conversations, elem)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	return response.Ok
+}
+
 func SearchUsers(user_id string, query string, users *[]model.User) int {
 	id, _ := primitive.ObjectIDFromHex(user_id)
 	filter := bson.D{{"_id", id}}

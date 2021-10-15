@@ -18,7 +18,8 @@ const (
 
 type Message struct {
 	Type    MessageType `bson:"type,omitempty" json:"type,omitempty"`
-	Sender  string      `bson:"sender,omitempty" json:"sender,omitempty"`
+	From    string      `bson:"from,omitempty" json:"from,omitempty"`
+	To      string      `bson:"to,omitempty" json:"to,omitempty"`
 	Content interface{} `bson:"content,omitempty" json:"content,omitempty"`
 	Date    time.Time   `bson:"date,omitempty" json:"date,omitempty"`
 	Success bool        `bson:"success,omitempty" json:"success,omitempty"`
@@ -32,6 +33,7 @@ type Conversation struct {
 }
 
 type MessageFromChat struct {
-	To      string `bson:"to,omitempty" json:"to,omitempty"`
-	Content string `bson:"content,omitempty" json:"content,omitempty"`
+	To              string `bson:"to,omitempty" json:"to,omitempty"`
+	Content         string `bson:"content,omitempty" json:"content,omitempty"`
+	Conversation_id string `bson:"conversation_id,omitempty" json:"conversation_id,omitempty"`
 }

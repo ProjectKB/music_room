@@ -6,6 +6,7 @@ import (
 	"net/http"
 	userController "server/controllers/userController"
 	"server/helpers"
+	"server/socket"
 
 	// "server/helpers"
 	"server/model"
@@ -303,4 +304,19 @@ func ReadUserFriends(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(users)
+}
+
+func ReadUserConversations(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	var conversations []socket.Conversation
+
+	if err := userController.ReadConversations(params["id"], &conversations); err != response.Ok {
+		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(conversations)
 }
