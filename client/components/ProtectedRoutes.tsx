@@ -24,9 +24,12 @@ const ProtectedRoutes = () => {
 
     ws.current.onopen = function () {
       ws.current.send(
-        new Blob([JSON.stringify({to: '', content: userLogin})], {
-          type: 'application/json',
-        }),
+        new Blob(
+          [JSON.stringify({to: '', content: userLogin, conversation_id: ''})],
+          {
+            type: 'application/json',
+          },
+        ),
       );
     };
   };

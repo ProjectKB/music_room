@@ -41,6 +41,22 @@ export type PlaylistPayload = {
   guests?: Guest[];
 };
 
+export type Message = {
+  type: string;
+  from: string;
+  to: string;
+  content: string;
+  date: string;
+  success: boolean;
+};
+
+export type Conversation = {
+  id: string;
+  user_a: string;
+  user_b: string;
+  message: Message[];
+};
+
 export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export type ScreenType = 'Playlist' | 'Search';

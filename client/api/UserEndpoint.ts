@@ -10,3 +10,15 @@ export const FetchUserFriends = async (userId: string) => {
     return false;
   }
 };
+
+export const FetchUserConversations = async (userId: string) => {
+  try {
+    const response = await axios.get(
+      global.URL + '/users/conversations/' + userId,
+    );
+
+    return response.data;
+  } catch (error) {
+    return false;
+  }
+};
