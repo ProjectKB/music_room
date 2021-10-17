@@ -36,7 +36,10 @@ const PlaylistElement = (props: PlaylistElementProps) => {
       if (props.playlist.owner_id === user.id) {
         setCanEdit(true);
         setCanDelete(true);
-        setCanDelegate(true);
+
+        if (props.playlist.guests) {
+          setCanDelegate(true);
+        }
       } else if (props.playlist.guests !== undefined) {
         setCanRemoveFromPlaylist(true);
 
@@ -59,7 +62,11 @@ const PlaylistElement = (props: PlaylistElementProps) => {
           props.navigation.navigate('SongDetails', {playlist: props.playlist})
         }
         onLongPress={() => {
-          canDelete || canEdit || canAddToPlaylist || canRemoveFromPlaylist
+          canDelete ||
+          canEdit ||
+          canAddToPlaylist ||
+          canRemoveFromPlaylist ||
+          canDelegate
             ? setShowActionButton(!showActionButton)
             : FlashMessage(
                 false,

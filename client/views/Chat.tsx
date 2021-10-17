@@ -59,7 +59,7 @@ const Chat = (props: {newMessage: Message}) => {
   useEffect(() => conversationLoaded(), [conversationLoaded]);
   useEffect(() => handleNewMessage(), [handleNewMessage]);
 
-  console.log(friendsName, displayConversation);
+  // console.log(friendsName, displayConversation);
 
   return (
     <View>
