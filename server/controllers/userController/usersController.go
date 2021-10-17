@@ -502,7 +502,7 @@ func ReadFriends(param string, users *[]model.User) int {
 	return response.Ok
 }
 
-func ReadConversations(param string, conversations *[]socket.Conversation) int {
+func ReadConversations(param string, conversations map[string]socket.Conversation) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
 	var user model.User
@@ -532,12 +532,17 @@ func ReadConversations(param string, conversations *[]socket.Conversation) int {
 	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(context.TODO()) {
 		var elem socket.Conversation
+		var target string
 
 		if err := cur.Decode(&elem); err != nil {
 			return response.BddError
+		} else if user.Login == elem.UserNameA {
+			target = elem.UserNameB
+		} else {
+			target = elem.UserNameA
 		}
 
-		*conversations = append(*conversations, elem)
+		conversations[target] = elem
 	}
 
 	// Close the cursor once finished

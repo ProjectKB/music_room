@@ -311,9 +311,9 @@ func ReadUserConversations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	params := mux.Vars(r)
-	var conversations []socket.Conversation
+	conversations := make(map[string]socket.Conversation)
 
-	if err := userController.ReadConversations(params["id"], &conversations); err != response.Ok {
+	if err := userController.ReadConversations(params["id"], conversations); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
 		return
 	}
