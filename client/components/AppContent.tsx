@@ -25,7 +25,7 @@ const AppContent = (props: {ws: WebSocket}) => {
       case 'join':
         console.log(
           data.content + ' has joined the chat at',
-          // new Date(data.date).toLocaleTimeString(),
+          new Date(data.date).toLocaleTimeString(),
           // new Date(data.date).toLocaleDateString(),
           // new Date(data.date).toLocaleString(),
         );
