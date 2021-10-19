@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   TextInput,
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
@@ -11,19 +10,27 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import {Message} from '../types/Types';
+import ChatMessages from '../components/Chat/ChatMessages';
 
-type ChatProps = {
+type ChatDetailProps = {
   ws: WebSocket;
   newMessage: Message;
+  navigation: any;
+  conversationName: string;
+  conversations: {};
 };
 
-const ChatDetail = (props: ChatProps) => {
+const ChatDetail = (props: ChatDetailProps) => {
   const [message, setMessage] = useState('');
+
+  useEffect(() => props.navigation.setOptions({title: props.conversationName}));
 
   return (
     <View style={styles.mainContainer}>
       <ScrollView style={styles.conversationContainer}>
-        <Text>Content</Text>
+        <ChatMessages
+          conversation={props.conversations[props.conversationName]}
+        />
       </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
@@ -41,9 +48,10 @@ const ChatDetail = (props: ChatProps) => {
               new Blob(
                 [
                   JSON.stringify({
-                    to: 'friend_name',
+                    to: props.conversationName,
                     content: message,
-                    conversation_id: 'conversation_id',
+                    conversation_id:
+                      props.conversations[props.conversationName].id,
                   }),
                 ],
                 {
