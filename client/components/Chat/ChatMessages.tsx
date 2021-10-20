@@ -1,15 +1,28 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {Text} from 'react-native';
+import {View} from 'react-native';
 import {Message} from '../../types/Types';
+import ChatMessageElement from './ChatMessageElement';
 
-const ChatMessages = (props: {conversation: any}) => (
-  <>
+type ChatMessagesProps = {
+  conversation: any;
+  conversationName: string;
+};
+
+const ChatMessages = (props: ChatMessagesProps) => (
+  <View style={{flex: 1, justifyContent: 'flex-end'}}>
     {props.conversation.messages
-      ? props.conversation.messages.map((msg: Message) => {
-          return <Text key={msg.date}>{msg.content}</Text>;
-        })
+      ? props.conversation.messages.map((msg: Message, index: number) => (
+          <ChatMessageElement
+            key={msg.date}
+            msg={msg}
+            index={index}
+            conversation={props.conversation}
+            conversationName={props.conversationName}
+          />
+        ))
       : null}
-  </>
+  </View>
 );
 
 export default ChatMessages;

@@ -1,5 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-undef */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   TextInput,
   View,
@@ -23,13 +24,22 @@ type ChatDetailProps = {
 const ChatDetail = (props: ChatDetailProps) => {
   const [message, setMessage] = useState('');
 
+  const scrollViewRef = useRef();
+
   useEffect(() => props.navigation.setOptions({title: props.conversationName}));
 
   return (
     <View style={styles.mainContainer}>
-      <ScrollView style={styles.conversationContainer}>
+      <ScrollView
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({animated: true})
+        }
+        style={styles.conversationContainer}
+        contentContainerStyle={{flexGrow: 1}}>
         <ChatMessages
           conversation={props.conversations[props.conversationName]}
+          conversationName={props.conversationName}
         />
       </ScrollView>
       <View style={styles.inputContainer}>
@@ -97,9 +107,10 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   conversationContainer: {
-    flex: 1,
-    backgroundColor: '#38393E',
+    // backgroundColor: '#38393E',
+    backgroundColor: 'coral',
     marginBottom: 10,
+    flex: 1,
   },
   submitMessage: {
     marginLeft: 5,
