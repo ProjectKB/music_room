@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, ScrollView} from 'react-native';
 import {AuthContext} from '../contexts/AuthContext';
 import UserContext from '../contexts/UserContext';
 import {Button} from 'react-native-paper';
@@ -72,38 +72,108 @@ const Home = () => {
         />
       </TouchableOpacity>
       <Button onPress={() => pictureSelector()}>
-        <Text>Modifier</Text>
+        <Text style={{color: 'white'}}>Modifier</Text>
       </Button>
     </View>
   );
 
   const InfosProfile = () => (
-    <View style={{marginTop: 30}}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <FontAwesomeIcon size={25} icon={faUser} color="#292929" />
-        <Text style={{marginLeft: 40, fontSize: 17}}>{user?.login}</Text>
+    <View
+      style={{
+        marginTop: 30,
+      }}>
+      <View style={styles.line} />
+      <View style={styles.containerText}>
+        <FontAwesomeIcon size={25} icon={faUser} color="grey" />
+        <Text style={styles.textProfile}>{user?.login}</Text>
       </View>
-      <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center'}}>
-        <FontAwesomeIcon size={25} icon={faEnvelope} color="#292929" />
-        <Text style={{marginLeft: 40, fontSize: 17}}>{user?.mail}</Text>
+      <View style={styles.line} />
+      <View style={styles.containerText}>
+        <FontAwesomeIcon size={25} icon={faEnvelope} color="grey" />
+        <Text style={styles.textProfile}>{user?.mail}</Text>
       </View>
+      <View style={styles.line} />
       <TouchableOpacity
-        style={{
-          marginTop: 20,
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: 'red',
-        }}
+        style={styles.containerText}
         onPress={() => setModal(true)}>
-        <FontAwesomeIcon size={25} icon={faMusic} color="#292929" />
-        <Text style={{marginLeft: 40, fontSize: 17}}>
-          Préférences musicales
-        </Text>
+        <FontAwesomeIcon size={25} icon={faMusic} color="white" />
+        <Text style={styles.textProfileEditable}>Préférences musicales</Text>
       </TouchableOpacity>
-      <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center'}}>
-        <FontAwesomeIcon size={25} icon={faUserFriends} color="#292929" />
-        <Text style={{marginLeft: 40, fontSize: 17}}>Amis</Text>
-      </View>
+      <View style={styles.line} />
+      <TouchableOpacity
+        style={styles.containerText}
+        onPress={() => setModal(true)}>
+        <FontAwesomeIcon size={25} icon={faUserFriends} color="white" />
+        <Text style={styles.textProfileEditable}>Amis</Text>
+      </TouchableOpacity>
+      <View style={styles.line} />
+    </View>
+  );
+
+  const ModalMusics = () => (
+    <View
+      style={{
+        height: '50%',
+        width: '80%',
+        backgroundColor: 'silver',
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <ScrollView
+        style={{
+          width: '100%',
+          margin: 10,
+          // backgroundColor: 'red',
+          // justifyContent: 'center',
+          // alignItems: 'center',
+        }}>
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+        <View style={styles.line} />
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+        <View style={styles.line} />
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+        <View style={styles.line} />
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+        <View style={styles.line} />
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+        <View style={styles.line} />
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+        <View style={styles.line} />
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+        <View style={styles.line} />
+        <View style={styles.containerFriends}>
+          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+          <Text style={styles.containerFriendsText}>Amis</Text>
+        </View>
+      </ScrollView>
+      <Button
+        style={{marginBottom: 10}}
+        mode="contained"
+        onPress={() => signOut()}>
+        Valider
+      </Button>
     </View>
   );
 
@@ -118,17 +188,9 @@ const Home = () => {
         backdropTransitionOutTiming={0}
         // onRequestClose={() => {this.setState({visible: false})}}
       >
-        <View
-          style={{
-            height: '50%',
-            width: '80%',
-            backgroundColor: 'green',
-            borderRadius: 15,
-          }}>
-          <Text>ok</Text>
-        </View>
+        <ModalMusics />
       </Modal>
-      <View>
+      <View style={{width: '100%'}}>
         <ImgProfile />
         <InfosProfile />
       </View>
@@ -146,6 +208,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    backgroundColor: '#1a1a1a',
+    // backgroundColor: '#292929'
   },
   imgContainer: {
     width: 100,
@@ -159,5 +223,41 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     // height: 300,
     // width: 300,
+  },
+  containerText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    paddingLeft: '5%',
+    // backgroundColor: 'red',
+  },
+  textProfile: {
+    marginLeft: 40,
+    fontSize: 17,
+    color: 'grey',
+  },
+  containerFriends: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    paddingLeft: '5%',
+    justifyContent: 'center',
+    alignContent: 'center',
+    // backgroundColor: 'red',
+  },
+  containerFriendsText: {
+    fontSize: 17,
+    color: 'white',
+  },
+  textProfileEditable: {
+    marginLeft: 40,
+    fontSize: 17,
+    color: 'white',
+  },
+  line: {
+    marginLeft: '5%',
+    width: '90%',
+    height: 1,
+    backgroundColor: 'grey',
   },
 });
