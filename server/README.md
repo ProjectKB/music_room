@@ -17,6 +17,9 @@ Name | Type
 **Preferences** | `string[]` (Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House)
 **Friends** | `friend[]`
 **Events** | `string[]`
+**Notifications** | `Notification[]`
+**Notifications_count** | `number`
+**Visibility** | `Visibility`
 **Avatar** | `string`
 
 #### Friend 
@@ -55,7 +58,7 @@ Route | Method | Utility
 `/users/confirmFriend/{id}` | **PUT** | confirm a friend
 `/users/readNotification/{id}` | **PUT** | read a notification
 `/users/friends/{id}` | **GET** | read every friends
-`/users/removeFriend/{id}` | **PUT** | remove a friend from `friends` field
+`/users/conversations/{id}` | **GET** | read every conversations
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
 `/users/events/{id}` | **GET** | read every events
 `/users/removeEvent/{id}` | **PUT** | remove an event from `events` field
