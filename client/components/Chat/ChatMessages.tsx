@@ -17,6 +17,7 @@ const ChatMessages = (props: ChatMessagesProps) => (
             key={msg.date}
             msg={msg}
             index={index}
+            messagesNbr={props.conversation?.messages?.length - 1 ?? 0}
             conversation={props.conversation}
             conversationName={props.conversationName}
           />

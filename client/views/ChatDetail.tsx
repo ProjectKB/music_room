@@ -90,7 +90,7 @@ export default ChatDetail;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: '#38393E',
+    backgroundColor: '#1a1a1a',
     flex: 1,
     padding: 15,
   },
@@ -107,8 +107,6 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   conversationContainer: {
-    // backgroundColor: '#38393E',
-    backgroundColor: 'coral',
     marginBottom: 10,
     flex: 1,
   },
