@@ -3,7 +3,7 @@ import {StyleSheet, StatusBar, View} from 'react-native';
 import ProtectedRoutes from './components/ProtectedRoutes';
 
 const App = () => {
-  global.URL = 'http://10.19.1.151:8080';
+  global.URL = 'http://192.168.1.3:8080';
 
   return (
     <View style={styles.mainContainer}>

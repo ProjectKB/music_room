@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {StyleSheet, View, Text, Image, ScrollView} from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import {AuthContext} from '../contexts/AuthContext';
 import UserContext from '../contexts/UserContext';
 import {Button} from 'react-native-paper';
@@ -16,13 +17,26 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-native-modal';
 
+const musicPref = [
+  'Rap FR',
+  'Rap US',
+  'Rock',
+  'Metal',
+  'Classic',
+  'Electro',
+  'Trance',
+  'Low-Fi',
+  'House',
+];
+
 const Home = () => {
   const {signOut} = useContext(AuthContext);
   const {user} = useContext(UserContext);
   const [avatarSelected, setAvatarSelected] = useState(null);
   const [modal, setModal] = useState(false);
+  const [checkActive, setCheckActive] = useState(0);
 
-  console.log('uuuse', user);
+  console.log('uuuse', user.preferences);
 
   function _buttonImage() {
     // ImagePicker.launchCamera()
@@ -128,45 +142,76 @@ const Home = () => {
           // justifyContent: 'center',
           // alignItems: 'center',
         }}>
+        {musicPref.map((e, key) => (
+          <>
+            <View style={styles.containerFriends}>
+              {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
+              {user.preferences.some(e2 => e2 === e) ? (
+                <TouchableOpacity
+                  onPress={() => console.log('LDLDLD')}
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text
+                    style={[
+                      styles.containerFriendsText,
+                      {color: 'purple', fontWeight: 'bold'},
+                    ]}>
+                    {e}
+                  </Text>
+                  <CheckBox
+                    value={checkActive === key}
+                    onValueChange={() => setCheckActive(key)}
+                    style={styles.checkbox}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => console.log('LDLDLD222')}
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'red',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={styles.containerFriendsText}>{e}</Text>
+                  <CheckBox
+                    value={checkActive === key}
+                    onValueChange={() => setCheckActive(key)}
+                    style={styles.checkbox}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={styles.line} />
+          </>
+        ))}
+        {/* <View style={styles.line} />
         <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
           <Text style={styles.containerFriendsText}>Amis</Text>
         </View>
         <View style={styles.line} />
         <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
           <Text style={styles.containerFriendsText}>Amis</Text>
         </View>
         <View style={styles.line} />
         <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
           <Text style={styles.containerFriendsText}>Amis</Text>
         </View>
         <View style={styles.line} />
         <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
           <Text style={styles.containerFriendsText}>Amis</Text>
         </View>
         <View style={styles.line} />
         <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
           <Text style={styles.containerFriendsText}>Amis</Text>
         </View>
         <View style={styles.line} />
         <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
           <Text style={styles.containerFriendsText}>Amis</Text>
         </View>
         <View style={styles.line} />
         <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
           <Text style={styles.containerFriendsText}>Amis</Text>
-        </View>
-        <View style={styles.line} />
-        <View style={styles.containerFriends}>
-          {/* <FontAwesomeIcon size={25} icon={faUserFriends} color="white" /> */}
-          <Text style={styles.containerFriendsText}>Amis</Text>
-        </View>
+        </View> */}
       </ScrollView>
       <Button
         style={{marginBottom: 10}}
@@ -259,5 +304,8 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 1,
     backgroundColor: 'grey',
+  },
+  checkbox: {
+    alignSelf: 'center',
   },
 });
