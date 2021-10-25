@@ -27,7 +27,7 @@ const ChatFriendsPickerModal = (props: ChatFriendsPickerModalProps) => {
           <Picker
             selectedValue={friendPicked}
             onValueChange={itemValue => setFriendPicked(itemValue)}
-            prompt="Guests">
+            prompt="Friends">
             {props.friendsCollection.map(item => (
               <Picker.Item
                 style={{fontSize: 20}}

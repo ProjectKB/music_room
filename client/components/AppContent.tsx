@@ -23,12 +23,7 @@ const AppContent = (props: {ws: WebSocket}) => {
   const handleMessage = (data: any) => {
     switch (data.type) {
       case 'join':
-        console.log(
-          data.content + ' has joined the chat at',
-          new Date(data.date).toLocaleTimeString(),
-          // new Date(data.date).toLocaleDateString(),
-          // new Date(data.date).toLocaleString(),
-        );
+        console.log(data.content);
         break;
       case 'leave':
         console.log(data.content + ' has leaved the chat at', data.date);
@@ -36,6 +31,10 @@ const AppContent = (props: {ws: WebSocket}) => {
       case 'message':
         console.log('New Message:', data.content);
         setNewMessage(data);
+        break;
+      case 'error':
+        console.log('Socket Error:', data.content);
+        break;
     }
   };
 

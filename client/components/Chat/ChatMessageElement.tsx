@@ -105,6 +105,8 @@ const ChatMessageElement = (props: ChatMessageElementProps) => {
         borderBottomLeftRadius: msgFromUs ? 20 : noRadiusBottom ? 5 : 20,
         borderTopRightRadius: msgFromUs ? (noRadiusTop ? 5 : 20) : 20,
         borderBottomRightRadius: msgFromUs ? (noRadiusBottom ? 5 : 20) : 20,
+        marginRight: !msgFromUs ? 100 : 0,
+        marginLeft: !msgFromUs ? 0 : 100,
         marginBottom: noExtraMarge ? 3 : 13,
         color: msgFromUs ? 'black' : 'white',
       },
