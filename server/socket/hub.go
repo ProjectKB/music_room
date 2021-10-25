@@ -1,11 +1,17 @@
 package socket
 
 import (
+	"context"
 	"fmt"
+	"server/response"
 	"strings"
 	"time"
 
+	db "server/system/db"
+
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var Usernames = make(map[*websocket.Conn]string)
@@ -24,17 +30,16 @@ func HandleIncomingMessage(sender *websocket.Conn, msg MessageFromChat) {
 			HandleDisconnection(NameToConn[username])
 		}
 
-		sendUserList(sender)
-
 		Usernames[sender] = username
 		NameToConn[username] = sender
-		m := newMessage(MsgJoin, "server", "client", username)
+
+		m := sendUserList()
 		m.dispatch()
 		return
 	}
 
 	// classic msg
-	sendChatMessage(sender, msg.To, msg.Content)
+	sendChatMessage(sender, msg)
 }
 
 func HandleDisconnection(sender *websocket.Conn) {
@@ -78,31 +83,56 @@ func (m Message) dispatch() {
 	}
 }
 
-func sendUserList(who *websocket.Conn) {
+func sendUserList() Message {
 	list := []string{}
 	for _, username := range Usernames {
 		list = append(list, username)
 	}
 
-	m := Message{
-		Type:    MsgUserList,
+	return Message{
+		Type:    MsgJoin,
 		From:    "server",
 		To:      "client",
 		Content: list,
 		Date:    time.Now().UTC(),
 		Success: true,
 	}
-
-	_ = who.WriteJSON(m)
 }
 
-func sendChatMessage(sender *websocket.Conn, receiver string, msg string) {
-	if msg != "" {
+func sendChatMessage(sender *websocket.Conn, msg MessageFromChat) {
+	if msg.Content != "" {
 
-		m := newMessage(MsgChat, Usernames[sender], receiver, msg)
-		m.dispatch()
+		m := newMessage(MsgChat, Usernames[sender], msg.To, msg.Content)
+		sender.WriteJSON(m)
 
-		// if receiver connected send to him to + add msg to conversation
+		if receiverNameToConn, ok := NameToConn[msg.To]; ok {
+			receiverNameToConn.WriteJSON(m)
+		}
 
+		if err := addMessageToConversation(msg.Conversation_id, m); err != response.Ok {
+			sender.WriteJSON(newError("Something went wrong with your message."))
+		}
 	}
+}
+
+func addMessageToConversation(conversation_id string, msg Message) int {
+	id, _ := primitive.ObjectIDFromHex(conversation_id)
+	filter := bson.D{{"_id", id}}
+	var conversation Conversation
+
+	if err := db.ConversationCollection.FindOne(context.TODO(), filter).Decode(&conversation); err != nil {
+		return response.BddError
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"messages", append(conversation.Messages, msg)},
+		},
+	}
+
+	if _, err := db.ConversationCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	}
+
+	return response.Ok
 }

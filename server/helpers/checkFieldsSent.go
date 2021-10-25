@@ -2,14 +2,11 @@ package helpers
 
 import (
 	"reflect"
-	"regexp"
 	"server/model"
 	"server/response"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
-
-// TODO Develop this logic for empty fields and others (the purpose is to refacto controllers/middlewares)
 
 func CheckUserPreferences(new_preferences []string) int {
 	var check bool
@@ -67,14 +64,6 @@ func UpdateUserFilter(doc interface{}) bson.M {
 
 		if key.String() == "avatar" || key.String() == "password" {
 			if _, ok := value.Interface().(string); !ok {
-				return bson.M{}
-			}
-
-			filter[key.String()] = value.Interface()
-		} else if key.String() == "mail" {
-			if mail, ok := value.Interface().(string); !ok {
-				return bson.M{}
-			} else if match, _ := regexp.MatchString("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", mail); !match {
 				return bson.M{}
 			}
 

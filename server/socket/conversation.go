@@ -13,7 +13,6 @@ const (
 	MsgJoin     MessageType = "join"
 	MsgLeave    MessageType = "leave"
 	MsgErr      MessageType = "error"
-	MsgUserList MessageType = "users"
 )
 
 type Message struct {
