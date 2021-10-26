@@ -35,8 +35,9 @@ type ChatMessageElementProps = {
 
 const ChatMessageElement = (props: ChatMessageElementProps) => {
   const getDateFormat = (msg: Message, date: Date, index: number) => {
+    const hours = date.getHours();
     const minutes = date.getMinutes();
-    const timeStr = `${date.getHours()}:${
+    const timeStr = `${hours < 10 ? '0' + hours : hours}:${
       minutes < 10 ? '0' + minutes : minutes
     }`;
     const dateStr = `${months[date.getMonth()]} ${date.getDate()}, `;

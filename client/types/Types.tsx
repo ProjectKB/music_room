@@ -54,7 +54,7 @@ export type Conversation = {
   id: string;
   user_a: string;
   user_b: string;
-  message: Message[];
+  messages: Message[];
 };
 
 export type Setter<T> = React.Dispatch<React.SetStateAction<T>>;

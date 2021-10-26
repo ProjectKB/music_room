@@ -1,11 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useContext, useCallback} from 'react';
-import {Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {FetchUserConversations} from '../api/UserEndpoint';
 import ChatFriendsPickerModal from '../components/Chat/ChatFriendsPickerModal';
 import CustomModal from '../components/CustomModal';
+import SearchBar from '../components/SearchBar';
 import UserContext from '../contexts/UserContext';
 import {Message, Setter} from '../types/Types';
+import {pick} from 'lodash';
+import ChatList from '../components/Chat/ChatList';
 
 type ChatProps = {
   newMessage: Message;
@@ -18,33 +21,25 @@ type ChatProps = {
 };
 
 const Chat = (props: ChatProps) => {
-  const [displayConversation, setDisplayConversation] = useState(false);
   const [friendsName, setFriendsName] = useState([]);
+  const [friendsNameToShow, setFriendsNameToShow] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const {user} = useContext(UserContext);
 
   const loadUserConversations = useCallback(() => {
     if (user) {
-      FetchUserConversations(user.id).then(res =>
-        props.setConversationsCollection(res ? res : {}),
-      );
+      FetchUserConversations(user.id).then(res => {
+        props.setConversationsCollection(res ? res : {});
+      });
     }
   }, [user]);
 
-  const conversationLoaded = useCallback(() => {
+  const defineFriendsName = useCallback(() => {
     const friendsTmp = Object.keys(props.conversationsCollection);
 
+    // trigger when new friend is added
     if (friendsName !== friendsTmp) {
-      if (friendsTmp.length) {
-        for (const friend of friendsTmp) {
-          if (props.conversationsCollection[friend].messages) {
-            setDisplayConversation(true);
-          }
-        }
-      } else {
-        setDisplayConversation(false);
-      }
-
       setFriendsName(friendsTmp);
     }
   }, [props.conversationsCollection]);
@@ -64,18 +59,42 @@ const Chat = (props: ChatProps) => {
 
       props.setConversationsCollection({
         ...props.conversationsCollection,
-        target: conversationsCollectionTmp[target],
+        [target]: conversationsCollectionTmp[target],
       });
     }
   }, [props.newMessage]);
 
+  const filterConversationsToShow = useCallback(() => {
+    let friendsNameToShowTmp = [];
+
+    for (const friend of friendsName) {
+      if (
+        props.conversationsCollection[friend].messages &&
+        friend.match(searchQuery)
+      ) {
+        friendsNameToShowTmp.push(friend);
+      }
+    }
+
+    setFriendsNameToShow(friendsNameToShowTmp);
+  }, [searchQuery, friendsName]);
+
   useEffect(() => loadUserConversations(), [loadUserConversations]);
-  useEffect(() => conversationLoaded(), [conversationLoaded]);
+  useEffect(() => defineFriendsName(), [defineFriendsName]);
   useEffect(() => handleNewMessage(), [handleNewMessage]);
+  useEffect(() => filterConversationsToShow(), [filterConversationsToShow]);
 
   return (
-    <View>
-      <Text>Coucou</Text>
+    <View style={styles.mainContainer}>
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <ChatList
+        friendsName={friendsNameToShow}
+        conversationsCollection={pick(
+          props.conversationsCollection,
+          friendsNameToShow,
+        )}
+        navigation={props.navigation}
+      />
       <CustomModal
         modalVisibility={props.modalVisibility}
         setModalVisibility={props.setModalVisibility}
@@ -94,3 +113,10 @@ const Chat = (props: ChatProps) => {
 };
 
 export default Chat;
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    backgroundColor: '#1a1a1a',
+    flex: 1,
+  },
+});
