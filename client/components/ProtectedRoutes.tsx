@@ -7,6 +7,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from '../views/SplashScreen';
 import {User} from '../types/Types';
+import {SocketJoin, SocketLeave} from '../helpers/Socket';
 
 type ReducerState = {
   type: 'RETRIEVE_TOKEN' | 'LOGIN' | 'LOGOUT';
@@ -19,18 +20,11 @@ type ReducerState = {
 const ProtectedRoutes = () => {
   const ws = useRef(undefined);
 
-  const initWebSocket = (userLogin: string) => {
+  const initWebSocket = async (userLogin: string) => {
     ws.current = new WebSocket(global.URL + '/websocket');
 
     ws.current.onopen = function () {
-      ws.current.send(
-        new Blob(
-          [JSON.stringify({to: '', content: userLogin, conversation_id: ''})],
-          {
-            type: 'application/json',
-          },
-        ),
-      );
+      ws.current.send(SocketJoin(userLogin));
     };
   };
 
@@ -125,7 +119,7 @@ const ProtectedRoutes = () => {
 
           userLogin = await AsyncStorage.getItem('userLogin');
 
-          ws.current.send(userLogin);
+          ws.current.send(SocketLeave(userLogin));
 
           await AsyncStorage.removeItem('userLogin');
         } catch (e) {

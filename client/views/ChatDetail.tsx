@@ -1,5 +1,4 @@
 /* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-undef */
 import React, {useState, useEffect, useRef} from 'react';
 import {
   TextInput,
@@ -12,6 +11,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import {Message} from '../types/Types';
 import ChatMessages from '../components/Chat/ChatMessages';
+import {SocketMessage} from '../helpers/Socket';
 
 type ChatDetailProps = {
   ws: WebSocket;
@@ -27,6 +27,12 @@ const ChatDetail = (props: ChatDetailProps) => {
   const scrollViewRef = useRef();
 
   useEffect(() => props.navigation.setOptions({title: props.conversationName}));
+
+  const handlePress = async () => {
+    props.ws.send(
+      SocketMessage(props.conversationName, message, props.conversations),
+    );
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -54,22 +60,7 @@ const ChatDetail = (props: ChatDetailProps) => {
         />
         <TouchableOpacity
           onPress={() => {
-            props.ws.send(
-              new Blob(
-                [
-                  JSON.stringify({
-                    to: props.conversationName,
-                    content: message,
-                    conversation_id:
-                      props.conversations[props.conversationName].id,
-                  }),
-                ],
-                {
-                  type: 'application/json',
-                },
-              ),
-            );
-
+            handlePress();
             setMessage('');
           }}>
           {message !== '' && (
