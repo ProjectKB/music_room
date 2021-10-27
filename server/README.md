@@ -17,8 +17,7 @@ Name | Type
 **Preferences** | `string[]` (Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House)
 **Friends** | `friend[]`
 **Events** | `string[]`
-**Notifications** | `Notification[]`
-**Notifications_count** | `number`
+**Notifications** | `string`
 **Visibility** | `Visibility`
 **Avatar** | `string`
 
@@ -37,13 +36,6 @@ Name | Type
 **Friend** | `string` (public | private | friends)
 **Avatar** | `string` (public | private | friends)
 
-#### Notification 
-Name | Type
- --- | ---
-**From** | `string`
-**Content** | `string`
-**Readed** | `boolean`
-
 ### ENDPOINTS 
 Route | Method | Utility
  --- | --- | ---
@@ -54,9 +46,7 @@ Route | Method | Utility
 `/users/{id}` | **DELETE** | delete one user
 `/users/login` | **POST** | check user validity and return token
 `/users/define` | **POST** | read a token a return the corresponding user
-`/users/addFriend/{id}` | **PUT** | add a friend to `friends` field and send a notification to this friend
 `/users/confirmFriend/{id}` | **PUT** | confirm a friend
-`/users/readNotification/{id}` | **PUT** | read a notification
 `/users/friends/{id}` | **GET** | read every friends
 `/users/conversations/{id}` | **GET** | read every conversations
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
@@ -80,7 +70,6 @@ Name | Type
 **Guests** | `Guest[]`
 **Has_event** | `bool`
 
-
 #### Song
 Name | Type
  --- | ---
@@ -94,8 +83,6 @@ Name | Type
  --- | ---
 **Id** | `string`
 **Contributor** | bool
-
-(*) mandatory fields
 
 ### ENDPOINTS
 Route | Method | Utility
@@ -131,8 +118,6 @@ Name | Type | Value
 **End** | `string`
 **Status** | `string` | pending/ongoing/finished
 
-(*) mandatory fields
-
 ### ENDPOINTS
 Route | Method | Utility
  --- | --- | ---
@@ -146,3 +131,32 @@ Route | Method | Utility
 `/events/removePlaylist/{id}` | **PUT** | remove a playlist from `playlists` field
 `/events/removeUpdateStatus/{id}` | **PUT** | update `status` field
 </details>
+
+<details>
+
+<summary>NOTIFICATIONS</summary>
+
+### MODEL
+Name | Type | Value
+ --- | --- | ---
+**Id** | `primitive.ObjectID`
+**Login** | `string`
+**Notifications** | `Notifications[]`
+**Notifications_count** | `int`
+
+#### Notification
+Name | Type | Value
+ --- | --- | ---
+**Id** | `string`
+**From** | `string`
+**Login** | `string`
+**Content** | `string`
+**Readed** | `bool`
+
+### ENDPOINTS
+Route | Method | Utility
+ --- | --- | ---
+`/notifications` | **GET** | read every notificationss
+`/notifications/{id}` | **GET** | read one notification
+`/notifications/sendFriendShipRequest/{id}` | **PUT** | add a friendship request
+`/users/readNotification/{id}` | **PUT** | read a notification
