@@ -158,5 +158,5 @@ Route | Method | Utility
  --- | --- | ---
 `/notifications` | **GET** | read every notificationss
 `/notifications/{id}` | **GET** | read one notification
-`/notifications/sendFriendShipRequest/{id}` | **PUT** | add a friendship request
+`/notifications/sendFriendShipRequest/{id}` | **PUT** | add a friendship notification to `notifications` field
 `/users/readNotification/{id}` | **PUT** | read a notification
