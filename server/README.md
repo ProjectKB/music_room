@@ -141,7 +141,7 @@ Name | Type | Value
  --- | --- | ---
 **Id** | `primitive.ObjectID`
 **Login** | `string`
-**Notifications** | `Notifications[]`
+**Notifications** | `Notification[]`
 **Notifications_count** | `int`
 
 #### Notification
