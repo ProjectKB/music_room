@@ -24,11 +24,21 @@ func Create(elem *model.User) int {
 	match, _ := regexp.MatchString(mail_regex, elem.Mail)
 	var isDuplicated *model.User
 
-	elem.Visibility = model.Visibility{"public", "private", "public", "public", "public"}
-
 	if elem.Login == "" || elem.Mail == "" || elem.Password == "" {
 		return response.FieldIsMissing
-	} else if err := helpers.CheckUserBlacklistedFields(elem); err != response.Ok {
+	}
+
+	notifications := model.Notifications{primitive.NewObjectID(), elem.Login, nil, 0}
+	
+	if _, err := db.NotificationCollection.InsertOne(context.TODO(), notifications); err != nil {
+		return response.BddError
+	}
+
+	elem.Notifications = notifications.Id.Hex()
+	elem.Visibility = model.Visibility{"public", "private", "public", "public", "public"}
+
+
+	if err := helpers.CheckUserBlacklistedFields(elem); err != response.Ok {
 		return response.Unauthorized
 	} else if !match {
 		return response.InvalidFormat
@@ -144,61 +154,53 @@ func Update(fields bson.M, param string) int {
 func Delete(param string) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
+	var user model.User
 
-	deleteResult, err := db.UserCollection.DeleteOne(context.TODO(), filter)
+	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+	
+	notification_id, _ := primitive.ObjectIDFromHex(user.Notifications)
+	notification_filter := bson.D{{"_id", notification_id}}
+	_, err := db.NotificationCollection.DeleteOne(context.TODO(), notification_filter)
+	
+	if err != nil {
+		return response.BddError
+	}
+	
+	
+	for i := 0; i < len(user.Friends); i++ {
+		conversation_id, _ := primitive.ObjectIDFromHex(user.Friends[i].Conversation)
+		conversation_filter := bson.D{{"_id", conversation_id}}
+		_, err := db.ConversationCollection.DeleteOne(context.TODO(), conversation_filter)
+
+		if err != nil {
+			return response.BddError
+		}
+	}
+
+	userResult, err := db.UserCollection.DeleteOne(context.TODO(), filter)
 
 	if err != nil {
 		return response.BddError
 	}
 
-	fmt.Printf("Deleted %v documents in the users collection\n", deleteResult.DeletedCount)
+	fmt.Printf("Deleted %v documents in the users collection\n", userResult.DeletedCount)
 	return response.Ok
 }
 
 func DeleteAll() {
-	deleteResult, err := db.UserCollection.DeleteMany(context.TODO(), bson.D{{}})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Deleted %v documents in the users collection\n", deleteResult.DeletedCount)
-}
+	userResult, userErr := db.UserCollection.DeleteMany(context.TODO(), bson.D{{}})
+	notificationResult, notificationErr := db.NotificationCollection.DeleteMany(context.TODO(), bson.D{{}})
+	conversationResult, conversationErr := db.ConversationCollection.DeleteMany(context.TODO(), bson.D{{}})
 
-func AddFriend(userId string, new_user_id string) int {
-	id, _ := primitive.ObjectIDFromHex(userId)
-	friendId, _ := primitive.ObjectIDFromHex(new_user_id)
-	filter := bson.D{{"_id", id}}
-	friendFilter := bson.D{{"_id", friendId}}
-	var user model.User
-	var friend model.User
-
-	if new_user_id == "" {
-		return response.FieldIsMissing
-	} else if userId == new_user_id {
-		return response.Unauthorized
-	} else if err := db.UserCollection.FindOne(context.TODO(), friendFilter).Decode(&friend); err != nil {
-		return response.BddError
-	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return response.BddError
+	if userErr != nil || notificationErr != nil || conversationErr != nil {
+		log.Fatal(userErr, notificationErr, conversationErr)
 	}
 
-	for i := 0; i < len(user.Friends); i++ {
-		if user.Friends[i].Id == new_user_id {
-			return response.Unauthorized
-		}
-	}
-
-	update_friend := bson.M{
-		"$set": bson.D{
-			{"notifications", append(friend.Notifications, model.Notification{userId, fmt.Sprintf("%s wants to be your friend!", user.Login), false})},
-			{"notifications_count", friend.Notifications_count + 1},
-		},
-	}
-
-	if _, err := db.UserCollection.UpdateOne(context.TODO(), friendFilter, update_friend); err != nil {
-		return response.BddError
-	}
-
-	return response.Ok
+	fmt.Printf("Deleted %v documents in the users collection\n", userResult.DeletedCount)
+	fmt.Printf("Deleted %v documents in the notifications collection\n", notificationResult.DeletedCount)
+	fmt.Printf("Deleted %v documents in the conversations collection\n", conversationResult.DeletedCount)
 }
 
 func ConfirmFriend(userId string, user_to_confirm model.Friend) int {
@@ -246,49 +248,6 @@ func ConfirmFriend(userId string, user_to_confirm model.Friend) int {
 		return response.BddError
 	} else if _, err := db.UserCollection.UpdateOne(context.TODO(), friend_filter, update_friend); err != nil {
 		// send new user to friend if connected + notification by socket
-		return response.BddError
-	}
-
-	return response.Ok
-}
-
-func ReadNotification(userId string, fromId string) int {
-	id, _ := primitive.ObjectIDFromHex(userId)
-	from_id, _ := primitive.ObjectIDFromHex(fromId)
-	filter := bson.D{{"_id", id}}
-	from_filter := bson.D{{"_id", from_id}}
-	var user model.User
-	var from model.User
-
-	if fromId == "" {
-		return response.FieldIsMissing
-	} else if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
-		return response.BddError
-	} else if err := db.UserCollection.FindOne(context.TODO(), from_filter).Decode(&from); err != nil {
-		return response.BddError
-	}
-
-	var check bool
-
-	for i := 0; i < len(user.Notifications); i++ {
-		if user.Notifications[i].From == fromId && !user.Notifications[i].Readed {
-			check = true
-			user.Notifications[i].Readed = true
-		}
-	}
-
-	if !check {
-		return response.Nonexistence
-	}
-
-	update := bson.M{
-		"$set": bson.D{
-			{"notifications", user.Notifications},
-			{"notifications_count", user.Notifications_count - 1},
-		},
-	}
-
-	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
 		return response.BddError
 	}
 

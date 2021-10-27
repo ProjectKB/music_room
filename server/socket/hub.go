@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"server/response"
-	"strings"
 	"time"
 
 	db "server/system/db"
@@ -18,28 +17,22 @@ var Usernames = make(map[*websocket.Conn]string)
 var NameToConn = make(map[string]*websocket.Conn)
 
 func HandleIncomingMessage(sender *websocket.Conn, msg MessageFromChat) {
+	sendChatMessage(sender, msg)
+}
 
-	// handle first connection
-	if _, ok := Usernames[sender]; !ok {
-		username := strings.TrimSpace(msg.Content)
-
-		if username == "" || username == "server" {
-			sender.WriteJSON(newError("You have an illegal username."))
-			return
-		} else if _, ok = NameToConn[username]; ok {
-			HandleDisconnection(NameToConn[username])
-		}
-
-		Usernames[sender] = username
-		NameToConn[username] = sender
-
-		m := sendUserList()
-		m.dispatch()
+func HandleFirstConnection(sender *websocket.Conn, username string) {
+	if username == "" || username == "server" {
+		sender.WriteJSON(newError("You have an illegal username."))
 		return
+	} else if _, ok := NameToConn[username]; ok {
+		HandleDisconnection(NameToConn[username])
 	}
 
-	// classic msg
-	sendChatMessage(sender, msg)
+	Usernames[sender] = username
+	NameToConn[username] = sender
+
+	m := sendUserList()
+	m.dispatch()
 }
 
 func HandleDisconnection(sender *websocket.Conn) {

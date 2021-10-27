@@ -29,7 +29,7 @@ func CheckUserPreferences(new_preferences []string) int {
 }
 
 func CheckUserBlacklistedFields(user *model.User) int {
-	if user.Friends != nil || user.Events != nil || user.Token != "" || user.Notifications != nil || user.Notifications_count != 0 || user.Avatar != "" || user.Preferences != nil {
+	if user.Friends != nil || user.Events != nil || user.Token != "" || user.Avatar != "" || user.Preferences != nil {
 		return response.Unauthorized
 	}
 

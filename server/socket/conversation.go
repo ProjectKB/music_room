@@ -9,10 +9,11 @@ import (
 type MessageType string
 
 const (
-	MsgChat     MessageType = "message"
-	MsgJoin     MessageType = "join"
-	MsgLeave    MessageType = "leave"
-	MsgErr      MessageType = "error"
+	MsgChat              MessageType = "message"
+	MsgJoin              MessageType = "join"
+	MsgLeave             MessageType = "leave"
+	MsgErr               MessageType = "error"
+	MsgFriendShipRequest MessageType = "friendship request"
 )
 
 type Message struct {
@@ -35,4 +36,17 @@ type MessageFromChat struct {
 	To              string `bson:"to,omitempty" json:"to,omitempty"`
 	Content         string `bson:"content,omitempty" json:"content,omitempty"`
 	Conversation_id string `bson:"conversation_id,omitempty" json:"conversation_id,omitempty"`
+}
+
+type FriendShipRequest struct {
+	ConversationsId string `bson:"conversationId,omitempty" json:"conversationId,omitempty"`
+	From            string `bson:"from,omitempty" json:"from,omitempty"`
+}
+
+type SocketBody struct {
+	Type              MessageType       `bson:"type,omitempty" json:"type,omitempty"`
+	MessageChat       MessageFromChat   `bson:"messageFromChat,omitempty" json:"messageFromChat,omitempty"`
+	MessageJoin       string            `bson:"messageJoin,omitempty" json:"messageJoin,omitempty"`
+	MessageLeave      string            `bson:"messageLeave,omitempty" json:"messageLeave,omitempty"`
+	FriendShipRequest FriendShipRequest `bson:"friendShipRequest,omitempty" json:"friendShipRequest,omitempty"`
 }

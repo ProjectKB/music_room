@@ -17,7 +17,7 @@ var upgrader = websocket.Upgrader{
 
 func WebsocketConnection(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
-	var message MessageFromChat
+	var socket_body SocketBody
 
 	if err != nil {
 		_, _ = fmt.Fprint(w, "You must use the web socket protocol to connect to this endpoint.", err)
@@ -26,21 +26,28 @@ func WebsocketConnection(w http.ResponseWriter, r *http.Request) {
 
 	defer ws.Close()
 
+	socket_functions := map[MessageType]func(){
+		MsgJoin: func() {
+			HandleFirstConnection(ws, socket_body.MessageJoin)
+		},
+		MsgLeave: func() {
+			HandleDisconnection(NameToConn[strings.Trim(socket_body.MessageLeave, "\"")])
+		},
+		MsgChat: func() {
+			HandleIncomingMessage(ws, socket_body.MessageChat)
+		},
+	}
+
 	for {
-		data_type, p, err := ws.ReadMessage()
+		_, p, err := ws.ReadMessage()
 		if err != nil {
 			HandleDisconnection(ws)
-			break
-		} else if data_type == 1 {
-			user_login := string(p)
-
-			HandleDisconnection(NameToConn[strings.Trim(user_login, "\"")])
 			break
 		}
 
 		byteReader := bytes.NewReader(p)
-		json.NewDecoder(byteReader).Decode(&message)
-
-		HandleIncomingMessage(ws, message)
+		
+		json.NewDecoder(byteReader).Decode(&socket_body)
+		socket_functions[socket_body.Type]()
 	}
 }
