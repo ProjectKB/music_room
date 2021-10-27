@@ -156,7 +156,7 @@ Name | Type | Value
 ### ENDPOINTS
 Route | Method | Utility
  --- | --- | ---
-`/notifications` | **GET** | read every notificationss
+`/notifications` | **GET** | read every notifications
 `/notifications/{id}` | **GET** | read one notification
 `/notifications/sendFriendShipRequest/{id}` | **PUT** | add a friendship notification to `notifications` field
 `/users/readNotification/{id}` | **PUT** | read a notification
