@@ -22,6 +22,28 @@ export const SocketMessage = (
   );
 };
 
+export const SocketFriendshipRequest = (
+  conversations_id: string,
+  sender_id: string,
+  receiver_login: string,
+) => {
+  return new Blob(
+    [
+      JSON.stringify({
+        type: 'friendship request',
+        friendShipRequest: {
+          conversations_id: conversations_id,
+          sender_id: sender_id,
+          receiver_login: receiver_login,
+        },
+      }),
+    ],
+    {
+      type: 'application/json',
+    },
+  );
+};
+
 export const SocketJoin = (userLogin: string) => {
   return new Blob([JSON.stringify({type: 'join', messageJoin: userLogin})], {
     type: 'application/json',

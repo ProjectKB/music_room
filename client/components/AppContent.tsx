@@ -32,6 +32,9 @@ const AppContent = (props: {ws: WebSocket}) => {
         console.log('New Message:', data.content);
         setNewMessage(data);
         break;
+      case 'friendship request':
+        console.log(data.content);
+        break;
       case 'error':
         console.log('Socket Error:', data.content);
         break;
