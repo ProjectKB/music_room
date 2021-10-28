@@ -39,8 +39,9 @@ type MessageFromChat struct {
 }
 
 type FriendShipRequest struct {
-	ConversationsId string `bson:"conversationId,omitempty" json:"conversationId,omitempty"`
-	From            string `bson:"from,omitempty" json:"from,omitempty"`
+	Conversations_id string `bson:"conversations_id,omitempty" json:"conversations_id,omitempty"`
+	Sender_id       string `bson:"sender_id,omitempty" json:"sender_id,omitempty"`
+	Receiver_login  string `bson:"receiver_login,omitempty" json:"receiver_login,omitempty"`
 }
 
 type SocketBody struct {

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"server/model"
 	"server/response"
 	db "server/system/db"
@@ -84,7 +83,7 @@ func ReadNotification(notifications_id string, notification_id string) int {
 	return response.Ok
 }
 
-func SendFriendShipRequest(notifications_id string, user_id string) int {
+func SendFriendShipRequest(notifications_id string, user_id string, new_notification *model.Notification) int {
 	id, _ := primitive.ObjectIDFromHex(notifications_id)
 	filter := bson.D{{"_id", id}}
 	userId, _ := primitive.ObjectIDFromHex(user_id)
@@ -100,7 +99,7 @@ func SendFriendShipRequest(notifications_id string, user_id string) int {
 
 	update := bson.M{
 		"$set": bson.D{
-			{"notifications", append(notifications.Notifications, model.Notification{primitive.NewObjectID().Hex(), user_id, fmt.Sprintf("%s wants to be your friend!", user.Login), model.FriendshipRequest, false})},
+			{"notifications", append(notifications.Notifications, *new_notification)},
 			{"notifications_count", notifications.Notifications_count + 1},
 		},
 	}

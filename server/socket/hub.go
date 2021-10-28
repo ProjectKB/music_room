@@ -3,10 +3,12 @@ package socket
 import (
 	"context"
 	"fmt"
+	"server/model"
 	"server/response"
 	"time"
 
 	db "server/system/db"
+	notificationController "server/controllers/notificationController"
 
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
@@ -46,6 +48,29 @@ func HandleDisconnection(sender *websocket.Conn) {
 	m.dispatch()
 	delete(Usernames, sender)
 	delete(NameToConn, username)
+}
+
+func HandleFriendshipRequest(sender *websocket.Conn, request FriendShipRequest) {
+	new_notification := model.Notification{primitive.NewObjectID().Hex(), request.Sender_id, fmt.Sprintf("%s wants to be your friend!", Usernames[sender]), model.FriendshipRequest, false}
+
+	if receiverNameToConn, ok := NameToConn[request.Receiver_login]; ok {
+		m := Message{
+			Type:    MsgFriendShipRequest,
+			From:    Usernames[sender],
+			To:      request.Receiver_login,
+			Content: new_notification,
+			Date:    time.Now().UTC(),
+			Success: true,
+		}
+
+		receiverNameToConn.WriteJSON(m)
+		// sender.WriteJSON(m)
+	}
+
+	if err := notificationController.SendFriendShipRequest(request.Conversations_id, request.Sender_id, &new_notification); err != response.Ok {
+		sender.WriteJSON(newError("Impossible to send friendship request."))
+		return
+	}
 }
 
 func newError(content string) Message {

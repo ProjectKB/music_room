@@ -29,14 +29,13 @@ func Create(elem *model.User) int {
 	}
 
 	notifications := model.Notifications{primitive.NewObjectID(), elem.Login, nil, 0}
-	
+
 	if _, err := db.NotificationCollection.InsertOne(context.TODO(), notifications); err != nil {
 		return response.BddError
 	}
 
 	elem.Notifications = notifications.Id.Hex()
 	elem.Visibility = model.Visibility{"public", "private", "public", "public", "public"}
-
 
 	if err := helpers.CheckUserBlacklistedFields(elem); err != response.Ok {
 		return response.Unauthorized
@@ -159,16 +158,15 @@ func Delete(param string) int {
 	if err := db.UserCollection.FindOne(context.TODO(), filter).Decode(&user); err != nil {
 		return response.BddError
 	}
-	
+
 	notification_id, _ := primitive.ObjectIDFromHex(user.Notifications)
 	notification_filter := bson.D{{"_id", notification_id}}
 	_, err := db.NotificationCollection.DeleteOne(context.TODO(), notification_filter)
-	
+
 	if err != nil {
 		return response.BddError
 	}
-	
-	
+
 	for i := 0; i < len(user.Friends); i++ {
 		conversation_id, _ := primitive.ObjectIDFromHex(user.Friends[i].Conversation)
 		conversation_filter := bson.D{{"_id", conversation_id}}

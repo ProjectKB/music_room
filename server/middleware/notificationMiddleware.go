@@ -40,25 +40,25 @@ func ReadOneNotification(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(notifications)
 }
 
-func SendFriendShipRequest(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+// func SendFriendShipRequest(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var friend_id string
-	params := mux.Vars(r)
+// 	var friend_id string
+// 	params := mux.Vars(r)
 
-	if err := json.NewDecoder(r.Body).Decode(&friend_id); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	} else if err := notificationController.SendFriendShipRequest(params["id"], friend_id); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
-	}
+// 	if err := json.NewDecoder(r.Body).Decode(&friend_id); err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	} else if err := notificationController.SendFriendShipRequest(params["id"], friend_id); err != response.Ok {
+// 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+// 		return
+// 	}
 
-	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend Request", response.Sent))
-}
+// 	json.NewEncoder(w).Encode(response.GetSuccessMessage("Friend Request", response.Sent))
+// }
 
 func ReadNotification(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
