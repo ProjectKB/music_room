@@ -30,11 +30,24 @@ const AppContent = (props: {ws: WebSocket}) => {
         console.log(data.content + ' has leaved the chat at', data.date);
         break;
       case 'message':
-        console.log('New Message:', data.content);
-        setNewMessage(data);
+        console.log('New Message:', data.content.content);
+        setNewMessage(data.content);
         break;
       case 'friendship request':
         console.log(data.content);
+        break;
+      case 'friendship confirmed':
+        console.log(data.content);
+        break;
+      case 'update user':
+        // setUser({
+        //   ...user,
+        //   friends: user.friends
+        //     ? [...user.friends, data.content]
+        //     : [data.content],
+        // });
+
+        // here do like for message, define new conversation and send it to chat
         break;
       case 'error':
         FlashMsg(false, '', data.content);

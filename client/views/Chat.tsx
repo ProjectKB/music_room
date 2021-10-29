@@ -40,6 +40,7 @@ const Chat = (props: ChatProps) => {
 
     // trigger when new friend is added
     if (friendsName !== friendsTmp) {
+      console.log(friendsTmp);
       setFriendsName(friendsTmp);
     }
   }, [props.conversationsCollection]);
