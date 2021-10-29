@@ -5,7 +5,7 @@ import {FetchUserConversations} from '../api/UserEndpoint';
 import ChatFriendsPickerModal from '../components/Chat/ChatFriendsPickerModal';
 import CustomModal from '../components/CustomModal';
 import SearchBar from '../components/SearchBar';
-import UserContext from '../contexts/UserContext';
+import UserContext, {userTemplate} from '../contexts/UserContext';
 import {Message, Setter} from '../types/Types';
 import {pick} from 'lodash';
 import ChatList from '../components/Chat/ChatList';
@@ -28,7 +28,7 @@ const Chat = (props: ChatProps) => {
   const {user} = useContext(UserContext);
 
   const loadUserConversations = useCallback(() => {
-    if (user) {
+    if (user !== userTemplate) {
       FetchUserConversations(user.id).then(res => {
         props.setConversationsCollection(res ? res : {});
       });

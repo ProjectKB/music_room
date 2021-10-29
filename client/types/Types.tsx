@@ -10,6 +10,7 @@ export type User = {
   friends: string[];
   password: string;
   token: string;
+  notifications: string;
 };
 
 export type PlaylistType = {

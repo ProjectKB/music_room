@@ -14,6 +14,7 @@ export const userTemplate = {
   friends: [],
   password: '',
   token: '',
+  notifications: '',
 };
 
 const UserContext = createContext<UserType>({

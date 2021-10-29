@@ -8,6 +8,7 @@ import FlashMessage from 'react-native-flash-message';
 import SearchStackNavigator from './Search/SearchStackNavigator';
 import ContextProvider from './ContextProvider';
 import ChatStackNavigator from './Chat/ChatStackNavigator';
+import {FlashMessage as FlashMsg} from './FlashMessage';
 
 const AppContent = (props: {ws: WebSocket}) => {
   const Tab = createMaterialTopTabNavigator();
@@ -36,7 +37,7 @@ const AppContent = (props: {ws: WebSocket}) => {
         console.log(data.content);
         break;
       case 'error':
-        console.log('Socket Error:', data.content);
+        FlashMsg(false, '', data.content);
         break;
     }
   };
