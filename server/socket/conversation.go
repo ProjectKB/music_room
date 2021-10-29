@@ -51,8 +51,3 @@ type SocketBody struct {
 	MessageLeave      string            `bson:"messageLeave,omitempty" json:"messageLeave,omitempty"`
 	FriendShipRequest FriendShipRequest `bson:"friendShipRequest,omitempty" json:"friendShipRequest,omitempty"`
 }
-
-type SocketAPIError struct {
-	Type    MessageType `bson:"type,omitempty" json:"type,omitempty"`
-	Content string      `bson:"content,omitempty" json:"content,omitempty"`
-}

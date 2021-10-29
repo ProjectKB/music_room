@@ -53,7 +53,10 @@ func HandleDisconnection(sender *websocket.Conn) {
 func HandleFriendshipRequest(sender *websocket.Conn, request FriendShipRequest) {
 	new_notification := model.Notification{primitive.NewObjectID().Hex(), request.Sender_id, fmt.Sprintf("%s wants to be your friend!", Usernames[sender]), model.FriendshipRequest, false}
 
-	if receiverNameToConn, ok := NameToConn[request.Receiver_login]; ok {
+	if err := notificationController.SendFriendShipRequest(request.Conversations_id, request.Sender_id, &new_notification); err != response.Ok {
+		sender.WriteJSON(newError("Impossible to send friendship request."))
+		return
+	} else if receiverNameToConn, ok := NameToConn[request.Receiver_login]; ok {
 		m := Message{
 			Type:    MsgFriendShipRequest,
 			From:    Usernames[sender],
@@ -64,12 +67,6 @@ func HandleFriendshipRequest(sender *websocket.Conn, request FriendShipRequest) 
 		}
 
 		receiverNameToConn.WriteJSON(m)
-		// sender.WriteJSON(m)
-	}
-
-	if err := notificationController.SendFriendShipRequest(request.Conversations_id, request.Sender_id, &new_notification); err != response.Ok {
-		sender.WriteJSON(newError("Impossible to send friendship request."))
-		return
 	}
 }
 
@@ -119,16 +116,17 @@ func sendUserList() Message {
 
 func sendChatMessage(sender *websocket.Conn, msg MessageFromChat) {
 	if msg.Content != "" {
-
 		m := newMessage(MsgChat, Usernames[sender], msg.To, msg.Content)
+
+		if err := addMessageToConversation(msg.Conversation_id, m); err != response.Ok {
+			sender.WriteJSON(newError("Something went wrong with your message."))
+			return
+		}
+
 		sender.WriteJSON(m)
 
 		if receiverNameToConn, ok := NameToConn[msg.To]; ok {
 			receiverNameToConn.WriteJSON(m)
-		}
-
-		if err := addMessageToConversation(msg.Conversation_id, m); err != response.Ok {
-			sender.WriteJSON(newError("Something went wrong with your message."))
 		}
 	}
 }

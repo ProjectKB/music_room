@@ -52,7 +52,6 @@ func Router() *mux.Router {
 
 	router.HandleFunc("/notifications", middleware.ReadAllNotification).Methods("GET", "OPTIONS")
 	router.HandleFunc("/notifications/{id}", middleware.ReadOneNotification).Methods("GET", "OPTIONS")
-	// router.HandleFunc("/notifications/sendFriendShipRequest/{id}", middleware.SendFriendShipRequest).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/notifications/readNotification/{id}", middleware.ReadNotification).Methods("PUT", "OPTIONS")
 
 	router.HandleFunc("/websocket", socket.WebsocketConnection)
