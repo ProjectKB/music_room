@@ -40,8 +40,8 @@ type MessageFromChat struct {
 
 type FriendShipRequest struct {
 	Conversations_id string `bson:"conversations_id,omitempty" json:"conversations_id,omitempty"`
-	Sender_id       string `bson:"sender_id,omitempty" json:"sender_id,omitempty"`
-	Receiver_login  string `bson:"receiver_login,omitempty" json:"receiver_login,omitempty"`
+	Sender_id        string `bson:"sender_id,omitempty" json:"sender_id,omitempty"`
+	Receiver_login   string `bson:"receiver_login,omitempty" json:"receiver_login,omitempty"`
 }
 
 type SocketBody struct {
@@ -50,4 +50,9 @@ type SocketBody struct {
 	MessageJoin       string            `bson:"messageJoin,omitempty" json:"messageJoin,omitempty"`
 	MessageLeave      string            `bson:"messageLeave,omitempty" json:"messageLeave,omitempty"`
 	FriendShipRequest FriendShipRequest `bson:"friendShipRequest,omitempty" json:"friendShipRequest,omitempty"`
+}
+
+type SocketAPIError struct {
+	Type    MessageType `bson:"type,omitempty" json:"type,omitempty"`
+	Content string      `bson:"content,omitempty" json:"content,omitempty"`
 }
