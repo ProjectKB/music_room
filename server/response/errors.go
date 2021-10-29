@@ -12,6 +12,7 @@ const (
 	UpdateEmpty
 	Unauthorized
 	Nonexistence
+	FriendshipRequestDuplicated
 	Ok
 )
 
@@ -25,5 +26,6 @@ var ErrorMessages = []string{
 	"You can't update without providing data.",
 	"Nice try sweety.",
 	"nonexistence",
+	"You already ask this user for friendship.",
 	"There are no mistakes.",
 }

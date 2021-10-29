@@ -5,13 +5,9 @@ import (
 	"net/http"
 	userController "server/controllers/userController"
 	"server/helpers"
-	"server/socket"
 
-	// "server/helpers"
 	"server/model"
 	"server/response"
-
-	// "strings"
 
 	"github.com/gorilla/mux"
 )
@@ -170,29 +166,29 @@ func UpdateOneUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response.GetSuccessMessage("User", response.Update))
 }
 
-func ConfirmFriend(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+// func ConfirmFriend(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	var user_to_confirm model.Friend
-	params := mux.Vars(r)
+// 	var user_to_confirm model.Friend
+// 	params := mux.Vars(r)
 
-	if err := json.NewDecoder(r.Body).Decode(&user_to_confirm); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	} else if err := userController.ConfirmFriend(params["id"], user_to_confirm); err != response.Ok {
-		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
-		return
-	}
+// 	if err := json.NewDecoder(r.Body).Decode(&user_to_confirm); err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	} else if err := userController.ConfirmFriend(params["id"], user_to_confirm); err != response.Ok {
+// 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)
+// 		return
+// 	}
 
-	if user_to_confirm.Confirmed {
-		json.NewEncoder(w).Encode(response.GetSuccessMessage("Friendship", response.Confirm))
-	} else {
-		json.NewEncoder(w).Encode(response.GetSuccessMessage("Friendship", response.Deny))
-	}
-}
+// 	if user_to_confirm.Confirmed {
+// 		json.NewEncoder(w).Encode(response.GetSuccessMessage("Friendship", response.Confirm))
+// 	} else {
+// 		json.NewEncoder(w).Encode(response.GetSuccessMessage("Friendship", response.Deny))
+// 	}
+// }
 
 func AddEventToUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
@@ -269,7 +265,7 @@ func ReadUserConversations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	params := mux.Vars(r)
-	conversations := make(map[string]socket.Conversation)
+	conversations := make(map[string]model.Conversation)
 
 	if err := userController.ReadConversations(params["id"], conversations); err != response.Ok {
 		http.Error(w, response.ErrorMessages[err], http.StatusBadRequest)

@@ -8,7 +8,7 @@ type NotificationType string
 
 const (
 	FriendshipRequest  NotificationType = "friendship request"
-	FriendshipAccepted NotificationType = "friendship accepted"
+	FriendshipConfirmed NotificationType = "friendship confirmed"
 )
 
 type Notification struct {

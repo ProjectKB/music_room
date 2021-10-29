@@ -17,7 +17,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/users", middleware.CreateOneUser).Methods("POST", "OPTIONS")
 	router.HandleFunc("/users/login", middleware.LoginUser).Methods("POST", "OPTIONS")
 	router.HandleFunc("/users/{id}", middleware.UpdateOneUser).Methods("PUT", "OPTIONS")
-	router.HandleFunc("/users/confirmFriend/{id}", middleware.ConfirmFriend).Methods("PUT", "OPTIONS")
+	// router.HandleFunc("/users/confirmFriend/{id}", middleware.ConfirmFriend).Methods("PUT", "OPTIONS")
 	router.HandleFunc("/users/friends/{id}", middleware.ReadUserFriends).Methods("GET", "OPTIONS")
 	router.HandleFunc("/users/conversations/{id}", middleware.ReadUserConversations).Methods("GET", "OPTIONS")
 	router.HandleFunc("/users/addEvent/{id}", middleware.AddEventToUser).Methods("PUT", "OPTIONS")

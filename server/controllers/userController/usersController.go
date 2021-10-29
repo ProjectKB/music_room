@@ -9,7 +9,6 @@ import (
 	"server/helpers"
 	"server/model"
 	"server/response"
-	"server/socket"
 	db "server/system/db"
 
 	"regexp"
@@ -221,7 +220,13 @@ func ConfirmFriend(userId string, user_to_confirm model.Friend) int {
 		return response.Ok
 	}
 
-	conversation := socket.Conversation{primitive.NewObjectID(), user.Login, friend.Login, nil}
+	for _, friend := range user.Friends {
+		if friend.Id == user_to_confirm.Id {
+			return response.Unauthorized
+		}
+	}
+
+	conversation := model.Conversation{primitive.NewObjectID(), user.Login, friend.Login, nil}
 
 	if _, err := db.ConversationCollection.InsertOne(context.TODO(), conversation); err != nil {
 		return response.BddError
@@ -242,10 +247,8 @@ func ConfirmFriend(userId string, user_to_confirm model.Friend) int {
 	}
 
 	if _, err := db.UserCollection.UpdateOne(context.TODO(), filter, update); err != nil {
-		// send user updated by socket
 		return response.BddError
 	} else if _, err := db.UserCollection.UpdateOne(context.TODO(), friend_filter, update_friend); err != nil {
-		// send new user to friend if connected + notification by socket
 		return response.BddError
 	}
 
@@ -459,7 +462,7 @@ func ReadFriends(param string, users *[]model.User) int {
 	return response.Ok
 }
 
-func ReadConversations(param string, conversations map[string]socket.Conversation) int {
+func ReadConversations(param string, conversations map[string]model.Conversation) int {
 	id, _ := primitive.ObjectIDFromHex(param)
 	filter := bson.D{{"_id", id}}
 	var user model.User
@@ -488,7 +491,7 @@ func ReadConversations(param string, conversations map[string]socket.Conversatio
 	// Finding multiple documents returns a cursor
 	// Iterating through the cursor allows us to decode documents one at a time
 	for cur.Next(context.TODO()) {
-		var elem socket.Conversation
+		var elem model.Conversation
 		var target string
 
 		if err := cur.Decode(&elem); err != nil {

@@ -39,6 +39,9 @@ func WebsocketConnection(w http.ResponseWriter, r *http.Request) {
 		MsgFriendShipRequest: func() {
 			HandleFriendshipRequest(ws, socket_body.FriendShipRequest)
 		},
+		MsgFriendShipConfirmed: func() {
+			HandleFriendshipConfirmed(ws, socket_body.FriendShipConfirmed)
+		},
 	}
 
 	for {

@@ -97,6 +97,40 @@ func SendFriendShipRequest(notifications_id string, user_id string, new_notifica
 		return response.BddError
 	}
 
+	for _, notification := range(notifications.Notifications) {
+		if !notification.Readed && notification.Content == new_notification.Content {
+			return response.FriendshipRequestDuplicated
+		}
+	}
+
+	update := bson.M{
+		"$set": bson.D{
+			{"notifications", append(notifications.Notifications, *new_notification)},
+			{"notifications_count", notifications.Notifications_count + 1},
+		},
+	}
+
+	if _, err := db.NotificationCollection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return response.BddError
+	}
+
+	return response.Ok
+}
+
+func SendFriendShipConfirmed(notifications_id string, user_id string, new_notification *model.Notification) int {
+	id, _ := primitive.ObjectIDFromHex(notifications_id)
+	filter := bson.D{{"_id", id}}
+	userId, _ := primitive.ObjectIDFromHex(user_id)
+	user_filter := bson.D{{"_id", userId}}
+	var notifications model.Notifications
+	var user model.User
+
+	if err := db.NotificationCollection.FindOne(context.TODO(), filter).Decode(&notifications); err != nil {
+		return response.BddError
+	} else if err := db.UserCollection.FindOne(context.TODO(), user_filter).Decode(&user); err != nil {
+		return response.BddError
+	}
+
 	update := bson.M{
 		"$set": bson.D{
 			{"notifications", append(notifications.Notifications, *new_notification)},
