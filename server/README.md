@@ -46,7 +46,6 @@ Route | Method | Utility
 `/users/{id}` | **DELETE** | delete one user
 `/users/login` | **POST** | check user validity and return token
 `/users/define` | **POST** | read a token a return the corresponding user
-`/users/confirmFriend/{id}` | **PUT** | confirm a friend
 `/users/friends/{id}` | **GET** | read every friends
 `/users/conversations/{id}` | **GET** | read every conversations
 `/users/addEvent/{id}` | **PUT** | add an event to `events` field
@@ -149,8 +148,8 @@ Name | Type | Value
  --- | --- | ---
 **Id** | `string`
 **From** | `string`
-**Login** | `string`
 **Content** | `string`
+**Type** | `string`
 **Readed** | `bool`
 
 ### ENDPOINTS
