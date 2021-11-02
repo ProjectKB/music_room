@@ -9,7 +9,7 @@ const (
 	MsgErr                 MessageType = "error"
 	MsgFriendShipRequest   MessageType = "friendship request"
 	MsgFriendShipConfirmed MessageType = "friendship confirmed"
-	MsgUpdateUser          MessageType = "update user"
+	MsgUpdateUserFriend    MessageType = "update user friends"
 )
 
 type SocketMessage struct {
@@ -24,13 +24,13 @@ type MessageFromChat struct {
 }
 
 type FriendShipRequest struct {
-	Conversations_id string `bson:"conversations_id,omitempty" json:"conversations_id,omitempty"`
+	Notifications_id string `bson:"notifications_id,omitempty" json:"notifications_id,omitempty"`
 	Sender_id        string `bson:"sender_id,omitempty" json:"sender_id,omitempty"`
 	Receiver_login   string `bson:"receiver_login,omitempty" json:"receiver_login,omitempty"`
 }
 
 type FriendShipConfirmed struct {
-	Conversations_id string `bson:"conversations_id,omitempty" json:"conversations_id,omitempty"`
+	Notifications_id string `bson:"notifications_id,omitempty" json:"notifications_id,omitempty"`
 	User_id          string `bson:"user_id,omitempty" json:"user_id,omitempty"`
 	Friend_id        string `bson:"friend_id,omitempty" json:"friend_id,omitempty"`
 	Friend_login     string `bson:"friend_login,omitempty" json:"friend_login,omitempty"`

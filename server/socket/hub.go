@@ -8,7 +8,7 @@ import (
 	"time"
 
 	notificationController "server/controllers/notificationController"
-	// userController "server/controllers/userController"
+	userController "server/controllers/userController"
 	db "server/system/db"
 
 	"github.com/gorilla/websocket"
@@ -55,7 +55,7 @@ func HandleDisconnection(sender *websocket.Conn) {
 func HandleFriendshipRequest(sender *websocket.Conn, request FriendShipRequest) {
 	new_notification := model.Notification{primitive.NewObjectID().Hex(), request.Sender_id, fmt.Sprintf("%s wants to be your friend!", Usernames[sender]), model.FriendshipRequest, false}
 
-	if err := notificationController.SendFriendShipRequest(request.Conversations_id, request.Sender_id, &new_notification); err != response.Ok {
+	if err := notificationController.SendFriendShipRequest(request.Notifications_id, request.Sender_id, &new_notification); err != response.Ok {
 		sender.WriteJSON(newError(response.ErrorMessages[err]))
 		return
 	} else if receiverNameToConn, ok := NameToConn[request.Receiver_login]; ok {
@@ -73,19 +73,19 @@ func HandleFriendshipConfirmed(sender *websocket.Conn, request FriendShipConfirm
 	user_new_friend := model.Friend{request.Friend_id, true, ""}
 	friend_new_friend := model.Friend{request.User_id, true, ""}
 
-	// if err := userController.ConfirmFriend(request.User_id, user_new_friend); err == response.Unauthorized {
-	// 	sender.WriteJSON(newError("You have already accepted this friendship!"))
-	// 	return
-	// } else if err != response.Ok {
-	// 	sender.WriteJSON(newError("Something went wrong. Try later!"))
-	// 	return
-	// } else if err := notificationController.SendFriendShipConfirmed(request.Conversations_id, request.User_id, &new_notification); err != response.Ok {
-	// 	sender.WriteJSON(newError(response.ErrorMessages[err]))
-	// 	return
-	// }
+	if err := userController.ConfirmFriend(request.User_id, user_new_friend); err == response.Unauthorized {
+		sender.WriteJSON(newError("You have already accepted this friendship!"))
+		return
+	} else if err != response.Ok {
+		sender.WriteJSON(newError("Something went wrong. Try later!"))
+		return
+	} else if err := notificationController.SendFriendShipConfirmed(request.Notifications_id, request.User_id, &new_notification); err != response.Ok {
+		sender.WriteJSON(newError(response.ErrorMessages[err]))
+		return
+	}
 
 	sender.WriteJSON(SocketMessage{
-		Type:    MsgUpdateUser,
+		Type:    MsgUpdateUserFriend,
 		Content: user_new_friend,
 	})
 
@@ -96,7 +96,7 @@ func HandleFriendshipConfirmed(sender *websocket.Conn, request FriendShipConfirm
 		})
 
 		receiverNameToConn.WriteJSON(SocketMessage{
-			Type:    MsgUpdateUser,
+			Type:    MsgUpdateUserFriend,
 			Content: friend_new_friend,
 		})
 	}
