@@ -157,4 +157,4 @@ Route | Method | Utility
  --- | --- | ---
 `/notifications` | **GET** | read every notifications
 `/notifications/{id}` | **GET** | read one notification
-`/users/readNotification/{id}` | **PUT** | read a notification
+`/notifications/readNotification/{id}` | **PUT** | read a notification
