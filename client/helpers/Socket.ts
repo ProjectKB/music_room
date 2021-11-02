@@ -35,18 +35,18 @@ export const SocketMessage = (
 };
 
 export const SocketFriendshipRequest = (
-  senderId: string,
-  receiverLogin: string,
-  friendConversationsId: string,
+  userId: string,
+  friendLogin: string,
+  friendNotificationsId: string,
 ) => {
   return new Blob(
     [
       JSON.stringify({
         type: 'friendship request',
         friendShipRequest: {
-          conversations_id: friendConversationsId,
-          sender_id: senderId,
-          receiver_login: receiverLogin,
+          notifications_id: friendNotificationsId,
+          sender_id: userId,
+          receiver_login: friendLogin,
         },
       }),
     ],
@@ -60,14 +60,14 @@ export const SocketFriendshipConfirmed = (
   userId: string,
   friendId: string,
   friendLogin: string,
-  friendConversationsId: string,
+  friendNotificationsId: string,
 ) => {
   return new Blob(
     [
       JSON.stringify({
         type: 'friendship confirmed',
         friendShipConfirmed: {
-          conversations_id: friendConversationsId,
+          notifications_id: friendNotificationsId,
           user_id: userId,
           friend_id: friendId,
           friend_login: friendLogin,

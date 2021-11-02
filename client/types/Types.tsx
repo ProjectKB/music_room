@@ -7,7 +7,7 @@ export type User = {
   id: string;
   login: string;
   mail: string;
-  friends: string[];
+  friends: Friend[];
   password: string;
   token: string;
   notifications: string;
@@ -34,6 +34,12 @@ export type Guest = {
   id: string;
   login?: string;
   contributor?: boolean;
+};
+
+export type Friend = {
+  id: string;
+  confirmed: boolean;
+  conversation: string;
 };
 
 export type PlaylistPayload = {

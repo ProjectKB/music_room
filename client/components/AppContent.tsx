@@ -14,6 +14,7 @@ const AppContent = (props: {ws: WebSocket}) => {
   const Tab = createMaterialTopTabNavigator();
 
   const [newMessage, setNewMessage] = useState(undefined);
+  const [newFriend, setNewFriend] = useState(undefined);
 
   props.ws.onmessage = function (info: any) {
     let data = JSON.parse(info.data);
@@ -39,15 +40,8 @@ const AppContent = (props: {ws: WebSocket}) => {
       case 'friendship confirmed':
         console.log(data.content);
         break;
-      case 'update user':
-        // setUser({
-        //   ...user,
-        //   friends: user.friends
-        //     ? [...user.friends, data.content]
-        //     : [data.content],
-        // });
-
-        // here do like for message, define new conversation and send it to chat
+      case 'update user friends':
+        setNewFriend(data.content);
         break;
       case 'error':
         FlashMsg(false, '', data.content);
@@ -61,7 +55,10 @@ const AppContent = (props: {ws: WebSocket}) => {
         <Tab.Navigator
           tabBar={tabBarProps => <TabBar {...tabBarProps} />}
           tabBarPosition="bottom">
-          <Tab.Screen name={'Home'} component={Home} />
+          <Tab.Screen
+            name={'Home'}
+            children={() => <Home newFriend={newFriend} />}
+          />
           <Tab.Screen name={'Playlist'} component={PlaylistStackNavigator} />
           <Tab.Screen name={'Search'} component={SearchStackNavigator} />
           <Tab.Screen name={'Event'} component={Event} />

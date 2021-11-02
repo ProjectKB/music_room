@@ -11,7 +11,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import {Message} from '../types/Types';
 import ChatMessages from '../components/Chat/ChatMessages';
-import {SocketFriendshipConfirmed, SocketMessage} from '../helpers/Socket';
+import {SocketMessage} from '../helpers/Socket';
 
 type ChatDetailProps = {
   ws: WebSocket;
@@ -33,17 +33,6 @@ const ChatDetail = (props: ChatDetailProps) => {
       SocketMessage(props.conversationName, message, props.conversations),
     );
   };
-
-  // useEffect(() => {
-  //   props.ws.send(
-  //     SocketFriendshipConfirmed(
-  //       '60fe76501c32f3940b389358',
-  //       '60fe7ad83ff810f2ad042eb6',
-  //       'a',
-  //       '6179323748463d76bed1af07',
-  //     ),
-  //   );
-  // });
 
   return (
     <View style={styles.mainContainer}>
