@@ -9,32 +9,33 @@ You'll find below informations about models and endpoints.
 ### MODEL 
 Name | Type
  --- | ---
-**Id** | `primitive.ObjectID`
-**Login** | `string`
-**Mail** | `string`
-**Password** | `string`
-**Token** | `string`
-**Preferences** | `string[]` (Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House)
-**Friends** | `friend[]`
-**Events** | `string[]`
-**Notifications** | `string`
-**Visibility** | `Visibility`
-**Avatar** | `string`
+**id** | `primitive.ObjectID`
+**login** | `string`
+**mail** | `string`
+**password** | `string`
+**token** | `string`
+**preferences** | `string[]` (Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House)
+**friends** | `friend[]`
+**events** | `string[]`
+**notifications** | `string`
+**visibility** | `Visibility`
+**avatar** | `string`
 
 #### Friend 
 Name | Type
  --- | ---
-**Id** | `string`
-**Password** | `string`
+**id** | `string`
+**confirmed** | `bool`
+**conversation** | `string`
 
 #### Visibility 
 Name | Type
  --- | ---
-**Login** | `string` (public | private | friends)
-**Mail** | `string` (public | private | friends)
-**Preferences** | `string` (public | private | friends)
-**Friend** | `string` (public | private | friends)
-**Avatar** | `string` (public | private | friends)
+**login** | `string` (public | private | friends)
+**mail** | `string` (public | private | friends)
+**preferences** | `string` (public | private | friends)
+**friends** | `string` (public | private | friends)
+**avatar** | `string` (public | private | friends)
 
 ### ENDPOINTS 
 Route | Method | Utility
@@ -61,27 +62,27 @@ Route | Method | Utility
 ### MODEL
 Name | Type
  --- | ---
-**Id** | `primitive.ObjectID`
-**Name** | `string`
-**Owner_id** | `string`
-**Status** | `string`
-**Songs** | `Song[]`
-**Guests** | `Guest[]`
-**Has_event** | `bool`
+**id** | `primitive.ObjectID`
+**name** | `string`
+**owner_id** | `string`
+**status** | `string`
+**songs** | `Song[]`
+**guests** | `Guest[]`
+**has_event** | `bool`
 
 #### Song
 Name | Type
  --- | ---
-**Id** | `string`
-**Name** | `string`
-**Picture** | `string`
-**Score** | `uint`
+**id** | `string`
+**name** | `string`
+**picture** | `string`
+**score** | `uint`
 
 #### Guest
 Name | Type
  --- | ---
-**Id** | `string`
-**Contributor** | bool
+**id** | `string`
+**contributor** | bool
 
 ### ENDPOINTS
 Route | Method | Utility
@@ -108,14 +109,14 @@ Route | Method | Utility
 ### MODEL
 Name | Type | Value
  --- | --- | ---
-**Id** | `primitive.ObjectID`
-**Name** | `string`
-**Owner_id** | `string`
-**Playlist_id** | `string`
-**Picture** | `string`
-**Start** | `string`
-**End** | `string`
-**Status** | `string` | pending/ongoing/finished
+**id** | `primitive.ObjectID`
+**name** | `string`
+**owner_id** | `string`
+**playlist_id** | `string`
+**picture** | `string`
+**start** | `string`
+**end** | `string`
+**status** | `string` | pending/ongoing/finished
 
 ### ENDPOINTS
 Route | Method | Utility
@@ -138,10 +139,10 @@ Route | Method | Utility
 ### MODEL
 Name | Type | Value
  --- | --- | ---
-**Id** | `primitive.ObjectID`
-**Login** | `string`
-**Notifications** | `Notification[]`
-**Notifications_count** | `int`
+**id** | `primitive.ObjectID`
+**login** | `string`
+**notifications** | `Notification[]`
+**notifications_count** | `int`
 
 #### Notification
 Name | Type | Value
@@ -158,3 +159,26 @@ Route | Method | Utility
 `/notifications` | **GET** | read every notifications
 `/notifications/{id}` | **GET** | read one notification
 `/notifications/readNotification/{id}` | **PUT** | read a notification
+</details>
+
+<details>
+
+<summary>CONVERSATION</summary>
+
+### MODEL
+Name | Type | Value
+ --- | --- | ---
+**id** | `primitive.ObjectID`
+**user_a** | `string`
+**user_b** | `string`
+**messages** | `Message[]`
+
+#### Message
+Name | Type | Value
+ --- | --- | ---
+**from** | `string`
+**to** | `string`
+**content** | `string`
+**date** | `rime.Time`
+**success** | `bool`
+</details>
