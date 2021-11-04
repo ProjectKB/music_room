@@ -7,14 +7,14 @@ You'll find below informations about models and endpoints.
 <summary>USER</summary>
 
 ### MODEL 
-Name | Type
- --- | ---
+Name | Type | Value
+ --- | --- | ---
 **id** | `primitive.ObjectID`
 **login** | `string`
 **mail** | `string`
 **password** | `string`
 **token** | `string`
-**preferences** | `string[]` (Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House)
+**preferences** | `string[]` | Rap FR, Rap US, Rock, Metal, Classic, Electro, Trance, Low-Fi, House
 **friends** | `friend[]`
 **events** | `string[]`
 **notifications** | `string`
@@ -29,13 +29,13 @@ Name | Type
 **conversation** | `string`
 
 #### Visibility 
-Name | Type
- --- | ---
-**login** | `string` (public | private | friends)
-**mail** | `string` (public | private | friends)
-**preferences** | `string` (public | private | friends)
-**friends** | `string` (public | private | friends)
-**avatar** | `string` (public | private | friends)
+Name | Type | Value
+ --- | --- | ---
+**login** | `string` | public/private/friends
+**mail** | `string` | public/private/friends
+**preferences** | `string` | public/private/friends
+**friends** | `string` | public/private/friends
+**avatar** | `string` | public/private/friends
 
 ### ENDPOINTS 
 Route | Method | Utility
@@ -137,16 +137,16 @@ Route | Method | Utility
 <summary>NOTIFICATIONS</summary>
 
 ### MODEL
-Name | Type | Value
- --- | --- | ---
+Name | Type
+ --- | ---
 **id** | `primitive.ObjectID`
 **login** | `string`
 **notifications** | `Notification[]`
 **notifications_count** | `int`
 
 #### Notification
-Name | Type | Value
- --- | --- | ---
+Name | Type
+ --- | ---
 **Id** | `string`
 **From** | `string`
 **Content** | `string`
@@ -166,19 +166,19 @@ Route | Method | Utility
 <summary>CONVERSATION</summary>
 
 ### MODEL
-Name | Type | Value
- --- | --- | ---
+Name | Type
+ --- | ---
 **id** | `primitive.ObjectID`
 **user_a** | `string`
 **user_b** | `string`
 **messages** | `Message[]`
 
 #### Message
-Name | Type | Value
- --- | --- | ---
+Name | Type
+ --- | ---
 **from** | `string`
 **to** | `string`
 **content** | `string`
-**date** | `rime.Time`
+**date** | `time.Time`
 **success** | `bool`
 </details>
